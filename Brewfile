@@ -7,6 +7,10 @@ brew "ripgrep"
 brew "fd"
 brew "fzf"
 brew "jq"
+brew "rustup"  # needed to build the ricekit CLI from source
 
 # Terminal
 cask "wezterm"
+
+# Fonts
+cask "font-hack-nerd-font"  # referenced by .wezterm.lua

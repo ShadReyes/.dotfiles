@@ -1,3 +1,5 @@
+schema_version = 1
+
 [[installed]]
 name = "slack-desktop"
 kind = "config"
@@ -24,4 +26,11 @@ name = "userstyles"
 kind = "config"
 installed_version = "1.0.6"
 installed_at = "2026-05-04T23:13:01.074826+00:00"
+source_release = "1.0.6"
+
+[[installed]]
+name = "wezterm-colors"
+kind = "config"
+installed_version = "1.0.6"
+installed_at = "2026-05-14T17:30:06.195550+00:00"
 source_release = "1.0.6"

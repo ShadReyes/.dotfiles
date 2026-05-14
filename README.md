@@ -15,8 +15,10 @@ cd ~/dotfiles
 
 `bootstrap.sh` will:
 1. Install [Homebrew](https://brew.sh) if missing
-2. Install all dependencies from `Brewfile` (stow, neovim, wezterm, ripgrep, etc.)
+2. Install all dependencies from `Brewfile` (stow, neovim, wezterm, ripgrep, rustup, hack-nerd-font, etc.)
 3. Symlink each package into `$HOME` via stow
+
+The ricekit CLI is not on Homebrew (private, proprietary repo) — see [ricekit setup](#ricekit-setup) below to build it.
 
 ## Packages
 
@@ -62,6 +64,29 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) auto-installs a
 - `~/.config/ricekit/extensions/` — browser extensions (firefox)
 
 After stowing, run `ricekit apply` to render the active theme across apps.
+
+#### ricekit setup
+
+Ricekit is a private, proprietary product — not on Homebrew. Build the CLI from source after bootstrap:
+
+```sh
+rustup default stable   # rustup is installed by Brewfile but has no toolchain yet
+git clone git@github.com:brs98/ricekit.git ~/src/ricekit
+cd ~/src/ricekit
+cargo install --path crates/ricekit-cli --locked
+. "$HOME/.cargo/env"    # add ~/.cargo/bin to PATH for this shell
+```
+
+The community configs listed in `marketplace.toml` are not bundled with the repo (the
+`installed-configs/` directory is runtime state and gitignored). Reinstall them on a fresh machine:
+
+```sh
+ricekit marketplace refresh
+for cfg in wezterm-colors slack-desktop linear-desktop chrome-colors userstyles; do
+  ricekit marketplace install "$cfg"
+done
+ricekit apply <theme>
+```
 
 ## Managing packages
 
