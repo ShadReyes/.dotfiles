@@ -1,0 +1,51 @@
+# OS
+.DS_Store
+
+# Claude runtime state (never track)
+.claude/history.jsonl
+.claude/policy-limits.json
+.claude/readout-*.json
+.claude/.last-cleanup
+.claude/mcp-needs-auth-cache.json
+.claude/stats-cache.json
+.claude/cache/
+.claude/debug/
+.claude/downloads/
+.claude/file-history/
+.claude/ide/
+.claude/paste-cache/
+.claude/plan-backups/
+.claude/plans/
+.claude/plugins/
+.claude/projects/
+.claude/session-env/
+.claude/sessions/
+.claude/shell-snapshots/
+.claude/statsig/
+.claude/tasks/
+.claude/teams/
+.claude/telemetry/
+.claude/todos/
+.claude/backups/
+.claude/.anthropic/
+
+# Ricekit runtime state (never track)
+.config/ricekit/active/
+.config/ricekit/backups/
+.config/ricekit/community-cache/
+.config/ricekit/configs/
+.config/ricekit/installed-configs/
+.config/ricekit/installed-integrations/
+.config/ricekit/installed-themes/
+.config/ricekit/integrations/
+.config/ricekit/logs/
+.config/ricekit/rendered/
+.config/ricekit/themes/
+.config/ricekit/state.toml
+.config/ricekit/state.toml.lock
+.config/ricekit/marketplace.toml.lock
+
+# Secrets
+*.env
+*.pem
+*.key

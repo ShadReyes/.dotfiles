@@ -1,0 +1,27 @@
+[metadata]
+name = "vo9lyx14s41a1"
+author = "Imported from image"
+version = "1.0.0"
+variant = "dark"
+slug = ""
+is_custom = false
+
+[colors.ansi]
+foreground = "#dcd5c4"
+background = "#161616"
+black = "#636363"
+red = "#e9a79f"
+green = "#95c395"
+yellow = "#ddb383"
+blue = "#a0b8ec"
+magenta = "#d2aadb"
+cyan = "#73c5c4"
+white = "#c2bbab"
+bright_black = "#636363"
+bright_red = "#eba8a1"
+bright_green = "#b5e4b4"
+bright_yellow = "#ffe4b2"
+bright_blue = "#9fb8ec"
+bright_magenta = "#d6aedf"
+bright_cyan = "#8ddfdf"
+bright_white = "#f3ecdb"

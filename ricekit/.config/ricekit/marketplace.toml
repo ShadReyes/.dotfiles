@@ -1,0 +1,27 @@
+[[installed]]
+name = "slack-desktop"
+kind = "config"
+installed_version = "1.0.5"
+installed_at = "2026-05-04T22:30:05.333346+00:00"
+source_release = "1.0.5"
+
+[[installed]]
+name = "linear-desktop"
+kind = "config"
+installed_version = "1.0.5"
+installed_at = "2026-05-04T22:32:04.791601+00:00"
+source_release = "1.0.5"
+
+[[installed]]
+name = "chrome-colors"
+kind = "config"
+installed_version = "1.0.6"
+installed_at = "2026-05-04T23:01:33.221466+00:00"
+source_release = "1.0.6"
+
+[[installed]]
+name = "userstyles"
+kind = "config"
+installed_version = "1.0.6"
+installed_at = "2026-05-04T23:13:01.074826+00:00"
+source_release = "1.0.6"

@@ -1,0 +1,27 @@
+[metadata]
+name = "morning-mountains"
+author = "Imported from image"
+version = "1.0.0"
+variant = "light"
+slug = ""
+is_custom = false
+
+[colors.ansi]
+foreground = "#3a2c32"
+background = "#ebcfcc"
+black = "#3f2a29"
+red = "#5b1626"
+green = "#043818"
+yellow = "#472900"
+blue = "#1c2e59"
+magenta = "#4a2140"
+cyan = "#00353b"
+white = "#84747b"
+bright_black = "#3f2a29"
+bright_red = "#5b1626"
+bright_green = "#043818"
+bright_yellow = "#472900"
+bright_blue = "#1b2e58"
+bright_magenta = "#4a2141"
+bright_cyan = "#00353b"
+bright_white = "#84747b"

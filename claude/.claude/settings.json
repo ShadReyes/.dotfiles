@@ -1,0 +1,68 @@
+{
+  "autoMemoryEnabled": false,
+  "effortLevel": "high",
+  "enabledPlugins": {
+    "ruby-lsp@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "superpowers@superpowers-marketplace": true,
+    "typescript-lsp@claude-plugins-official": true
+  },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_NO_FLICKER": "1 claude"
+  },
+  "extraKnownMarketplaces": {
+    "fluid-skills-marketplace": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/fluid-commerce/fluid-skills.git"
+      }
+    }
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "bash ~/.claude/hooks/backup-plan.sh",
+            "type": "command"
+          }
+        ],
+        "matcher": "Write|Edit"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "printf \"\\033]1337;SetUserVar=%s=%s\\007\" claude_project \"$(echo -n \"$(basename \"$PWD\")\" | base64)\" \u0026\u0026 printf \"\\033]1337;SetUserVar=%s=%s\\007\" claude_status \"$(echo -n \"Stopped: ${CLAUDE_STOP_REASON:-unknown}\" | base64)\"",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  },
+  "model": "claude-opus-4-6[1m]",
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(mkdir:*)",
+      "Bash(curl:*)",
+      "Bash(ls:*)",
+      "Bash(npm install)",
+      "Bash(timeout:*)",
+      "Bash(npm test:*)",
+      "Bash(npx lint:*)",
+      "Bash(yarn ts:*)",
+      "Bash(npx tsx:*)",
+      "mcp__pencil"
+    ]
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "statusLine": {
+    "command": "node ~/.claude/statusline-command.js",
+    "type": "command"
+  },
+  "theme": "dark-ansi",
+  "voiceEnabled": true
+}
