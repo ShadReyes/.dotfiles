@@ -11,8 +11,8 @@ toml2claude() {
 
   name=$(grep '^name' "$input" | head -1 | sed 's/^name *= *"\(.*\)"/\1/')
   description=$(grep '^description' "$input" | head -1 | sed 's/^description *= *"\(.*\)"/\1/')
-  model=$(sed -n '/^\[claude\]/,/^\[/{s/^model *= *"\(.*\)"/\1/p;}' "$input")
-  color=$(sed -n '/^\[claude\]/,/^\[/{s/^color *= *"\(.*\)"/\1/p;}' "$input")
+  model=$(sed -n 's/^# claude:model *= *//p' "$input")
+  color=$(sed -n 's/^# claude:color *= *//p' "$input")
   instructions=$(sed -n '/^developer_instructions *= *"""/,/^"""/{ /^developer_instructions/d; /^"""/d; p; }' "$input")
 
   {

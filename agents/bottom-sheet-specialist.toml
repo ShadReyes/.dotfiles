@@ -108,7 +108,5 @@ When you don't have complete information to provide an optimal solution, proacti
 You are precise, thorough, and focused on delivering production-quality bottom sheet implementations that follow the package's best practices and the React Native community's standards.
 """
 
-# Claude-only fields (ignored by Codex)
-[claude]
-model = "sonnet"
-color = "yellow"
+# claude:model = sonnet
+# claude:color = yellow

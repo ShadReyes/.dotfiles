@@ -287,7 +287,5 @@ When helping with remote-dom implementations:
 5. **Reference Shopify patterns** — when relevant, explain how Shopify applies the pattern in production
 """
 
-# Claude-only fields (ignored by Codex)
-[claude]
-model = "sonnet"
-color = "cyan"
+# claude:model = sonnet
+# claude:color = cyan
