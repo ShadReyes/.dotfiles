@@ -3,6 +3,30 @@ set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 
+# Convert a TOML agent file to Claude Code markdown (YAML frontmatter + body).
+# Reads top-level name, description, developer_instructions, and [claude] table.
+toml2claude() {
+  local input="$1" output="$2"
+  local name description model color instructions
+
+  name=$(grep '^name' "$input" | head -1 | sed 's/^name *= *"\(.*\)"/\1/')
+  description=$(grep '^description' "$input" | head -1 | sed 's/^description *= *"\(.*\)"/\1/')
+  model=$(sed -n '/^\[claude\]/,/^\[/{s/^model *= *"\(.*\)"/\1/p;}' "$input")
+  color=$(sed -n '/^\[claude\]/,/^\[/{s/^color *= *"\(.*\)"/\1/p;}' "$input")
+  instructions=$(sed -n '/^developer_instructions *= *"""/,/^"""/{ /^developer_instructions/d; /^"""/d; p; }' "$input")
+
+  {
+    echo "---"
+    echo "name: $name"
+    echo "description: $description"
+    [ -n "$model" ] && echo "model: $model"
+    [ -n "$color" ] && echo "color: $color"
+    echo "---"
+    echo ""
+    echo "$instructions"
+  } > "$output"
+}
+
 # --- Skills (shared SKILL.md format — both Claude and Codex read it) ---
 CLAUDE_SKILLS="$HOME/.claude/skills"
 CODEX_SKILLS="$HOME/.agents/skills"
@@ -31,7 +55,7 @@ for f in "$DOTFILES/agents"/*.toml; do
   [ -f "$f" ] || continue
   name="$(basename "$f" .toml)"
   ln -sfn "$f" "$CODEX_AGENTS/$name.toml"
-  python3 "$DOTFILES/toml2claude.py" "$f" "$CLAUDE_AGENTS/$name.md"
+  toml2claude "$f" "$CLAUDE_AGENTS/$name.md"
   agent_count=$((agent_count + 1))
 done
 
