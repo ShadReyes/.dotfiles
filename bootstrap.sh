@@ -17,7 +17,7 @@ brew bundle --file="$DOTFILES/Brewfile"
 echo "Stowing dotfiles..."
 cd "$DOTFILES"
 
-for pkg in wezterm claude ricekit; do
+for pkg in wezterm claude codex ricekit; do
   echo "  stow $pkg"
   stow -v --target="$HOME" "$pkg"
 done
@@ -30,6 +30,10 @@ else
   echo "  stow nvim"
   stow -v --target="$HOME" nvim
 fi
+
+# --- Sync skills, agents, commands ---
+echo "Syncing skills..."
+"$DOTFILES/sync-skills.sh"
 
 echo ""
 echo "Done! Restart your shell or terminal to pick up changes."

@@ -52,15 +52,13 @@ For each valid comment:
 2. Make the minimal fix
 3. Note which comment it addresses
 
-### Step 5: Format and Test
+### Step 5: Lint, Format, and Test
 
-**Format first**, then run tests.
+**Lint and format first**, then run tests.
 
-Detect the project type and run the appropriate formatter on changed files:
-
-Format any files you changed using the project's configured formatter.
-
-Then run the test file(s) most relevant to what changed. Don't run the full suite unless necessary.
+1. **Lint** — run the project's linter on changed files (e.g., RuboCop, ESLint, Biome, Ruff). Fix any offenses before committing. Check project config files, CLAUDE.md, or package.json to identify the correct linter.
+2. **Format** — run the project's formatter on changed files if it's separate from the linter (e.g., Prettier, Black). Some linters handle formatting too (RuboCop, Biome) — don't double-run.
+3. **Test** — run the test file(s) most relevant to what changed. Don't run the full suite unless necessary.
 
 ### Step 6: Commit and Push
 
@@ -115,6 +113,17 @@ gh api graphql -f query='
 ```
 
 Only resolve threads for comments you've addressed.
+
+### Step 9: Update PR Description
+
+If the changes you made affect what the PR description says, update it with `gh pr edit`. Common reasons:
+
+- New files were added or changed that aren't listed
+- Behavior described in "How it works" or similar sections is now different
+- Verification/test steps should cover the new fixes
+- Decisions or trade-offs were made that reviewers should know about
+
+Read the current description (`gh pr view <PR_NUMBER> --json body`), update only the sections that are stale, and preserve the rest.
 
 ## Skipping Comments
 

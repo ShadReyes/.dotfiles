@@ -1,6 +1,6 @@
 # dotfiles
 
-Personal dev environment for macOS, managed with [GNU Stow](https://www.gnu.org/software/stow/).
+Personal dev environment for macOS, managed with [GNU Stow](https://www.gnu.org/software/stow/) and a custom sync script.
 
 ## Fresh machine setup
 
@@ -16,11 +16,12 @@ cd ~/dotfiles
 `bootstrap.sh` will:
 1. Install [Homebrew](https://brew.sh) if missing
 2. Install all dependencies from `Brewfile` (stow, neovim, wezterm, ripgrep, rustup, hack-nerd-font, etc.)
-3. Symlink each package into `$HOME` via stow
+3. Symlink each stow package into `$HOME`
+4. Run `sync-skills.sh` to symlink skills, agents, and commands to all AI CLIs
 
 The ricekit CLI is not on Homebrew (private, proprietary repo) — see [ricekit setup](#ricekit-setup) below to build it.
 
-## Packages
+## Stow packages
 
 ### wezterm
 
@@ -44,15 +45,19 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) auto-installs a
 
 - `~/.claude/CLAUDE.md` — global instructions
 - `~/.claude/settings.json` — model, permissions, hooks, plugins
-- `~/.claude/skills/` — 11 custom skills (code-search, grill-me, solving-linear-issues, etc.)
-- `~/.claude/agents/` — custom agent definitions (bottom-sheet-specialist, remote-dom-specialist)
 - `~/.claude/hooks/` — post-tool-use hooks (plan backup)
 - `~/.claude/templates/` — PR summary template
-- `~/.claude/commands/` — slash commands
+- `~/.claude/statusline-command.js` — iTerm2 status line
 
-> **Note:** Some skills (vercel-\*, web-design-guidelines) are managed externally
-> via marketplace plugins and are not tracked here. They install automatically
-> when the plugins are enabled in `settings.json`.
+> Skills, agents, and commands are managed by `sync-skills.sh` (see below).
+
+### codex
+
+[OpenAI Codex CLI](https://github.com/openai/codex) configuration.
+
+- `~/.codex/AGENTS.md` — global instructions
+
+> Skills and agents are managed by `sync-skills.sh` (see below).
 
 ### ricekit
 
@@ -88,6 +93,31 @@ done
 ricekit apply <theme>
 ```
 
+## Shared AI resources
+
+Skills, agents, and commands live in agent-neutral top-level directories. `sync-skills.sh` symlinks them into the right places for each AI CLI.
+
+### skills/
+
+13 custom skills in shared `SKILL.md` format (works with both Claude Code and Codex).
+
+Synced to `~/.claude/skills/` and `~/.agents/skills/`.
+
+### agents/
+
+Custom agent definitions in tool-specific formats:
+
+- `agents/claude/*.md` — Claude Code format (YAML frontmatter + markdown)
+- `agents/codex/*.toml` — Codex format (TOML)
+
+Synced to `~/.claude/agents/` and `~/.codex/agents/`.
+
+### commands/
+
+Slash commands (Claude Code only).
+
+Synced to `~/.claude/commands/`.
+
 ## Managing packages
 
 ```sh
@@ -99,6 +129,9 @@ stow -v --target="$HOME" wezterm
 # Unstow a single package
 stow -v --delete --target="$HOME" wezterm
 
+# Re-sync skills/agents/commands after changes
+./sync-skills.sh
+
 # Unstow everything
 ./unstow.sh
 ```
@@ -108,4 +141,11 @@ stow -v --delete --target="$HOME" wezterm
 1. `mkdir -p <package>/<path-mirroring-home>`
 2. Move the config file into the new directory
 3. `stow -v --target="$HOME" <package>`
+4. Commit and push
+
+## Adding a new skill
+
+1. `mkdir skills/<skill-name>`
+2. Create `skills/<skill-name>/SKILL.md` with YAML frontmatter (`name`, `description`) and markdown body
+3. Run `./sync-skills.sh`
 4. Commit and push
