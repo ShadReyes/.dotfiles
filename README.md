@@ -105,12 +105,11 @@ Synced to `~/.claude/skills/` and `~/.agents/skills/`.
 
 ### agents/
 
-Custom agent definitions in tool-specific formats:
+Custom agent definitions in canonical TOML format. `sync-skills.sh` symlinks the TOML to Codex and generates Claude Code markdown via `toml2claude.py`.
 
-- `agents/claude/*.md` — Claude Code format (YAML frontmatter + markdown)
-- `agents/codex/*.toml` — Codex format (TOML)
+- `agents/*.toml` — single source of truth per agent
 
-Synced to `~/.claude/agents/` and `~/.codex/agents/`.
+Synced to `~/.codex/agents/` (symlink) and `~/.claude/agents/` (generated `.md`).
 
 ### commands/
 
