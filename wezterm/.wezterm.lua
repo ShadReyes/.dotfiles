@@ -44,6 +44,11 @@ bar.apply_to_config(config, {
 	},
 })
 
+config.inactive_pane_hsb = {
+	saturation = 0.85,
+	brightness = 0.7,
+}
+
 config.font = wezterm.font("Hack Nerd Font")
 
 -- Adaptive font size based on platform and screen
