@@ -9,6 +9,10 @@ echo "Removing skill/agent/command symlinks..."
 rm -f "$HOME/.claude/skills"/* "$HOME/.claude/agents"/* "$HOME/.claude/commands"/* 2>/dev/null
 rm -f "$HOME/.codex/agents"/* 2>/dev/null
 rm -f "$HOME/.agents/skills"/* 2>/dev/null
+for skill_dir in "$DOTFILES/skills"/*/; do
+  [ -d "$skill_dir" ] || continue
+  rm -f "$HOME/.codex/skills/$(basename "$skill_dir")" 2>/dev/null
+done
 rmdir "$HOME/.claude/skills" "$HOME/.claude/agents" "$HOME/.claude/commands" 2>/dev/null
 rmdir "$HOME/.codex/agents" 2>/dev/null
 rmdir "$HOME/.agents/skills" "$HOME/.agents" 2>/dev/null

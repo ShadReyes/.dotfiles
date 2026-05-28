@@ -99,13 +99,17 @@ Skills, agents, and commands live in agent-neutral top-level directories. `sync-
 
 ### skills/
 
-13 custom skills in shared `SKILL.md` format (works with both Claude Code and Codex).
+14 custom skills in shared `SKILL.md` format (works with both Claude Code and Codex).
 
 Synced to `~/.claude/skills/` and `~/.agents/skills/`.
+Each skill also has `agents/openai.yaml` metadata so it appears cleanly in Codex skill UI lists.
+
+In Codex, `/skills` opens a menu. Choose `List skills` to open the `$` mention picker, then search
+for a skill such as `address` or type `$address-pr-comments` directly.
 
 ### agents/
 
-Custom agent definitions in canonical TOML format. `sync-skills.sh` symlinks the TOML to Codex and generates Claude Code markdown via `toml2claude.py`.
+Custom agent definitions in canonical TOML format. `sync-skills.sh` symlinks the TOML to Codex and generates Claude Code markdown.
 
 - `agents/*.toml` — single source of truth per agent
 

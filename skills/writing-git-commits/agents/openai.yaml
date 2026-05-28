@@ -1,0 +1,4 @@
+interface:
+  display_name: "Writing Git Commits"
+  short_description: "Write clear git commit messages"
+  default_prompt: "Use $writing-git-commits to draft a clear commit message."

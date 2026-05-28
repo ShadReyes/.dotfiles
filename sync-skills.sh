@@ -29,16 +29,16 @@ toml2claude() {
 
 # --- Skills (shared SKILL.md format — both Claude and Codex read it) ---
 CLAUDE_SKILLS="$HOME/.claude/skills"
-CODEX_SKILLS="$HOME/.agents/skills"
+AGENT_SKILLS="$HOME/.agents/skills"
 
-mkdir -p "$CLAUDE_SKILLS" "$CODEX_SKILLS"
+mkdir -p "$CLAUDE_SKILLS" "$AGENT_SKILLS"
 
 skill_count=0
 for skill_dir in "$DOTFILES/skills"/*/; do
   [ -d "$skill_dir" ] || continue
   name="$(basename "$skill_dir")"
   ln -sfn "$skill_dir" "$CLAUDE_SKILLS/$name"
-  ln -sfn "$skill_dir" "$CODEX_SKILLS/$name"
+  ln -sfn "$skill_dir" "$AGENT_SKILLS/$name"
   skill_count=$((skill_count + 1))
 done
 

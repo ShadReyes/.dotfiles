@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python Testing Patterns"
+  short_description: "Write robust pytest coverage"
+  default_prompt: "Use $python-testing-patterns to add focused pytest coverage."

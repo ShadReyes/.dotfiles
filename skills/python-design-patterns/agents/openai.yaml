@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python Design Patterns"
+  short_description: "Apply pragmatic Python design"
+  default_prompt: "Use $python-design-patterns to review this Python design."

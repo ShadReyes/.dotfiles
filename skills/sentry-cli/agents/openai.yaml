@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sentry CLI"
+  short_description: "Inspect Sentry from the CLI"
+  default_prompt: "Use $sentry-cli to inspect Sentry issues and events from the CLI."

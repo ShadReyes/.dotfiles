@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rust Best Practices"
+  short_description: "Write idiomatic Rust code"
+  default_prompt: "Use $rust-best-practices to review this Rust implementation."

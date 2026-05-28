@@ -1,0 +1,4 @@
+interface:
+  display_name: "CMUX Browser"
+  short_description: "Automate cmux browser surfaces"
+  default_prompt: "Use $cmux-browser to inspect or automate a cmux browser surface."

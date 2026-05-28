@@ -1,0 +1,4 @@
+interface:
+  display_name: "Remote DOM"
+  short_description: "Build with Shopify Remote DOM"
+  default_prompt: "Use $remote-dom to implement or troubleshoot a Remote DOM integration."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "LazyVim Config"
+  short_description: "Configure and troubleshoot Neovim"
+  default_prompt: "Use $lazyvim-config to help troubleshoot or update my Neovim setup."

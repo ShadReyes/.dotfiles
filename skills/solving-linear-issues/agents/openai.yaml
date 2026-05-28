@@ -1,0 +1,4 @@
+interface:
+  display_name: "Solving Linear Issues"
+  short_description: "Implement Linear issues end to end"
+  default_prompt: "Use $solving-linear-issues to fetch this Linear issue and implement it."

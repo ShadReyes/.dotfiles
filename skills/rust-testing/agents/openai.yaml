@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rust Testing"
+  short_description: "Write effective Rust tests"
+  default_prompt: "Use $rust-testing to add or improve Rust test coverage."
