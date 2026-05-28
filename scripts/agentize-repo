@@ -1,0 +1,220 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage: agentize-repo [--recursive] [path]
+
+Make AGENTS.md and .agents/ the canonical agent configuration for a repo
+or workspace, leaving Claude-compatible symlinks in place.
+
+Options:
+  --recursive   Normalize every descendant directory that already has
+                AGENTS.md, CLAUDE.md, .agents, or .claude.
+  -h, --help    Show this help.
+USAGE
+}
+
+RECURSIVE=0
+TARGET="."
+CONFLICTS=0
+CHANGES=0
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --recursive)
+      RECURSIVE=1
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      TARGET="$1"
+      ;;
+  esac
+  shift
+done
+
+target_path() {
+  local path="$1"
+  (cd "$path" && pwd -P)
+}
+
+link_target() {
+  local path="$1"
+  if command -v readlink >/dev/null 2>&1; then
+    readlink "$path"
+  else
+    stat -f '%Y' "$path"
+  fi
+}
+
+changed() {
+  CHANGES=$((CHANGES + 1))
+  printf '  changed: %s\n' "$1"
+}
+
+conflict() {
+  CONFLICTS=$((CONFLICTS + 1))
+  printf '  conflict: %s\n' "$1" >&2
+}
+
+ensure_root_claude_link() {
+  local dir="$1"
+  local agents="$dir/AGENTS.md"
+  local claude="$dir/CLAUDE.md"
+
+  [ -f "$agents" ] || return 0
+
+  if [ -L "$claude" ]; then
+    return 0
+  fi
+
+  if [ -f "$claude" ]; then
+    if cmp -s "$agents" "$claude"; then
+      rm "$claude"
+      ln -s AGENTS.md "$claude"
+      changed "$dir/CLAUDE.md -> AGENTS.md"
+    else
+      conflict "$dir has both AGENTS.md and a different CLAUDE.md"
+    fi
+    return 0
+  fi
+
+  if [ ! -e "$claude" ]; then
+    ln -s AGENTS.md "$claude"
+    changed "$dir/CLAUDE.md -> AGENTS.md"
+  fi
+}
+
+normalize_docs() {
+  local dir="$1"
+  local agents="$dir/AGENTS.md"
+  local claude="$dir/CLAUDE.md"
+  local nested="$dir/.claude/CLAUDE.md"
+  local target
+
+  if [ -L "$agents" ]; then
+    target="$(link_target "$agents")"
+    if [ "$target" = "CLAUDE.md" ] && [ -f "$claude" ] && [ ! -L "$claude" ]; then
+      rm "$agents"
+      mv "$claude" "$agents"
+      ln -s AGENTS.md "$claude"
+      changed "$dir/AGENTS.md canonicalized from CLAUDE.md"
+    elif [ "$target" = ".claude/CLAUDE.md" ] && [ -f "$nested" ] && [ ! -L "$nested" ]; then
+      rm "$agents"
+      mv "$nested" "$agents"
+      ln -s ../AGENTS.md "$nested"
+      changed "$dir/AGENTS.md canonicalized from .claude/CLAUDE.md"
+    else
+      conflict "$agents is a symlink to unsupported target: $target"
+    fi
+  fi
+
+  if [ ! -e "$agents" ] && [ -f "$claude" ] && [ ! -L "$claude" ]; then
+    mv "$claude" "$agents"
+    ln -s AGENTS.md "$claude"
+    changed "$dir/AGENTS.md created from CLAUDE.md"
+  fi
+
+  if [ ! -e "$agents" ] && [ -f "$nested" ] && [ ! -L "$nested" ]; then
+    mv "$nested" "$agents"
+    ln -s ../AGENTS.md "$nested"
+    changed "$dir/AGENTS.md created from .claude/CLAUDE.md"
+  fi
+
+  ensure_root_claude_link "$dir"
+
+  if [ -f "$agents" ] && [ -f "$nested" ] && [ ! -L "$nested" ]; then
+    if cmp -s "$agents" "$nested"; then
+      rm "$nested"
+      ln -s ../AGENTS.md "$nested"
+      changed "$dir/.claude/CLAUDE.md -> ../AGENTS.md"
+    else
+      conflict "$dir has both AGENTS.md and a different .claude/CLAUDE.md"
+    fi
+  fi
+}
+
+normalize_store() {
+  local dir="$1"
+  local name="$2"
+  local canonical="$dir/.agents/$name"
+  local compat="$dir/.claude/$name"
+  local target
+
+  if [ -L "$canonical" ]; then
+    target="$(link_target "$canonical")"
+    if [ "$target" = "../.claude/$name" ] && [ -d "$compat" ] && [ ! -L "$compat" ]; then
+      rm "$canonical"
+      mkdir -p "$dir/.agents"
+      mv "$compat" "$canonical"
+      mkdir -p "$dir/.claude"
+      ln -s "../.agents/$name" "$compat"
+      changed "$dir/.agents/$name canonicalized from .claude/$name"
+      return 0
+    fi
+  fi
+
+  if [ -d "$compat" ] && [ ! -L "$compat" ]; then
+    mkdir -p "$dir/.agents"
+    if [ -e "$canonical" ]; then
+      conflict "$dir has both .agents/$name and .claude/$name directories"
+      return 0
+    fi
+
+    mv "$compat" "$canonical"
+    ln -s "../.agents/$name" "$compat"
+    changed "$dir/.agents/$name created from .claude/$name"
+    return 0
+  fi
+
+  if [ -d "$canonical" ] && [ ! -L "$canonical" ]; then
+    mkdir -p "$dir/.claude"
+    if [ ! -e "$compat" ]; then
+      ln -s "../.agents/$name" "$compat"
+      changed "$dir/.claude/$name -> ../.agents/$name"
+    elif [ -L "$compat" ]; then
+      return 0
+    else
+      conflict "$compat exists and is not a symlink"
+    fi
+  fi
+}
+
+has_agent_config() {
+  local dir="$1"
+  [ -e "$dir/AGENTS.md" ] ||
+    [ -e "$dir/CLAUDE.md" ] ||
+    [ -e "$dir/.agents" ] ||
+    [ -e "$dir/.claude" ]
+}
+
+normalize_dir() {
+  local dir="$1"
+
+  has_agent_config "$dir" || return 0
+
+  printf 'Normalizing %s\n' "$dir"
+  normalize_docs "$dir"
+  normalize_store "$dir" skills
+  normalize_store "$dir" agents
+}
+
+ROOT="$(target_path "$TARGET")"
+
+if [ "$RECURSIVE" -eq 1 ]; then
+  while IFS= read -r dir; do
+    normalize_dir "$dir"
+  done < <(
+    find "$ROOT" \
+      \( -name .git -o -name node_modules -o -name .worktrees -o -path '*/.claude/worktrees' \) -prune \
+      -o -type d -print
+  )
+else
+  normalize_dir "$ROOT"
+fi
+
+printf 'Done: %s changes, %s conflicts\n' "$CHANGES" "$CONFLICTS"
+[ "$CONFLICTS" -eq 0 ]
