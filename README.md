@@ -99,13 +99,17 @@ Skills, agents, and commands live in agent-neutral top-level directories. `sync-
 
 ### skills/
 
-14 custom skills in shared `SKILL.md` format (works with both Claude Code and Codex).
+17 custom skills in shared `SKILL.md` format (works with both Claude Code and Codex).
 
 Synced to `~/.claude/skills/` and `~/.agents/skills/`.
 Each skill also has `agents/openai.yaml` metadata so it appears cleanly in Codex skill UI lists.
 
 In Codex, `/skills` opens a menu. Choose `List skills` to open the `$` mention picker, then search
 for a skill such as `address` or type `$address-pr-comments` directly.
+
+The `grill-me`, `grilling`, and `teach` skills are vendored from
+[`mattpocock/skills`](https://github.com/mattpocock/skills). `teach` includes its companion document
+formats so it works from a fresh clone after `./sync-skills.sh`.
 
 ### agents/
 
@@ -152,3 +156,6 @@ stow -v --delete --target="$HOME" wezterm
 2. Create `skills/<skill-name>/SKILL.md` with YAML frontmatter (`name`, `description`) and markdown body
 3. Run `./sync-skills.sh`
 4. Commit and push
+
+Imported third-party skills should include their companion docs in the same skill directory, plus an
+`agents/openai.yaml` file for Codex UI metadata.

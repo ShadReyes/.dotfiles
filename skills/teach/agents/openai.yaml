@@ -1,0 +1,4 @@
+interface:
+  display_name: "Teach"
+  short_description: "Teach a topic over sessions"
+  default_prompt: "Use $teach to teach me this topic in a stateful workspace."

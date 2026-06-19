@@ -24,15 +24,19 @@ mkdir -p "$TEMP_HOME/.claude" "$TEMP_HOME/.codex" "$TEMP_HOME/.agents"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
 
 echo "Skills"
-assert_count "$TEMP_HOME/.claude/skills" '*' 14 "14 skills synced to Claude"
-assert_count "$TEMP_HOME/.agents/skills" '*' 14 "14 skills synced to Codex"
+assert_count "$TEMP_HOME/.claude/skills" '*' 17 "17 skills synced to Claude"
+assert_count "$TEMP_HOME/.agents/skills" '*' 17 "17 skills synced to Codex"
 
-for skill in agent-config code-search grill-me solving-linear-issues rust-best-practices; do
+for skill in agent-config code-search grill-me grilling teach solving-linear-issues rust-best-practices; do
   assert_link "$TEMP_HOME/.claude/skills/$skill" "Claude skill: $skill is symlink"
   assert_link "$TEMP_HOME/.agents/skills/$skill" "Codex skill: $skill is symlink"
   assert_file "$TEMP_HOME/.claude/skills/$skill/SKILL.md" "Claude skill: $skill/SKILL.md readable"
   assert_file "$TEMP_HOME/.agents/skills/$skill/SKILL.md" "Codex skill: $skill/SKILL.md readable"
   assert_file "$TEMP_HOME/.agents/skills/$skill/agents/openai.yaml" "Codex skill: $skill has UI metadata"
+done
+
+for doc in MISSION-FORMAT.md RESOURCES-FORMAT.md LEARNING-RECORD-FORMAT.md GLOSSARY-FORMAT.md; do
+  assert_file "$TEMP_HOME/.agents/skills/teach/$doc" "Codex skill: teach includes $doc"
 done
 
 echo ""
@@ -73,8 +77,8 @@ rd_lines=$(wc -l < "$TEMP_HOME/.claude/agents/remote-dom-specialist.md" | tr -d 
 echo ""
 echo "Idempotency"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
-assert_count "$TEMP_HOME/.claude/skills" '*' 14 "Re-run: still 14 skills"
-assert_count "$TEMP_HOME/.agents/skills" '*' 14 "Re-run: still 14 Codex skills"
+assert_count "$TEMP_HOME/.claude/skills" '*' 17 "Re-run: still 17 skills"
+assert_count "$TEMP_HOME/.agents/skills" '*' 17 "Re-run: still 17 Codex skills"
 assert_count "$TEMP_HOME/.claude/agents" '*.md' 2 "Re-run: still 2 agents"
 pass "sync-skills.sh is idempotent"
 
