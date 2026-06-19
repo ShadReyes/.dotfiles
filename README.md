@@ -1,6 +1,6 @@
 # dotfiles
 
-Personal dev environment for macOS, managed with [GNU Stow](https://www.gnu.org/software/stow/) and a custom sync script.
+Personal dev environment, managed with [GNU Stow](https://www.gnu.org/software/stow/), a macOS `Brewfile`, and a custom sync script for shared AI resources.
 
 ## Fresh machine setup
 
@@ -16,18 +16,45 @@ cd ~/dotfiles
 `bootstrap.sh` will:
 1. Install [Homebrew](https://brew.sh) if missing
 2. Install all dependencies from `Brewfile` (stow, neovim, wezterm, ripgrep, rustup, hack-nerd-font, etc.)
-3. Symlink each stow package into `$HOME`
+3. Symlink shared and platform-specific stow packages into `$HOME`
 4. Run `sync-skills.sh` to symlink skills, agents, and commands to all AI CLIs
 
 The ricekit CLI is not on Homebrew (private, proprietary repo) — see [ricekit setup](#ricekit-setup) below to build it.
 
+## Repository layout
+
+```text
+Brewfile              # macOS package source of truth
+bootstrap.sh          # fresh-machine install entrypoint
+shared/stow/          # configs shared across platforms
+shared/symlink/       # direct shared symlink packages
+mac/stow/             # macOS-only stow packages
+mac/symlink/          # direct macOS symlink packages
+linux/stow/           # reserved for Linux-only stow packages
+linux/symlink/        # direct Linux symlink packages
+skills/               # shared SKILL.md resources
+agents/               # canonical TOML agent definitions
+commands/             # Claude slash commands
+scripts/              # helper scripts
+```
+
+This keeps the repo close to a shared/platform split while retaining the existing
+winning pieces: `Brewfile` for macOS packages, readable bootstrap docs, and the
+canonical TOML agent source used by `sync-skills.sh`.
+
 ## Stow packages
+
+Shared stow packages live in `shared/stow/`. Platform stow packages live in
+`mac/stow/` or `linux/stow/`. Direct symlink packages can live in the matching
+`shared/symlink/`, `mac/symlink/`, or `linux/symlink/` layer when Stow is the
+wrong tool for a config.
 
 ### wezterm
 
 WezTerm terminal configuration.
 
 - `~/.wezterm.lua` — keybindings, appearance, fonts
+- Source: `shared/stow/wezterm/`
 
 ### nvim
 
@@ -38,6 +65,8 @@ Neovim config based on [kickstart.nvim](https://github.com/nvim-kickstart/kickst
 - `~/.config/nvim/lua/kickstart/plugins/` — kickstart plugin modules
 
 On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) auto-installs all plugins. No manual steps needed.
+
+- Source: `shared/stow/nvim/`
 
 ### claude
 
@@ -51,6 +80,8 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) auto-installs a
 
 > Skills, agents, and commands are managed by `sync-skills.sh` (see below).
 
+- Source: `shared/stow/claude/`
+
 ### codex
 
 [OpenAI Codex CLI](https://github.com/openai/codex) configuration.
@@ -58,6 +89,8 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) auto-installs a
 - `~/.codex/AGENTS.md` — global instructions
 
 > Skills and agents are managed by `sync-skills.sh` (see below).
+
+- Source: `shared/stow/codex/`
 
 ### ricekit
 
@@ -69,6 +102,8 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) auto-installs a
 - `~/.config/ricekit/extensions/` — browser extensions (firefox)
 
 After stowing, run `ricekit apply` to render the active theme across apps.
+
+- Source: `mac/stow/ricekit/`
 
 #### ricekit setup
 
@@ -99,7 +134,7 @@ Skills, agents, and commands live in agent-neutral top-level directories. `sync-
 
 ### skills/
 
-17 custom skills in shared `SKILL.md` format (works with both Claude Code and Codex).
+Custom skills in shared `SKILL.md` format (works with both Claude Code and Codex).
 
 Synced to `~/.claude/skills/` and `~/.agents/skills/`.
 Each skill also has `agents/openai.yaml` metadata so it appears cleanly in Codex skill UI lists.
@@ -131,10 +166,10 @@ Synced to `~/.claude/commands/`.
 cd ~/dotfiles
 
 # Stow a single package
-stow -v --target="$HOME" wezterm
+stow -v --no-folding --dir=shared/stow --target="$HOME" wezterm
 
 # Unstow a single package
-stow -v --delete --target="$HOME" wezterm
+stow -v --delete --no-folding --dir=shared/stow --target="$HOME" wezterm
 
 # Re-sync skills/agents/commands after changes
 ./sync-skills.sh
@@ -145,10 +180,11 @@ stow -v --delete --target="$HOME" wezterm
 
 ## Adding new configs
 
-1. `mkdir -p <package>/<path-mirroring-home>`
-2. Move the config file into the new directory
-3. `stow -v --target="$HOME" <package>`
-4. Commit and push
+1. Pick the right layer: `shared/stow`, `mac/stow`, or `linux/stow`
+2. `mkdir -p <layer>/<package>/<path-mirroring-home>`
+3. Move the config file into the new package directory
+4. `stow -v --no-folding --dir=<layer> --target="$HOME" <package>`
+5. Commit and push
 
 ## Adding a new skill
 

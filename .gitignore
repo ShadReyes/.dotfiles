@@ -1,51 +1,54 @@
 # OS
 .DS_Store
 
+# Local machine-only files moved out of stow packages
+local-runtime/
+
 # Claude runtime state (never track)
-claude/.claude/history.jsonl
-claude/.claude/policy-limits.json
-claude/.claude/readout-*.json
-claude/.claude/.last-cleanup
-claude/.claude/mcp-needs-auth-cache.json
-claude/.claude/remote-settings.json
-claude/.claude/stats-cache.json
-claude/.claude/cache/
-claude/.claude/debug/
-claude/.claude/downloads/
-claude/.claude/file-history/
-claude/.claude/ide/
-claude/.claude/paste-cache/
-claude/.claude/plan-backups/
-claude/.claude/plans/
-claude/.claude/plugins/
-claude/.claude/projects/
-claude/.claude/session-env/
-claude/.claude/sessions/
-claude/.claude/shell-snapshots/
-claude/.claude/statsig/
-claude/.claude/tasks/
-claude/.claude/teams/
-claude/.claude/telemetry/
-claude/.claude/todos/
-claude/.claude/backups/
-claude/.claude/.anthropic/
+shared/stow/claude/.claude/history.jsonl
+shared/stow/claude/.claude/policy-limits.json
+shared/stow/claude/.claude/readout-*.json
+shared/stow/claude/.claude/.last-cleanup
+shared/stow/claude/.claude/mcp-needs-auth-cache.json
+shared/stow/claude/.claude/remote-settings.json
+shared/stow/claude/.claude/stats-cache.json
+shared/stow/claude/.claude/cache/
+shared/stow/claude/.claude/debug/
+shared/stow/claude/.claude/downloads/
+shared/stow/claude/.claude/file-history/
+shared/stow/claude/.claude/ide/
+shared/stow/claude/.claude/paste-cache/
+shared/stow/claude/.claude/plan-backups/
+shared/stow/claude/.claude/plans/
+shared/stow/claude/.claude/plugins/
+shared/stow/claude/.claude/projects/
+shared/stow/claude/.claude/session-env/
+shared/stow/claude/.claude/sessions/
+shared/stow/claude/.claude/shell-snapshots/
+shared/stow/claude/.claude/statsig/
+shared/stow/claude/.claude/tasks/
+shared/stow/claude/.claude/teams/
+shared/stow/claude/.claude/telemetry/
+shared/stow/claude/.claude/todos/
+shared/stow/claude/.claude/backups/
+shared/stow/claude/.claude/.anthropic/
 
 # Ricekit runtime state (never track)
-ricekit/.config/ricekit/active/
-ricekit/.config/ricekit/backups/
-ricekit/.config/ricekit/community-cache/
-ricekit/.config/ricekit/configs/
-ricekit/.config/ricekit/installed-configs/
-ricekit/.config/ricekit/installed-integrations/
-ricekit/.config/ricekit/installed-themes/
-ricekit/.config/ricekit/integrations/
-ricekit/.config/ricekit/logs/
-ricekit/.config/ricekit/rendered/
-ricekit/.config/ricekit/themes/
-ricekit/.config/ricekit/state.toml
-ricekit/.config/ricekit/state.toml.lock
-ricekit/.config/ricekit/marketplace.toml.lock
-ricekit/.config/ricekit/trial.toml
+mac/stow/ricekit/.config/ricekit/active/
+mac/stow/ricekit/.config/ricekit/backups/
+mac/stow/ricekit/.config/ricekit/community-cache/
+mac/stow/ricekit/.config/ricekit/configs/
+mac/stow/ricekit/.config/ricekit/installed-configs/
+mac/stow/ricekit/.config/ricekit/installed-integrations/
+mac/stow/ricekit/.config/ricekit/installed-themes/
+mac/stow/ricekit/.config/ricekit/integrations/
+mac/stow/ricekit/.config/ricekit/logs/
+mac/stow/ricekit/.config/ricekit/rendered/
+mac/stow/ricekit/.config/ricekit/themes/
+mac/stow/ricekit/.config/ricekit/state.toml
+mac/stow/ricekit/.config/ricekit/state.toml.lock
+mac/stow/ricekit/.config/ricekit/marketplace.toml.lock
+mac/stow/ricekit/.config/ricekit/trial.toml
 
 # Secrets
 *.env
