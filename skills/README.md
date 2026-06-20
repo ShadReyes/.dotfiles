@@ -4,13 +4,16 @@ These directories are the source of truth for local AI skills. Run `../sync-skil
 
 Imported upstream skills:
 
-- `grill-me`, `grilling`, and `teach` come from `mattpocock/skills`.
-- `teach` includes its workspace document formats: `MISSION-FORMAT.md`, `RESOURCES-FORMAT.md`, `LEARNING-RECORD-FORMAT.md`, and `GLOSSARY-FORMAT.md`.
+- `brando` is a local plugin bundle vendored from `brs98/.dotfiles`.
+- `matt` is a local plugin bundle vendored from `mattpocock/skills`.
+- `grilling` remains a root skill vendored from `mattpocock/skills`.
 
 To refresh the imported copies from upstream:
 
 ```sh
-python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
-  --repo mattpocock/skills \
-  --path skills/productivity/grill-me skills/productivity/grilling skills/productivity/teach
+git clone --depth 1 https://github.com/brs98/.dotfiles /tmp/brs98-dotfiles
+git clone --depth 1 https://github.com/mattpocock/skills /tmp/mattpocock-skills
+
+# Copy the relevant skill directories into skills/brando/skills/ and skills/matt/skills/.
+# Keep root skills such as manage-skills under skills/<name>/.
 ```

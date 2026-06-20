@@ -3,12 +3,12 @@
 Personal, work-specific skills for Fluid Commerce, namespaced under `fluid:`.
 
 This is a local **skills-dir plugin**: because it lives at `~/.claude/skills/fluid/`
-(via the `~/.agents/skills/fluid` → dotfiles symlink) and contains
+(via the `~/.agents/skills/fluid` -> `.dotfiles` symlink) and contains
 `.claude-plugin/plugin.json`, Claude Code auto-loads it as `fluid@skills-dir` — no
 remote marketplace required. Its skills are exposed as `fluid:<skill-name>`.
 
 Distinct from the team's `fluid-skills` plugin (github.com/fluid-commerce/fluid-skills):
-that one is shared/team-owned; this one is personal and version-controlled in my dotfiles.
+that one is shared/team-owned; this one is personal and version-controlled in my `.dotfiles`.
 
 ## Skills
 

@@ -24,10 +24,10 @@ mkdir -p "$TEMP_HOME/.claude" "$TEMP_HOME/.codex" "$TEMP_HOME/.agents"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
 
 echo "Skills"
-assert_count "$TEMP_HOME/.claude/skills" '*' 17 "17 skills synced to Claude"
-assert_count "$TEMP_HOME/.agents/skills" '*' 17 "17 skills synced to Codex"
+assert_count "$TEMP_HOME/.claude/skills" '*' 18 "18 skills synced to Claude"
+assert_count "$TEMP_HOME/.agents/skills" '*' 18 "18 skills synced to Codex"
 
-for skill in agent-config code-search grill-me grilling teach solving-linear-issues rust-best-practices; do
+for skill in agent-config code-search grilling manage-skills solving-linear-issues rust-best-practices; do
   assert_link "$TEMP_HOME/.claude/skills/$skill" "Claude skill: $skill is symlink"
   assert_link "$TEMP_HOME/.agents/skills/$skill" "Codex skill: $skill is symlink"
   assert_file "$TEMP_HOME/.claude/skills/$skill/SKILL.md" "Claude skill: $skill/SKILL.md readable"
@@ -35,8 +35,22 @@ for skill in agent-config code-search grill-me grilling teach solving-linear-iss
   assert_file "$TEMP_HOME/.agents/skills/$skill/agents/openai.yaml" "Codex skill: $skill has UI metadata"
 done
 
+for plugin in brando matt fluid; do
+  assert_link "$TEMP_HOME/.claude/skills/$plugin" "Claude plugin: $plugin is symlink"
+  assert_link "$TEMP_HOME/.agents/skills/$plugin" "Codex plugin: $plugin is symlink"
+  assert_file "$TEMP_HOME/.agents/skills/$plugin/.claude-plugin/plugin.json" "Plugin: $plugin has manifest"
+done
+
+for skill in react-doctor typescript-doctor turborepo patchtree prd-to-plan improve-codebase-architecture validate-startup-idea find-skills; do
+  assert_file "$TEMP_HOME/.agents/skills/brando/skills/$skill/SKILL.md" "brando:$skill readable"
+done
+
+for skill in writing-great-skills grill-me teach tdd to-prd grill-with-docs; do
+  assert_file "$TEMP_HOME/.agents/skills/matt/skills/$skill/SKILL.md" "matt:$skill readable"
+done
+
 for doc in MISSION-FORMAT.md RESOURCES-FORMAT.md LEARNING-RECORD-FORMAT.md GLOSSARY-FORMAT.md; do
-  assert_file "$TEMP_HOME/.agents/skills/teach/$doc" "Codex skill: teach includes $doc"
+  assert_file "$TEMP_HOME/.agents/skills/matt/skills/teach/$doc" "Codex skill: matt:teach includes $doc"
 done
 
 echo ""
@@ -77,20 +91,20 @@ rd_lines=$(wc -l < "$TEMP_HOME/.claude/agents/remote-dom-specialist.md" | tr -d 
 echo ""
 echo "Idempotency"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
-assert_count "$TEMP_HOME/.claude/skills" '*' 17 "Re-run: still 17 skills"
-assert_count "$TEMP_HOME/.agents/skills" '*' 17 "Re-run: still 17 Codex skills"
+assert_count "$TEMP_HOME/.claude/skills" '*' 18 "Re-run: still 18 skills"
+assert_count "$TEMP_HOME/.agents/skills" '*' 18 "Re-run: still 18 Codex skills"
 assert_count "$TEMP_HOME/.claude/agents" '*.md' 2 "Re-run: still 2 agents"
 pass "sync-skills.sh is idempotent"
 
 echo ""
 echo "Symlink targets"
-# Verify symlinks point back to dotfiles repo, not somewhere else
-target=$(readlink "$TEMP_HOME/.claude/skills/grill-me")
-[[ "$target" == "$DOTFILES/skills/grill-me/" ]] && pass "Skill symlink points to dotfiles repo" \
+# Verify symlinks point back to the .dotfiles repo, not somewhere else
+target=$(readlink "$TEMP_HOME/.claude/skills/matt")
+[[ "$target" == "$DOTFILES/skills/matt/" ]] && pass "Skill plugin symlink points to .dotfiles repo" \
                                                  || fail "Skill symlink points to: $target"
 
 target=$(readlink "$TEMP_HOME/.codex/agents/bottom-sheet-specialist.toml")
-[[ "$target" == "$DOTFILES/agents/bottom-sheet-specialist.toml" ]] && pass "Agent symlink points to dotfiles repo" \
+[[ "$target" == "$DOTFILES/agents/bottom-sheet-specialist.toml" ]] && pass "Agent symlink points to .dotfiles repo" \
                                                                     || fail "Agent symlink points to: $target"
 
 echo ""

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Manage Skills"
+  short_description: "Keep dotfiles skills organized and synced"
+  default_prompt: "Use $manage-skills to add, move, audit, or sync skills in this dotfiles repo."

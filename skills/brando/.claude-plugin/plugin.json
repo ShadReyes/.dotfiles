@@ -1,0 +1,6 @@
+{
+  "name": "brando",
+  "version": "1.0.0",
+  "description": "Vendored skills from brs98/.dotfiles",
+  "skills": "./skills/"
+}
