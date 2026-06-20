@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
+FAIL=0
+
+ok() { echo "✓ $1"; }
+warn() { echo "! $1"; }
+fail() { echo "✗ $1"; FAIL=$((FAIL + 1)); }
+count_entries() {
+  local dir="$1"
+  if [ -d "$dir" ]; then
+    find "$dir" -mindepth 1 -maxdepth 1 | wc -l | tr -d ' '
+  else
+    echo 0
+  fi
+}
+check_path() {
+  local path="$1" label="$2"
+  if [ -L "$path" ]; then
+    ok "$label: symlink -> $(readlink "$path")"
+  elif [ -e "$path" ]; then
+    warn "$label: exists but is not a symlink"
+  else
+    fail "$label: missing"
+  fi
+}
+
+printf 'Dotfiles doctor\n'
+printf 'Repo: %s\n' "$DOTFILES"
+printf 'Home: %s\n' "$HOME"
+printf '\nTools\n'
+if command -v stow >/dev/null 2>&1; then
+  ok "stow: $(command -v stow)"
+else
+  fail "stow: not found"
+fi
+for cmd in nvim wezterm claude codex; do
+  if command -v "$cmd" >/dev/null 2>&1; then
+    ok "$cmd: $(command -v "$cmd")"
+  else
+    warn "$cmd: not installed (config can still be linked)"
+  fi
+done
+
+printf '\nKey links\n'
+check_path "$HOME/.wezterm.lua" '~/.wezterm.lua'
+check_path "$HOME/.codex/AGENTS.md" '~/.codex/AGENTS.md'
+check_path "$HOME/.claude/CLAUDE.md" '~/.claude/CLAUDE.md'
+check_path "$HOME/.claude/settings.json" '~/.claude/settings.json'
+check_path "$HOME/.config/nvim/init.lua" '~/.config/nvim/init.lua'
+
+printf '\nAI resource counts\n'
+printf 'Claude skills: %s\n' "$(count_entries "$HOME/.claude/skills")"
+printf 'Shared agent skills: %s\n' "$(count_entries "$HOME/.agents/skills")"
+printf 'Codex agents: %s\n' "$(count_entries "$HOME/.codex/agents")"
+printf 'Claude agents: %s\n' "$(count_entries "$HOME/.claude/agents")"
+printf 'Claude commands: %s\n' "$(count_entries "$HOME/.claude/commands")"
+
+printf '\nBroken symlinks\n'
+broken_file="$(mktemp)"
+trap 'rm -f "$broken_file"' EXIT
+for root in "$HOME/.claude" "$HOME/.codex" "$HOME/.agents" "$HOME/.config/nvim" "$HOME/.wezterm.lua"; do
+  [ -e "$root" ] || [ -L "$root" ] || continue
+  if [ -L "$root" ] || [ -f "$root" ]; then
+    [ -L "$root" ] && [ ! -e "$root" ] && printf '%s\n' "$root" >> "$broken_file"
+  else
+    find "$root" -xtype l >> "$broken_file"
+  fi
+done
+if [ -s "$broken_file" ]; then
+  fail "Broken symlinks found:"
+  sed 's/^/  /' "$broken_file"
+else
+  ok "Broken symlinks: none"
+fi
+
+printf '\nStow dry-run\n'
+if [ "${DOTFILES_DOCTOR_SKIP_STOW_DRY_RUN:-0}" = 1 ]; then
+  warn "Skipping stow dry-run by request"
+elif command -v stow >/dev/null 2>&1; then
+  for pkg_path in "$DOTFILES/shared/stow"/*/; do
+    [ -d "$pkg_path" ] || continue
+    pkg="$(basename "$pkg_path")"
+    if stow -n --no-folding --dir="$DOTFILES/shared/stow" --target="$HOME" "$pkg" >/dev/null 2>&1; then
+      ok "shared/stow/$pkg"
+    else
+      fail "shared/stow/$pkg has conflicts"
+    fi
+  done
+else
+  warn "Skipping stow dry-run because stow is missing"
+fi
+
+printf '\nResult\n'
+if [ "$FAIL" -eq 0 ]; then
+  ok "doctor passed"
+else
+  fail "$FAIL check(s) failed"
+fi
+
+exit "$FAIL"

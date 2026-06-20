@@ -4,6 +4,40 @@ set -euo pipefail
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 cd "$DOTFILES"
 
+is_macos() {
+  [[ "${OSTYPE:-}" == darwin* ]] || [ "$(uname -s)" = "Darwin" ]
+}
+
+managed_link() {
+  local path="$1"
+  [ -L "$path" ] || return 1
+
+  local target resolved
+  target="$(readlink "$path")"
+  case "$target" in
+    "$DOTFILES"/*) return 0 ;;
+  esac
+
+  resolved="$(cd "$(dirname "$path")" 2>/dev/null && cd "$(dirname "$target")" 2>/dev/null && pwd -P)/$(basename "$target")" || return 1
+  case "$resolved" in
+    "$DOTFILES"/*) return 0 ;;
+  esac
+
+  return 1
+}
+
+remove_managed_path() {
+  local path="$1"
+  if managed_link "$path"; then
+    rm -f "$path"
+  fi
+}
+
+remove_empty_dir() {
+  local dir="$1"
+  rmdir "$dir" 2>/dev/null || true
+}
+
 unstow_packages_in() {
   local base="$1"
   local pkg_path pkg
@@ -49,24 +83,59 @@ remove_symlink_packages_in() {
   done
 }
 
-# Remove sync-skills symlinks first (these aren't managed by stow)
-echo "Removing skill/agent/command symlinks..."
-rm -f "$HOME/.claude/skills"/* "$HOME/.claude/agents"/* "$HOME/.claude/commands"/* 2>/dev/null
-rm -f "$HOME/.codex/agents"/* 2>/dev/null
-rm -f "$HOME/.agents/skills"/* 2>/dev/null
-for skill_dir in "$DOTFILES/skills"/*/; do
-  [ -d "$skill_dir" ] || continue
-  rm -f "$HOME/.codex/skills/$(basename "$skill_dir")" 2>/dev/null
-done
-rmdir "$HOME/.claude/skills" "$HOME/.claude/agents" "$HOME/.claude/commands" 2>/dev/null
-rmdir "$HOME/.codex/agents" 2>/dev/null
-rmdir "$HOME/.agents/skills" "$HOME/.agents" 2>/dev/null
+remove_synced_ai_resources() {
+  local skill_dir name agent_file command_file generated_agent
 
+  echo "Removing skill/agent/command symlinks managed by this repo..."
+
+  for skill_dir in "$DOTFILES/skills"/*/; do
+    [ -d "$skill_dir" ] || continue
+    name="$(basename "$skill_dir")"
+    remove_managed_path "$HOME/.claude/skills/$name"
+    remove_managed_path "$HOME/.agents/skills/$name"
+    remove_managed_path "$HOME/.codex/skills/$name"
+  done
+
+  for agent_file in "$DOTFILES/agents"/*.toml; do
+    [ -f "$agent_file" ] || continue
+    name="$(basename "$agent_file" .toml)"
+    remove_managed_path "$HOME/.codex/agents/$name.toml"
+
+    # Claude agents are generated markdown files rather than symlinks. Remove
+    # only the files that correspond to this repo's canonical agent sources.
+    generated_agent="$HOME/.claude/agents/$name.md"
+    [ -f "$generated_agent" ] && [ ! -L "$generated_agent" ] && rm -f "$generated_agent"
+  done
+
+  for command_file in "$DOTFILES/commands"/*; do
+    [ -f "$command_file" ] || continue
+    remove_managed_path "$HOME/.claude/commands/$(basename "$command_file")"
+  done
+
+  remove_empty_dir "$HOME/.claude/skills"
+  remove_empty_dir "$HOME/.claude/agents"
+  remove_empty_dir "$HOME/.claude/commands"
+  remove_empty_dir "$HOME/.codex/agents"
+  remove_empty_dir "$HOME/.codex/skills"
+  remove_empty_dir "$HOME/.agents/skills"
+  remove_empty_dir "$HOME/.agents"
+}
+
+remove_synced_ai_resources
 unstow_packages_in "$DOTFILES/shared/stow"
-unstow_packages_in "$DOTFILES/mac/stow"
-unstow_packages_in "$DOTFILES/linux/stow"
-remove_symlink_packages_in "$DOTFILES/shared/symlink"
-remove_symlink_packages_in "$DOTFILES/mac/symlink"
-remove_symlink_packages_in "$DOTFILES/linux/symlink"
 
-echo "All symlinks removed."
+if is_macos; then
+  unstow_packages_in "$DOTFILES/mac/stow"
+else
+  unstow_packages_in "$DOTFILES/linux/stow"
+fi
+
+remove_symlink_packages_in "$DOTFILES/shared/symlink"
+
+if is_macos; then
+  remove_symlink_packages_in "$DOTFILES/mac/symlink"
+else
+  remove_symlink_packages_in "$DOTFILES/linux/symlink"
+fi
+
+echo "Managed symlinks removed. Manually-created AI resources were preserved."
