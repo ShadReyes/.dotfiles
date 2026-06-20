@@ -30,8 +30,9 @@ multi-repo workspace layout when possible, then add the `~/dotfiles` convenience
 
 ```sh
 mkdir -p ~/code/github.com/ShadReyes
-git clone git@github.com:ShadReyes/dotfiles.git ~/code/github.com/ShadReyes/dotfiles
-ln -sfn ~/code/github.com/ShadReyes/dotfiles ~/dotfiles
+git clone git@github.com:ShadReyes/.dotfiles.git ~/code/github.com/ShadReyes/.dotfiles
+ln -sfn ~/code/github.com/ShadReyes/.dotfiles ~/.dotfiles
+ln -sfn ~/.dotfiles ~/dotfiles
 cd ~/dotfiles
 ./bootstrap.sh --stow-only
 ```

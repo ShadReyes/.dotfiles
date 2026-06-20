@@ -26,7 +26,7 @@ for arg in "$@"; do
 done
 
 is_macos() {
-  [ "${DOTFILES_OS:-}" = "macos" ] || [[ "${OSTYPE:-}" == darwin* ]] || [ "$(uname -s)" = "Darwin" ]
+  [ "${DOTFILES_OS:-}" = "macos" ] || { [ -z "${DOTFILES_OS:-}" ] && { [[ "${OSTYPE:-}" == darwin* ]] || [ "$(uname -s)" = "Darwin" ]; }; }
 }
 
 is_linux() {

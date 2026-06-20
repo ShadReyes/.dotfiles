@@ -10,7 +10,7 @@ fail() { echo "✗ $1"; FAIL=$((FAIL + 1)); }
 count_entries() {
   local dir="$1"
   if [ -d "$dir" ]; then
-    find "$dir" -mindepth 1 -maxdepth 1 | wc -l | tr -d ' '
+    find "$dir"/ -mindepth 1 -maxdepth 1 | wc -l | tr -d ' '
   else
     echo 0
   fi
@@ -24,6 +24,40 @@ check_path() {
   else
     fail "$label: missing"
   fi
+}
+is_macos() {
+  [ "${DOTFILES_OS:-}" = "macos" ] || { [ -z "${DOTFILES_OS:-}" ] && { [[ "${OSTYPE:-}" == darwin* ]] || [ "$(uname -s)" = "Darwin" ]; }; }
+}
+is_linux() {
+  [ "${DOTFILES_OS:-}" = "linux" ] || { [ -z "${DOTFILES_OS:-}" ] && [ "$(uname -s)" = "Linux" ]; }
+}
+find_broken_symlinks() {
+  local root="$1" link
+
+  [ -e "$root" ] || [ -L "$root" ] || return 0
+
+  if [ -L "$root" ]; then
+    [ -e "$root" ] || printf '%s\n' "$root"
+  elif [ -d "$root" ]; then
+    while IFS= read -r link; do
+      [ -e "$link" ] || printf '%s\n' "$link"
+    done < <(find "$root" -type l)
+  fi
+}
+check_stow_packages_in() {
+  local base="$1" label="$2" pkg_path pkg
+
+  [ -d "$base" ] || return 0
+
+  for pkg_path in "$base"/*/; do
+    [ -d "$pkg_path" ] || continue
+    pkg="$(basename "$pkg_path")"
+    if stow -n --no-folding --dir="$base" --target="$HOME" "$pkg" >/dev/null 2>&1; then
+      ok "$label/$pkg"
+    else
+      fail "$label/$pkg has conflicts"
+    fi
+  done
 }
 
 printf 'Dotfiles doctor\n'
@@ -60,13 +94,22 @@ printf 'Claude commands: %s\n' "$(count_entries "$HOME/.claude/commands")"
 printf '\nBroken symlinks\n'
 broken_file="$(mktemp)"
 trap 'rm -f "$broken_file"' EXIT
-for root in "$HOME/.claude" "$HOME/.codex" "$HOME/.agents" "$HOME/.config/nvim" "$HOME/.wezterm.lua"; do
-  [ -e "$root" ] || [ -L "$root" ] || continue
-  if [ -L "$root" ] || [ -f "$root" ]; then
-    [ -L "$root" ] && [ ! -e "$root" ] && printf '%s\n' "$root" >> "$broken_file"
-  else
-    find "$root" -xtype l >> "$broken_file"
-  fi
+for root in \
+  "$HOME/.claude/CLAUDE.md" \
+  "$HOME/.claude/settings.json" \
+  "$HOME/.claude/statusline-command.js" \
+  "$HOME/.claude/hooks" \
+  "$HOME/.claude/templates" \
+  "$HOME/.claude/skills" \
+  "$HOME/.claude/agents" \
+  "$HOME/.claude/commands" \
+  "$HOME/.codex/AGENTS.md" \
+  "$HOME/.codex/agents" \
+  "$HOME/.codex/skills" \
+  "$HOME/.agents/skills" \
+  "$HOME/.config/nvim" \
+  "$HOME/.wezterm.lua"; do
+  find_broken_symlinks "$root" >> "$broken_file"
 done
 if [ -s "$broken_file" ]; then
   fail "Broken symlinks found:"
@@ -79,15 +122,12 @@ printf '\nStow dry-run\n'
 if [ "${DOTFILES_DOCTOR_SKIP_STOW_DRY_RUN:-0}" = 1 ]; then
   warn "Skipping stow dry-run by request"
 elif command -v stow >/dev/null 2>&1; then
-  for pkg_path in "$DOTFILES/shared/stow"/*/; do
-    [ -d "$pkg_path" ] || continue
-    pkg="$(basename "$pkg_path")"
-    if stow -n --no-folding --dir="$DOTFILES/shared/stow" --target="$HOME" "$pkg" >/dev/null 2>&1; then
-      ok "shared/stow/$pkg"
-    else
-      fail "shared/stow/$pkg has conflicts"
-    fi
-  done
+  check_stow_packages_in "$DOTFILES/shared/stow" "shared/stow"
+  if is_macos; then
+    check_stow_packages_in "$DOTFILES/mac/stow" "mac/stow"
+  elif is_linux; then
+    check_stow_packages_in "$DOTFILES/linux/stow" "linux/stow"
+  fi
 else
   warn "Skipping stow dry-run because stow is missing"
 fi

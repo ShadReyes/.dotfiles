@@ -88,7 +88,7 @@ echo "Bootstrap flags"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 mkdir -p "$tmp/home"
-if run_bootstrap "$tmp/home" --stow-only; then
+if DOTFILES_TEST_OS=linux run_bootstrap "$tmp/home" --stow-only; then
   pass "--stow-only succeeds without Homebrew on Linux"
 else
   fail "--stow-only should succeed without Homebrew on Linux"
@@ -116,7 +116,7 @@ fi
 echo ""
 echo "Linux package install"
 tmp_linux="$(mktemp -d)"
-DOTFILES_TEST_SUDO_OK=1 run_bootstrap "$tmp_linux" --packages
+DOTFILES_TEST_OS=linux DOTFILES_TEST_SUDO_OK=1 run_bootstrap "$tmp_linux" --packages
 assert_contains "$tmp_linux/log" '^sudo apt-get update' "Linux package mode uses sudo apt-get update"
 assert_contains "$tmp_linux/log" '^sudo apt-get install' "Linux package mode uses sudo apt-get install"
 if grep -q '^brew ' "$tmp_linux/log" 2>/dev/null; then
@@ -135,7 +135,7 @@ else
   fail "doctor should succeed after stow-only setup"
 fi
 assert_contains "$tmp/doctor.out" 'Broken symlinks: none' "doctor reports no broken symlinks"
-assert_contains "$tmp/doctor.out" 'Claude skills: 17' "doctor reports Claude skill count"
+assert_contains "$tmp/doctor.out" 'Claude skills: 18' "doctor reports Claude skill count"
 assert_contains "$tmp/doctor.out" 'Codex agents: 2' "doctor reports Codex agent count"
 
 echo ""

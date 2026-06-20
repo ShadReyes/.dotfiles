@@ -5,7 +5,7 @@ DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 cd "$DOTFILES"
 
 is_macos() {
-  [[ "${OSTYPE:-}" == darwin* ]] || [ "$(uname -s)" = "Darwin" ]
+  [ "${DOTFILES_OS:-}" = "macos" ] || { [ -z "${DOTFILES_OS:-}" ] && { [[ "${OSTYPE:-}" == darwin* ]] || [ "$(uname -s)" = "Darwin" ]; }; }
 }
 
 managed_link() {
