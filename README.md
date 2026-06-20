@@ -4,6 +4,10 @@ Personal dev environment, managed with [GNU Stow](https://www.gnu.org/software/s
 
 ## Fresh machine setup
 
+### macOS workstation setup
+
+macOS is the first-class workstation path. It uses Homebrew and `Brewfile` for packages.
+
 Requires Xcode Command Line Tools (prompted automatically by `git`).
 
 ```sh
@@ -13,11 +17,53 @@ cd ~/.dotfiles
 ./bootstrap.sh
 ```
 
-`bootstrap.sh` will:
+On macOS, `bootstrap.sh` will:
 1. Install [Homebrew](https://brew.sh) if missing
 2. Install all dependencies from `Brewfile` (stow, neovim, wezterm, ripgrep, rustup, hack-nerd-font, etc.)
-3. Symlink shared and platform-specific stow packages into `$HOME`
+3. Symlink shared and macOS-specific stow packages into `$HOME`
 4. Run `sync-skills.sh` to symlink skills, agents, and commands to all AI CLIs
+
+### Linux / headless setup
+
+Linux is supported for server, Raspberry Pi, CI, and Hermes hosts. Use the standard
+multi-repo workspace layout when possible, then add the `~/dotfiles` convenience symlink:
+
+```sh
+mkdir -p ~/code/github.com/ShadReyes
+git clone git@github.com:ShadReyes/.dotfiles.git ~/code/github.com/ShadReyes/.dotfiles
+ln -sfn ~/code/github.com/ShadReyes/.dotfiles ~/.dotfiles
+ln -sfn ~/.dotfiles ~/dotfiles
+cd ~/dotfiles
+./bootstrap.sh --stow-only
+```
+
+Use `--stow-only` or `--no-packages` when you only want configs and shared AI resources
+linked into place. This is the safest path for headless hosts where GUI apps/fonts are
+not needed or package installs require an operator.
+
+If you do want Linux packages installed and have passwordless sudo, run:
+
+```sh
+./bootstrap.sh --packages
+```
+
+On Linux, package mode currently installs a small apt-based dependency set (`stow`,
+`neovim`, `ripgrep`, `git`, `curl`) and then links shared + Linux-specific packages.
+If passwordless sudo is unavailable, package installation is skipped with instructions
+and the script continues only if `stow` is already on `PATH`.
+
+Configs can be linked before the underlying apps are installed. For example, `nvim`,
+`wezterm`, `claude`, and `codex` may be installed later and will pick up their configs
+from the existing symlinks.
+
+### Bootstrap options
+
+```sh
+./bootstrap.sh              # default: install packages, then link configs
+./bootstrap.sh --packages   # explicit package install path
+./bootstrap.sh --stow-only  # skip packages; link configs and sync AI resources only
+./bootstrap.sh --no-packages # alias for --stow-only
+```
 
 The ricekit CLI is not on Homebrew (private, proprietary repo) — see [ricekit setup](#ricekit-setup) below to build it.
 
@@ -35,6 +81,7 @@ linux/symlink/        # direct Linux symlink packages
 skills/               # shared SKILL.md resources
 agents/               # canonical TOML agent definitions
 commands/             # Claude slash commands
+scripts/doctor        # validate symlinks, AI resource counts, and Stow dry-runs
 scripts/              # helper scripts
 ```
 
@@ -176,7 +223,10 @@ stow -v --delete --no-folding --dir=shared/stow --target="$HOME" wezterm
 # Re-sync skills/agents/commands after changes
 ./sync-skills.sh
 
-# Unstow everything
+# Validate the current machine setup
+./scripts/doctor
+
+# Unstow everything managed by this repo; manually-created AI resources are preserved
 ./unstow.sh
 ```
 
