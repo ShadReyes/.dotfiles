@@ -84,13 +84,13 @@ pass "sync-skills.sh is idempotent"
 
 echo ""
 echo "Symlink targets"
-# Verify symlinks point back to dotfiles repo, not somewhere else
+# Verify symlinks point back to the .dotfiles repo, not somewhere else
 target=$(readlink "$TEMP_HOME/.claude/skills/grill-me")
-[[ "$target" == "$DOTFILES/skills/grill-me/" ]] && pass "Skill symlink points to dotfiles repo" \
+[[ "$target" == "$DOTFILES/skills/grill-me/" ]] && pass "Skill symlink points to .dotfiles repo" \
                                                  || fail "Skill symlink points to: $target"
 
 target=$(readlink "$TEMP_HOME/.codex/agents/bottom-sheet-specialist.toml")
-[[ "$target" == "$DOTFILES/agents/bottom-sheet-specialist.toml" ]] && pass "Agent symlink points to dotfiles repo" \
+[[ "$target" == "$DOTFILES/agents/bottom-sheet-specialist.toml" ]] && pass "Agent symlink points to .dotfiles repo" \
                                                                     || fail "Agent symlink points to: $target"
 
 echo ""

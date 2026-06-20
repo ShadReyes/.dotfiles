@@ -1,4 +1,4 @@
-# dotfiles
+# .dotfiles
 
 Personal dev environment, managed with [GNU Stow](https://www.gnu.org/software/stow/), a macOS `Brewfile`, and a custom sync script for shared AI resources.
 
@@ -8,8 +8,8 @@ Requires Xcode Command Line Tools (prompted automatically by `git`).
 
 ```sh
 xcode-select --install  # if not already installed
-git clone git@github.com:ShadReyes/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+git clone git@github.com:ShadReyes/.dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
 ./bootstrap.sh
 ```
 
@@ -163,7 +163,7 @@ Synced to `~/.claude/commands/`.
 ## Managing packages
 
 ```sh
-cd ~/dotfiles
+cd ~/.dotfiles
 
 # Stow a single package
 stow -v --no-folding --dir=shared/stow --target="$HOME" wezterm
