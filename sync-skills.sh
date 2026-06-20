@@ -33,6 +33,21 @@ AGENT_SKILLS="$HOME/.agents/skills"
 
 mkdir -p "$CLAUDE_SKILLS" "$AGENT_SKILLS"
 
+prune_dead_skill_links() {
+  local dir="$1" link target
+
+  for link in "$dir"/*; do
+    [ -L "$link" ] || continue
+    target="$(readlink "$link")"
+    [[ "$target" == "$DOTFILES/skills/"* ]] || continue
+    [ -e "$target" ] && continue
+    rm -f "$link"
+  done
+}
+
+prune_dead_skill_links "$CLAUDE_SKILLS"
+prune_dead_skill_links "$AGENT_SKILLS"
+
 skill_count=0
 for skill_dir in "$DOTFILES/skills"/*/; do
   [ -d "$skill_dir" ] || continue

@@ -137,14 +137,16 @@ Skills, agents, and commands live in agent-neutral top-level directories. `sync-
 Custom skills in shared `SKILL.md` format (works with both Claude Code and Codex).
 
 Synced to `~/.claude/skills/` and `~/.agents/skills/`.
-Each skill also has `agents/openai.yaml` metadata so it appears cleanly in Codex skill UI lists.
+Direct root skills also have `agents/openai.yaml` metadata so they appear cleanly in Codex skill
+UI lists.
 
 In Codex, `/skills` opens a menu. Choose `List skills` to open the `$` mention picker, then search
 for a skill such as `address` or type `$address-pr-comments` directly.
 
-The `grill-me`, `grilling`, and `teach` skills are vendored from
-[`mattpocock/skills`](https://github.com/mattpocock/skills). `teach` includes its companion document
-formats so it works from a fresh clone after `./sync-skills.sh`.
+The `brando` and `matt` directories are local plugin bundles for vendored skill sets.
+Plugin skills are namespaced, such as `brando:react-doctor` and `matt:tdd`.
+The root `grilling` skill is still vendored from
+[`mattpocock/skills`](https://github.com/mattpocock/skills).
 
 ### agents/
 
