@@ -11,7 +11,6 @@ and is symlinked into `~/.agents/skills/brando` by `sync-skills.sh`.
 - `brando:react-doctor`
 - `brando:typescript-doctor`
 - `brando:turborepo`
-- `brando:patchtree`
 - `brando:prd-to-plan`
 - `brando:improve-codebase-architecture`
 - `brando:validate-startup-idea`

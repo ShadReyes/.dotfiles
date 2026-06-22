@@ -47,16 +47,17 @@ patchtree cleanup --apply
 
 ## Backend behavior
 
-On macOS, `patchtree fork` defaults to APFS copy-on-write cloning for low incremental storage across many parallel workspaces. This may fork slower than Git worktrees, but unchanged file blocks are shared.
+`patchtree fork` defaults to a copy-on-write clone of the **entire** base repo — including `.git` and untracked files like `node_modules` and build artifacts — so the workspace is immediately runnable without reinstalling dependencies. On macOS this is a single `clonefile(2)` syscall on the repo root (recursive, near-instant, ~0 added disk); on Linux it uses reflink (`cp --reflink`). Unchanged file blocks are shared with the base until modified. If CoW is unavailable (e.g. base and workspace on different volumes/filesystems), it falls back to a full copy.
 
-Useful overrides:
+`WS_MATERIALIZATION_POLICY` selects the backend:
 
 ```bash
-WS_MATERIALIZATION_POLICY=reflink patchtree fork <task-name>
-WS_MATERIALIZATION_POLICY=worktree patchtree fork <task-name>
+WS_MATERIALIZATION_POLICY=reflink  patchtree fork <task-name>   # force CoW, error if unavailable
+WS_MATERIALIZATION_POLICY=copy     patchtree fork <task-name>   # plain recursive copy
+WS_MATERIALIZATION_POLICY=worktree patchtree fork <task-name>   # git worktree
 ```
 
-Use `reflink` when storage sharing is the priority. Use `worktree` when fork latency is more important.
+Use `reflink` to require block sharing. Use `worktree` for a fast git-only checkout — but note it does NOT include untracked files (node_modules, Pods), so the workspace needs its own dependency install.
 
 ## Common workflows
 
@@ -90,9 +91,15 @@ patchtree cleanup
 patchtree cleanup --apply
 ```
 
-If `patchtree` is unavailable, install it from the prototype repo:
+If `patchtree` is unavailable, install it from the source repo (private):
 
 ```bash
-cd ~/personal/workspace-state-prototype
-./scripts/install.sh
+# if already cloned at ~/personal/patchtree:
+cd ~/personal/patchtree && ./scripts/install.sh
+
+# otherwise clone it fresh:
+gh repo clone ShadReyes/patchtree ~/personal/patchtree
+cd ~/personal/patchtree && ./scripts/install.sh
 ```
+
+`install.sh` runs `cargo build --release` and symlinks the binary into `~/.local/bin`. Requires a Rust toolchain and `git`. Source: <https://github.com/ShadReyes/patchtree>

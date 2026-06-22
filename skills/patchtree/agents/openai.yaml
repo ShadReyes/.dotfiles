@@ -1,0 +1,4 @@
+interface:
+  display_name: "Patchtree"
+  short_description: "Cheap copy-on-write workspaces for repo tasks"
+  default_prompt: "Use $patchtree to create an isolated copy-on-write workspace for a repository task."

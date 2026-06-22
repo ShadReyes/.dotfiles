@@ -24,10 +24,10 @@ mkdir -p "$TEMP_HOME/.claude" "$TEMP_HOME/.codex" "$TEMP_HOME/.agents"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
 
 echo "Skills"
-assert_count "$TEMP_HOME/.claude/skills" '*' 18 "18 skills synced to Claude"
-assert_count "$TEMP_HOME/.agents/skills" '*' 18 "18 skills synced to Codex"
+assert_count "$TEMP_HOME/.claude/skills" '*' 19 "19 skills synced to Claude"
+assert_count "$TEMP_HOME/.agents/skills" '*' 19 "19 skills synced to Codex"
 
-for skill in agent-config code-search grilling manage-skills solving-linear-issues rust-best-practices; do
+for skill in agent-config code-search grilling manage-skills solving-linear-issues rust-best-practices patchtree; do
   assert_link "$TEMP_HOME/.claude/skills/$skill" "Claude skill: $skill is symlink"
   assert_link "$TEMP_HOME/.agents/skills/$skill" "Codex skill: $skill is symlink"
   assert_file "$TEMP_HOME/.claude/skills/$skill/SKILL.md" "Claude skill: $skill/SKILL.md readable"
@@ -41,7 +41,7 @@ for plugin in brando matt fluid; do
   assert_file "$TEMP_HOME/.agents/skills/$plugin/.claude-plugin/plugin.json" "Plugin: $plugin has manifest"
 done
 
-for skill in react-doctor typescript-doctor turborepo patchtree prd-to-plan improve-codebase-architecture validate-startup-idea find-skills; do
+for skill in react-doctor typescript-doctor turborepo prd-to-plan improve-codebase-architecture validate-startup-idea find-skills; do
   assert_file "$TEMP_HOME/.agents/skills/brando/skills/$skill/SKILL.md" "brando:$skill readable"
 done
 
@@ -91,8 +91,8 @@ rd_lines=$(wc -l < "$TEMP_HOME/.claude/agents/remote-dom-specialist.md" | tr -d 
 echo ""
 echo "Idempotency"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
-assert_count "$TEMP_HOME/.claude/skills" '*' 18 "Re-run: still 18 skills"
-assert_count "$TEMP_HOME/.agents/skills" '*' 18 "Re-run: still 18 Codex skills"
+assert_count "$TEMP_HOME/.claude/skills" '*' 19 "Re-run: still 19 skills"
+assert_count "$TEMP_HOME/.agents/skills" '*' 19 "Re-run: still 19 Codex skills"
 assert_count "$TEMP_HOME/.claude/agents" '*.md' 2 "Re-run: still 2 agents"
 pass "sync-skills.sh is idempotent"
 
