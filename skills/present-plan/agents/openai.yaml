@@ -1,0 +1,4 @@
+interface:
+  display_name: "Present Plan"
+  short_description: "Turn plans into polished HTML briefs"
+  default_prompt: "Use $present-plan to turn this implementation plan into a polished HTML brief explaining the plan, choices, and tradeoffs."
