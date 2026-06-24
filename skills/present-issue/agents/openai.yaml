@@ -1,0 +1,4 @@
+interface:
+  display_name: "Present Issue"
+  short_description: "Turn bugs into polished issue briefs"
+  default_prompt: "Use $present-issue to turn this bug or production issue into a polished HTML brief explaining impact, evidence, root cause, and remediation tradeoffs."
