@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bug to Plan"
+  short_description: "Turn bug reports into clear fix plans"
+  default_prompt: "Use $bug-to-plan to clarify this bug report and turn it into an implementation plan."
