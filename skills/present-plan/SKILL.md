@@ -1,6 +1,6 @@
 ---
 name: present-plan
-description: Convert implementation plans, product plans, technical proposals, roadmaps, PRDs, ADR drafts, or planning notes into polished, standalone HTML briefings. Use when the user asks to make a plan presentable, explain plan choices and tradeoffs, create an executive or technical plan brief, turn a plan into an HTML document, or produce a shareable artifact for stakeholders.
+description: Convert implementation plans, product plans, technical proposals, roadmaps, PRDs, ADR drafts, or planning notes into polished, single-file HTML briefings with inline CSS. Use when the user asks to make a plan presentable, explain plan choices and tradeoffs, create an executive or technical plan brief, turn a plan into an HTML document, or produce a shareable artifact for stakeholders.
 ---
 
 The user has asked you to turn a plan into a presentable HTML document. Treat the output as a durable planning artifact: it should explain the plan, the reasoning behind it, the tradeoffs, and the decisions still in motion.
@@ -10,10 +10,10 @@ The user has asked you to turn a plan into a presentable HTML document. Treat th
 Use the current directory as the workspace unless the user specifies another location.
 
 - `./plan-briefs/*.html`: Final presentation documents. Name files `0001-<dash-case-title>.html`, incrementing the number each time.
-- `./assets/*`: Reusable components shared across plan briefs. Before authoring a brief, inspect this directory and reuse existing styles or components.
-- `./assets/plan-brief.css`: Default shared stylesheet. If the workspace does not already have a suitable stylesheet, copy this skill's `assets/plan-brief.css` into the workspace and link to it from the HTML.
+- Skill asset `assets/plan-brief.css`: Default source stylesheet. Read it from this skill and inline the CSS inside the generated HTML.
+- Workspace `./assets/*`: Existing local assets or prior reusable components. Inspect this directory before authoring, but do not require external CSS for the final brief.
 
-Do not create auxiliary documentation unless the user asks for it. The HTML brief is the primary output.
+Do not create auxiliary documentation unless the user asks for it. The HTML brief is the primary output and should be shareable as one file.
 
 ## Workflow
 
@@ -34,13 +34,16 @@ Do not create auxiliary documentation unless the user asks for it. The HTML brie
 
 4. Write the HTML document.
    - Make the document standalone enough that a reader can understand it without seeing the original raw plan.
+   - Embed CSS in a `<style>` tag in the document `<head>`; do not link to `./assets/plan-brief.css` unless the user explicitly asks for separate assets.
+   - Start from this skill's `assets/plan-brief.css` when the workspace does not already have suitable CSS, then adapt the inlined styles to the brief.
    - Preserve the plan's substance, but rewrite for clarity, sequencing, and decision quality.
    - Use clear headings, comparison tables, timelines, callouts, and concise prose.
    - Include links to source files, issues, PRs, docs, or external references when available.
    - Avoid marketing copy, filler, and generic claims.
 
 5. Validate the artifact.
-   - Ensure relative links resolve from the HTML file's location.
+   - Confirm the final HTML has no required local stylesheet dependency; it should render when shared by itself.
+   - Ensure any remaining relative links resolve from the HTML file's location.
    - Open the HTML file when possible and inspect it for layout problems.
    - Check that the document prints well: no dark full-page backgrounds, no clipped tables, and sensible page breaks.
 

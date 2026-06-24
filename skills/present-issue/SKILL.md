@@ -1,6 +1,6 @@
 ---
 name: present-issue
-description: Convert bug reports, production incidents, support escalations, QA findings, regression notes, investigation summaries, or issue tracker threads into polished, standalone HTML briefings. Use when the user asks to make a bug or issue presentable, summarize an incident, explain impact and root cause, compare fixes, document remediation tradeoffs, or create a shareable issue brief for stakeholders.
+description: Convert bug reports, production incidents, support escalations, QA findings, regression notes, investigation summaries, or issue tracker threads into polished, single-file HTML briefings with inline CSS. Use when the user asks to make a bug or issue presentable, summarize an incident, explain impact and root cause, compare fixes, document remediation tradeoffs, or create a shareable issue brief for stakeholders.
 ---
 
 The user has asked you to turn a bug, issue, or incident into a presentable HTML document. Treat the output as a durable evidence brief: it should help readers understand what happened, who is affected, how confident the diagnosis is, and what remediation path is recommended.
@@ -10,10 +10,10 @@ The user has asked you to turn a bug, issue, or incident into a presentable HTML
 Use the current directory as the workspace unless the user specifies another location.
 
 - `./issue-briefs/*.html`: Final presentation documents. Name files `0001-<dash-case-title>.html`, incrementing the number each time.
-- `./assets/*`: Reusable components shared across issue briefs. Before authoring a brief, inspect this directory and reuse existing styles or components.
-- `./assets/issue-brief.css`: Default shared stylesheet. If the workspace does not already have a suitable stylesheet, copy this skill's `assets/issue-brief.css` into the workspace and link to it from the HTML.
+- Skill asset `assets/issue-brief.css`: Default source stylesheet. Read it from this skill and inline the CSS inside the generated HTML.
+- Workspace `./assets/*`: Existing local assets or prior reusable components. Inspect this directory before authoring, but do not require external CSS for the final brief.
 
-Do not create auxiliary documentation unless the user asks for it. The HTML brief is the primary output.
+Do not create auxiliary documentation unless the user asks for it. The HTML brief is the primary output and should be shareable as one file.
 
 ## Workflow
 
@@ -36,13 +36,16 @@ Do not create auxiliary documentation unless the user asks for it. The HTML brie
 
 4. Write the HTML document.
    - Make the document standalone enough that a reader can understand the issue without reading the original raw thread.
+   - Embed CSS in a `<style>` tag in the document `<head>`; do not link to `./assets/issue-brief.css` unless the user explicitly asks for separate assets.
+   - Start from this skill's `assets/issue-brief.css` when the workspace does not already have suitable CSS, then adapt the inlined styles to the brief.
    - Preserve the evidence accurately, but rewrite for clarity, sequencing, and decision quality.
    - Use clear headings, impact summaries, evidence tables, timelines, callouts, and concise prose.
    - Include links to source issues, PRs, logs, dashboards, docs, traces, or commits when available.
    - Avoid blame, speculation presented as fact, generic claims, and filler.
 
 5. Validate the artifact.
-   - Ensure relative links resolve from the HTML file's location.
+   - Confirm the final HTML has no required local stylesheet dependency; it should render when shared by itself.
+   - Ensure any remaining relative links resolve from the HTML file's location.
    - Open the HTML file when possible and inspect it for layout problems.
    - Check that the document prints well: no dark full-page backgrounds, no clipped tables, and sensible page breaks.
 
