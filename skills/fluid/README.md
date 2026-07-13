@@ -14,6 +14,11 @@ that one is shared/team-owned; this one is personal and version-controlled in my
 
 - `fluid:investigate-prod-issue` — root-cause a production/user-reported issue using
   read-only prod DB access (no Docker) and scoped gcloud log queries.
+- `fluid:linear-create` — create Project-linked Current-team issues with optional
+  hierarchy and blocking relationships.
+- `fluid:linear-fluid` — use Fluid's locked direct Linear GraphQL launcher.
+- `fluid:linear-graphql` — shared secure GraphQL transport and operations.
+- `fluid:linear-triage` — triage Current-team Project work by status and blockers.
 
 ## Adding a skill
 
@@ -24,3 +29,7 @@ whole plugin dir is already linked into the agent hub.
 
 Skills here may rely on machine-local credentials kept **out** of version control
 (e.g. `~/.pgpass` for the read-only prod DB). Recreate those per machine.
+
+The Linear skills read `LINEAR_API_KEY` from
+`~/.config/linear/workspaces/fluid.env`. Keep the directory mode `0700` and the
+file mode `0600`.
