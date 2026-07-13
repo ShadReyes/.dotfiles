@@ -19,6 +19,8 @@ that one is shared/team-owned; this one is personal and version-controlled in my
 - `fluid:linear-fluid` — use Fluid's locked direct Linear GraphQL launcher.
 - `fluid:linear-graphql` — shared secure GraphQL transport and operations.
 - `fluid:linear-triage` — triage Current-team Project work by status and blockers.
+- `fluid:product-bet` — guide product problems from intake through evidence,
+  shaping, and a ready-to-bet decision in Linear Documents.
 
 ## Adding a skill
 
