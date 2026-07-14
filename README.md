@@ -103,6 +103,13 @@ WezTerm terminal configuration.
 - `~/.wezterm.lua` — keybindings, appearance, fonts
 - Source: `shared/stow/wezterm/`
 
+When Herdr is the active foreground process, the pane shortcuts are routed to
+Herdr automatically. Otherwise, they retain their native WezTerm behavior:
+
+- `Cmd+Alt+Right` — split right
+- `Cmd+Alt+Down` — split down
+- `Cmd+Alt+X` — close the pane
+
 ### nvim
 
 Neovim config based on [kickstart.nvim](https://github.com/nvim-kickstart/kickstart.nvim).

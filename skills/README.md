@@ -6,6 +6,7 @@ Imported upstream skills:
 
 - `brando` is a local plugin bundle vendored from `brs98/.dotfiles`.
 - `matt` is a local plugin bundle vendored from `mattpocock/skills`.
+- `herdr` is a local plugin bundle vendored from `ogulcancelik/herdr`.
 - `grilling` remains a root skill vendored from `mattpocock/skills`.
 
 To refresh the imported copies from upstream:
