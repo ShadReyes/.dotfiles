@@ -24,8 +24,8 @@ mkdir -p "$TEMP_HOME/.claude" "$TEMP_HOME/.codex" "$TEMP_HOME/.agents"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
 
 echo "Skills"
-assert_count "$TEMP_HOME/.claude/skills" '*' 22 "22 skills synced to Claude"
-assert_count "$TEMP_HOME/.agents/skills" '*' 22 "22 skills synced to Codex"
+assert_count "$TEMP_HOME/.claude/skills" '*' 23 "23 skills synced to Claude"
+assert_count "$TEMP_HOME/.agents/skills" '*' 23 "23 skills synced to Codex"
 
 for skill in agent-config bug-to-plan code-search grilling manage-skills solving-linear-issues rust-best-practices patchtree present-plan present-issue; do
   assert_link "$TEMP_HOME/.claude/skills/$skill" "Claude skill: $skill is symlink"
@@ -35,11 +35,13 @@ for skill in agent-config bug-to-plan code-search grilling manage-skills solving
   assert_file "$TEMP_HOME/.agents/skills/$skill/agents/openai.yaml" "Codex skill: $skill has UI metadata"
 done
 
-for plugin in brando matt fluid; do
+for plugin in brando matt fluid herdr; do
   assert_link "$TEMP_HOME/.claude/skills/$plugin" "Claude plugin: $plugin is symlink"
   assert_link "$TEMP_HOME/.agents/skills/$plugin" "Codex plugin: $plugin is symlink"
   assert_file "$TEMP_HOME/.agents/skills/$plugin/.claude-plugin/plugin.json" "Plugin: $plugin has manifest"
 done
+
+assert_file "$TEMP_HOME/.agents/skills/herdr/skills/herdr/SKILL.md" "herdr:herdr readable"
 
 for skill in react-doctor typescript-doctor turborepo prd-to-plan improve-codebase-architecture validate-startup-idea find-skills; do
   assert_file "$TEMP_HOME/.agents/skills/brando/skills/$skill/SKILL.md" "brando:$skill readable"
@@ -91,8 +93,8 @@ rd_lines=$(wc -l < "$TEMP_HOME/.claude/agents/remote-dom-specialist.md" | tr -d 
 echo ""
 echo "Idempotency"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
-assert_count "$TEMP_HOME/.claude/skills" '*' 22 "Re-run: still 22 skills"
-assert_count "$TEMP_HOME/.agents/skills" '*' 22 "Re-run: still 22 Codex skills"
+assert_count "$TEMP_HOME/.claude/skills" '*' 23 "Re-run: still 23 skills"
+assert_count "$TEMP_HOME/.agents/skills" '*' 23 "Re-run: still 23 Codex skills"
 assert_count "$TEMP_HOME/.claude/agents" '*.md' 2 "Re-run: still 2 agents"
 pass "sync-skills.sh is idempotent"
 
