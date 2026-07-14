@@ -124,6 +124,23 @@ local function navigate_pane_or_tab(direction)
 end
 
 local act = wezterm.action
+
+-- Use the same pane shortcuts for Herdr panes and native WezTerm panes.
+local function is_herdr_pane(pane)
+	local process_name = pane:get_foreground_process_name()
+	return process_name == "herdr" or (process_name and process_name:match("[/\\\\]herdr$") ~= nil)
+end
+
+local function herdr_or_wezterm(herdr_sequence, wezterm_action)
+	return wezterm.action_callback(function(window, pane)
+		if is_herdr_pane(pane) then
+			window:perform_action(act.SendString(herdr_sequence), pane)
+		else
+			window:perform_action(wezterm_action, pane)
+		end
+	end)
+end
+
 config.keys = { -- Create new tab
 	{
 		key = "t",
@@ -261,9 +278,21 @@ config.keys = { -- Create new tab
 	{ key = "DownArrow", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Down") },
 	{ key = "UpArrow", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Up") },
 
-	{ key = "RightArrow", mods = "SUPER|ALT", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
-	{ key = "DownArrow", mods = "SUPER|ALT", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
-	{ key = "x", mods = "SUPER|ALT", action = act.CloseCurrentPane({ confirm = true }) },
+	{
+		key = "RightArrow",
+		mods = "SUPER|ALT",
+		action = herdr_or_wezterm("\x02v", act.SplitHorizontal({ domain = "CurrentPaneDomain" })),
+	},
+	{
+		key = "DownArrow",
+		mods = "SUPER|ALT",
+		action = herdr_or_wezterm("\x02-", act.SplitVertical({ domain = "CurrentPaneDomain" })),
+	},
+	{
+		key = "x",
+		mods = "SUPER|ALT",
+		action = herdr_or_wezterm("\x02x", act.CloseCurrentPane({ confirm = true })),
+	},
 	{
 		key = "k",
 		mods = "SUPER",
