@@ -1,0 +1,6 @@
+{
+  "name": "manage-skills",
+  "version": "1.0.0",
+  "description": "Manage local agent skills and keep them synced across agents",
+  "skills": "./skills/"
+}

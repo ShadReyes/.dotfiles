@@ -45,9 +45,6 @@ cp -a /tmp/<repo-name>/path/to/skill ~/.dotfiles/skills/<plugin>/skills/<name>
 ~/.dotfiles/sync-skills.sh
 ```
 
-Add `agents/openai.yaml` for root skills so they appear cleanly in Codex skill UI lists. Plugin
-skills do not need per-skill UI metadata.
-
 **Author a new plugin skill.** Add it under the plugin bundle:
 
 ```bash

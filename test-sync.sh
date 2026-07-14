@@ -27,7 +27,7 @@ echo "Skills"
 assert_count "$TEMP_HOME/.claude/skills" '*' 23 "23 skills synced to Claude"
 assert_count "$TEMP_HOME/.agents/skills" '*' 23 "23 skills synced to Codex"
 
-for skill in agent-config bug-to-plan code-search grilling manage-skills solving-linear-issues rust-best-practices patchtree present-plan present-issue; do
+for skill in agent-config bug-to-plan code-search grilling solving-linear-issues rust-best-practices patchtree present-plan present-issue; do
   assert_link "$TEMP_HOME/.claude/skills/$skill" "Claude skill: $skill is symlink"
   assert_link "$TEMP_HOME/.agents/skills/$skill" "Codex skill: $skill is symlink"
   assert_file "$TEMP_HOME/.claude/skills/$skill/SKILL.md" "Claude skill: $skill/SKILL.md readable"
@@ -35,13 +35,14 @@ for skill in agent-config bug-to-plan code-search grilling manage-skills solving
   assert_file "$TEMP_HOME/.agents/skills/$skill/agents/openai.yaml" "Codex skill: $skill has UI metadata"
 done
 
-for plugin in brando matt fluid herdr; do
+for plugin in brando matt fluid herdr manage-skills; do
   assert_link "$TEMP_HOME/.claude/skills/$plugin" "Claude plugin: $plugin is symlink"
   assert_link "$TEMP_HOME/.agents/skills/$plugin" "Codex plugin: $plugin is symlink"
   assert_file "$TEMP_HOME/.agents/skills/$plugin/.claude-plugin/plugin.json" "Plugin: $plugin has manifest"
 done
 
 assert_file "$TEMP_HOME/.agents/skills/herdr/skills/herdr/SKILL.md" "herdr:herdr readable"
+assert_file "$TEMP_HOME/.agents/skills/manage-skills/skills/manage-skills/SKILL.md" "manage-skills:manage-skills readable"
 
 for skill in react-doctor typescript-doctor turborepo prd-to-plan improve-codebase-architecture validate-startup-idea find-skills; do
   assert_file "$TEMP_HOME/.agents/skills/brando/skills/$skill/SKILL.md" "brando:$skill readable"
