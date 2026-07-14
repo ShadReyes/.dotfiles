@@ -10,7 +10,6 @@ export const FLUID_LINEAR_PROFILE = Object.freeze({
   defaultTeamId: "22b26389-6926-49b2-bcfd-95eefcc4d376",
   defaultInitiative: "Admin & Dev Ex",
   defaultInitiativeId: "12874edd-22d9-443e-8271-ff91eb2d40e2",
-  defaultProductBetProject: "Product Bets",
   defaultIssueState: "Todo",
   labels: Object.freeze({
     agentReady: "ready-for-agent",

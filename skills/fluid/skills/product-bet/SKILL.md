@@ -33,16 +33,12 @@ For document bodies, write Markdown to a temporary file and pass
 
 ## Where bets live
 
-Use one standing Project named `Product Bets` per team. A bet is a Document on
-that Project, not a Project of its own.
+Each bet gets its own problem-named Project. The Project is created on the
+`Current` team and attached to the `Admin & Dev Ex` Initiative by default.
+Use another Initiative only when the user explicitly requests it.
 
-When `Product Bets` does not exist:
-
-1. Tell the user it is missing.
-2. Ask for confirmation before creating it.
-3. Create it on the `Current` team.
-4. Attach it to the `Admin & Dev Ex` Initiative by default.
-5. Use another Initiative only when the user explicitly requests it.
+The bet's Linear Document is attached to that same Project. Do not create a
+shared `Product Bets` Project and do not create a second delivery Project later.
 
 Do not infer Initiative membership from the bet owner or assignee. Initiatives
 are organizational context, not delivery ownership.
@@ -77,15 +73,19 @@ Create documents titled `Bet: <problem-named title>` with this structure:
    cannot do and why it matters; do not create a bet around a solution name.
 2. Draft the one-pager with the user. Run every one-pager lint check in
    `REFERENCE.md` and show pass/fail.
-3. Confirm the standing `Product Bets` Project exists, creating it only after
-   user confirmation.
-4. Create the document at stage `Problem framed`, or `Intake` when evidence is
+3. Propose a concise, problem-named Project title and get confirmation before
+   creating the Project.
+4. Create that Project on `Current`, attaching it to `Admin & Dev Ex` by
+   default. Use `save-project --name ... --team Current` and override the
+   Initiative only when explicitly requested.
+5. Create the Document on the new Project at stage `Problem framed`, or `Intake` when evidence is
    still thin.
-5. Tell the user when the document is team-visible.
+6. Tell the user when the Project and Document are team-visible.
 
 ## Advance a bet
 
-1. Find the document with `list-docs --project "Product Bets" --query "Bet:"`.
+1. Find the bet Document with `list-docs --query "Bet:"`, then use its linked
+   Project for all subsequent reads and updates.
 2. Read it with `get-doc` and identify the next empty or weak section.
 3. Apply the corresponding gate from `REFERENCE.md`.
 4. Update the document content and bump both `Stage` and `Updated`.
@@ -97,14 +97,16 @@ rabbit holes, no-gos, and measurable instrumentation.
 
 ## Graduation and passing
 
-When a bet wins:
+When a bet wins, the existing bet Project becomes the delivery Project:
 
-1. Create or identify the real delivery Project using `linear-create`.
-2. Default the delivery Project to `Admin & Dev Ex` unless another Initiative
-   is explicitly requested.
-3. Link the bet document from the Project description.
-4. Slice delivery issues using the current Project-based issue workflow.
-5. Update the bet stage to `Won -> <project>`.
+1. Keep the same Project and Initiative; do not create another Project.
+2. Slice implementation issues into that Project using the current
+   Project-based `linear-create` workflow.
+3. Link the bet Document from each implementation issue description and carry
+   the relevant discovery constraints, evidence, and acceptance criteria into
+   the issue body. The Document is supporting context; issue descriptions are
+   the implementation contract.
+4. Update the bet stage to `Won -> <same project>`.
 
 When a bet is rejected, update it to `Passed (not bet on)` with a concise reason
 in `Decision`. Passing is a valid outcome and is preferable to leaving stale
