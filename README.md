@@ -143,14 +143,16 @@ Herdr configuration and named session profiles are managed from
 `shared/stow/herdr/`.
 
 - `~/.config/herdr/config.toml` — initial Herdr configuration
+- `~/.local/bin/herdr-init` — idempotent session/workspace initializer
 
-Start or attach to the Fluid session with:
+Initialize the Fluid session and its `Orchestrator` workspace with:
 
 ```bash
-herdr --session fluid
+herdr-init fluid
 ```
 
-Runtime session state stays machine-local; the configuration is restored by the
+For session-only startup, use `herdr --session fluid`. Runtime session state
+stays machine-local; the configuration and initializer are restored by the
 dotfiles bootstrap.
 
 ### claude
