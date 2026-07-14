@@ -142,19 +142,16 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) auto-installs a
 Herdr configuration and named session profiles are managed from
 `shared/stow/herdr/`.
 
-- `~/.config/herdr/config.toml` — shared Herdr UI settings
-- `~/.local/bin/herdr-profile` — idempotent profile launcher
+- `~/.config/herdr/config.toml` — initial Herdr configuration
 
-Start the Fluid profile with:
+Start or attach to the Fluid session with:
 
 ```bash
-herdr-profile fluid
+herdr --session fluid
 ```
 
-The launcher starts or attaches to the named `fluid` session and creates its
-`Orchestrator` Space when needed. Runtime session state stays machine-local;
-the profile launcher and configuration are restored by the dotfiles bootstrap.
-The launcher uses `jq`, which is included in the `Brewfile`.
+Runtime session state stays machine-local; the configuration is restored by the
+dotfiles bootstrap.
 
 ### claude
 
