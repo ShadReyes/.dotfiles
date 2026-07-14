@@ -110,6 +110,21 @@ Herdr automatically. Otherwise, they retain their native WezTerm behavior:
 - `Cmd+Alt+Down` — split down
 - `Cmd+Alt+X` — close the pane
 
+### JankyBorders
+
+[JankyBorders](https://github.com/FelixKratz/JankyBorders) draws a themed border
+around the focused macOS window. The border colors are managed by RiceKit so
+they follow the active theme alongside WezTerm. The local launcher uses a
+slightly thicker `7.0` width than RiceKit’s default.
+
+- Install the dependency with `brew bundle --file=~/.dotfiles/Brewfile`
+- Enable the RiceKit config with `ricekit config enable jankyborders-colors`
+- Stow the LaunchAgent with `stow -v --no-folding --dir=mac/stow --target="$HOME" borders`
+- Load it for the current login with `launchctl bootstrap gui/$(id -u) "$HOME/Library/LaunchAgents/dev.dotfiles.borders.plist"`
+
+RiceKit reloads the border process after each theme apply. If the config was
+already enabled, run `ricekit apply <theme>` once after installing JankyBorders.
+
 ### nvim
 
 Neovim config based on [kickstart.nvim](https://github.com/nvim-kickstart/kickstart.nvim).

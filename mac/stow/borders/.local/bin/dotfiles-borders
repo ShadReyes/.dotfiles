@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -eu
+
+config="${HOME}/.config/borders/borders.sh"
+
+if [ ! -r "$config" ]; then
+	exit 0
+fi
+
+active_color=$(sed -n 's/^ACTIVE_COLOR=$(hex "\(.*\)")/\1/p' "$config")
+inactive_color=$(sed -n 's/^INACTIVE_COLOR=$(hex "\(.*\)")/\1/p' "$config")
+border_width="${DOTFILES_BORDERS_WIDTH:-7.0}"
+
+if [ -z "$active_color" ] || [ -z "$inactive_color" ]; then
+	exit 1
+fi
+
+active_color="0xff${active_color#\#}"
+inactive_color="0xff${inactive_color#\#}"
+
+if [ -x /opt/homebrew/bin/borders ]; then
+	exec /opt/homebrew/bin/borders \
+		active_color="$active_color" \
+		inactive_color="$inactive_color" \
+		width="$border_width"
+elif [ -x /usr/local/bin/borders ]; then
+	exec /usr/local/bin/borders \
+		active_color="$active_color" \
+		inactive_color="$inactive_color" \
+		width="$border_width"
+else
+	exec borders \
+		active_color="$active_color" \
+		inactive_color="$inactive_color" \
+		width="$border_width"
+fi
