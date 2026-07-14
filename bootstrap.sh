@@ -48,7 +48,7 @@ install_macos_packages() {
 }
 
 install_linux_packages() {
-  local packages=(stow neovim ripgrep git curl)
+  local packages=(stow neovim ripgrep git curl jq)
 
   if command -v apt-get >/dev/null 2>&1; then
     if have_sudo; then
