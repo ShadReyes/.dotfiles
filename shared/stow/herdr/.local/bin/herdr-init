@@ -31,6 +31,16 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 127
 fi
 
+session_exists() {
+  env -u HERDR_ENV herdr session list --json 2>/dev/null \
+    | jq -e --arg name "$profile" \
+      '.sessions[]? | select(.name == $name)' >/dev/null
+}
+
+if session_exists; then
+  exec env -u HERDR_ENV herdr --session "$profile"
+fi
+
 herdr_cmd() {
   env -u HERDR_ENV herdr --session "$profile" "$@"
 }
