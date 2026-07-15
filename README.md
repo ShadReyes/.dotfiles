@@ -19,7 +19,7 @@ cd ~/.dotfiles
 
 On macOS, `bootstrap.sh` will:
 1. Install [Homebrew](https://brew.sh) if missing
-2. Install all dependencies from `Brewfile` (stow, neovim, wezterm, ripgrep, rustup, hack-nerd-font, etc.)
+2. Install all dependencies from `Brewfile` (including Herdr on macOS)
 3. Symlink shared and macOS-specific stow packages into `$HOME`
 4. Run `sync-skills.sh` to symlink skills, agents, and commands to all AI CLIs
 
@@ -144,6 +144,10 @@ Herdr configuration and named session profiles are managed from
 
 - `~/.config/herdr/config.toml` — initial Herdr configuration
 - `~/.local/bin/herdr-init` — idempotent session/workspace initializer
+
+On macOS, Herdr is installed from the `Brewfile`. On Linux, bootstrap uses
+Herdr's official installer. When Claude or Codex configuration directories are
+present, bootstrap also installs and normalizes their Herdr integrations.
 
 Initialize the Fluid session and its `Orchestrator` workspace with:
 

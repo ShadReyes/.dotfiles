@@ -65,15 +65,77 @@ install_linux_packages() {
   fi
 }
 
+install_linux_herdr() {
+  export PATH="$HOME/.local/bin:$PATH"
+  if command -v herdr >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "curl is required to install Herdr on Linux." >&2
+    return 1
+  fi
+
+  echo "Installing Herdr..."
+  curl -fsSL https://herdr.dev/install.sh | sh
+  export PATH="$HOME/.local/bin:$PATH"
+}
+
 install_packages() {
   if is_macos; then
     install_macos_packages
   elif is_linux; then
     install_linux_packages
+    install_linux_herdr
   else
     echo "Unsupported OS for automatic package install: $(uname -s)"
     echo "Continuing without package installation."
   fi
+}
+
+install_herdr_integrations() {
+  if ! command -v herdr >/dev/null 2>&1; then
+    echo "Herdr not found; skipping Herdr agent integrations."
+    return 0
+  fi
+
+  if [ -d "$HOME/.claude" ]; then
+    echo "Installing Herdr Claude integration..."
+    env -u HERDR_ENV herdr integration install claude
+    normalize_herdr_hook "$HOME/.claude/settings.json" \
+      'bash "$HOME/.claude/hooks/herdr-agent-state.sh" session'
+  fi
+
+  if [ -d "$HOME/.codex" ]; then
+    echo "Installing Herdr Codex integration..."
+    env -u HERDR_ENV herdr integration install codex
+    normalize_herdr_hook "$HOME/.codex/hooks.json" \
+      'bash "$HOME/.codex/herdr-agent-state.sh" session'
+  fi
+}
+
+normalize_herdr_hook() {
+  local settings_path="$1"
+  local command="$2"
+  local temp_path
+
+  if ! command -v jq >/dev/null 2>&1; then
+    echo "jq is required to normalize Herdr hooks; leaving installer output unchanged." >&2
+    return 1
+  fi
+
+  [ -f "$settings_path" ] || return 0
+  temp_path="$(mktemp)"
+
+  if jq --arg command "$command" '
+    .hooks.SessionStart = ((.hooks.SessionStart // [])
+      | map(select([.hooks[]?.command // ""] | all(contains("herdr-agent-") | not)))
+      + [{"matcher":"*","hooks":[{"type":"command","command":$command,"timeout":10}]}])
+  ' "$settings_path" >"$temp_path"; then
+    cat "$temp_path" >"$settings_path"
+  fi
+
+  rm -f "$temp_path"
 }
 
 require_stow() {
@@ -191,6 +253,9 @@ fi
 # --- Sync skills, agents, commands ---
 echo "Syncing skills..."
 "$DOTFILES/sync-skills.sh"
+
+echo "Installing Herdr agent integrations..."
+install_herdr_integrations
 
 echo ""
 echo "Done! Restart your shell or terminal to pick up changes."

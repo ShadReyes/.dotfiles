@@ -8,6 +8,7 @@ brew "fd"
 brew "fzf"
 brew "jq"
 brew "rustup"  # needed to build the ricekit CLI from source
+brew "herdr"
 
 # Terminal
 cask "wezterm"
