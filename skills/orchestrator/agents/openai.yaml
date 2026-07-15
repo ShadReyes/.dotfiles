@@ -1,0 +1,4 @@
+interface:
+  display_name: "Orchestrator"
+  short_description: "Coordinate parallel sub-agents while conserving context"
+  default_prompt: "Use $orchestrator to coordinate this work through focused sub-agents."

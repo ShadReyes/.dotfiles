@@ -24,8 +24,14 @@ mkdir -p "$TEMP_HOME/.claude" "$TEMP_HOME/.codex" "$TEMP_HOME/.agents"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
 
 echo "Skills"
-assert_count "$TEMP_HOME/.claude/skills" '*' 23 "23 skills synced to Claude"
-assert_count "$TEMP_HOME/.agents/skills" '*' 23 "23 skills synced to Codex"
+assert_count "$TEMP_HOME/.claude/skills" '*' 24 "24 skills synced to Claude"
+assert_count "$TEMP_HOME/.agents/skills" '*' 24 "24 skills synced to Codex"
+
+assert_link "$TEMP_HOME/.claude/skills/orchestrator" "Claude skill: orchestrator is symlink"
+assert_link "$TEMP_HOME/.agents/skills/orchestrator" "Codex skill: orchestrator is symlink"
+assert_file "$TEMP_HOME/.claude/skills/orchestrator/SKILL.md" "Claude skill: orchestrator/SKILL.md readable"
+assert_file "$TEMP_HOME/.agents/skills/orchestrator/SKILL.md" "Codex skill: orchestrator/SKILL.md readable"
+assert_file "$TEMP_HOME/.agents/skills/orchestrator/agents/openai.yaml" "Codex skill: orchestrator has UI metadata"
 
 for skill in agent-config bug-to-plan code-search grilling solving-linear-issues rust-best-practices patchtree present-plan present-issue; do
   assert_link "$TEMP_HOME/.claude/skills/$skill" "Claude skill: $skill is symlink"
@@ -94,8 +100,8 @@ rd_lines=$(wc -l < "$TEMP_HOME/.claude/agents/remote-dom-specialist.md" | tr -d 
 echo ""
 echo "Idempotency"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
-assert_count "$TEMP_HOME/.claude/skills" '*' 23 "Re-run: still 23 skills"
-assert_count "$TEMP_HOME/.agents/skills" '*' 23 "Re-run: still 23 Codex skills"
+assert_count "$TEMP_HOME/.claude/skills" '*' 24 "Re-run: still 24 skills"
+assert_count "$TEMP_HOME/.agents/skills" '*' 24 "Re-run: still 24 Codex skills"
 assert_count "$TEMP_HOME/.claude/agents" '*.md' 2 "Re-run: still 2 agents"
 pass "sync-skills.sh is idempotent"
 
