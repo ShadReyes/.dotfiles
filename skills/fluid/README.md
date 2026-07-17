@@ -21,6 +21,8 @@ that one is shared/team-owned; this one is personal and version-controlled in my
 - `fluid:linear-triage` — triage Current-team Project work by status and blockers.
 - `fluid:product-bet` — guide product problems from intake through evidence,
   shaping, and a ready-to-bet decision in Linear Documents.
+- `fluid:ship-pr` — commit, push, create, and iterate on Fluid pull requests through
+  CI and review feedback.
 
 ## Adding a skill
 
