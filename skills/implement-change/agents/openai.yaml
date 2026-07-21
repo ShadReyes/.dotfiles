@@ -1,0 +1,4 @@
+interface:
+  display_name: "Implement Change"
+  short_description: "Implement changes with project skill discovery"
+  default_prompt: "Implement the requested change, load relevant project skills, and verify the result."
