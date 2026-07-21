@@ -47,9 +47,11 @@ Only address comments that pass all three. Use your judgment — bot comments ar
 
 ### Step 4: Address Valid Comments
 
+Before editing, use `$implement-change` as the implementation phase. It identifies the active worktree and repository instructions, discovers and loads every relevant project skill for the files being changed, and applies its verification checklist. The PR-comment workflow remains responsible for commit, push, GitHub replies, thread resolution, and PR-description updates.
+
 For each valid comment:
 1. Read the referenced file and line(s)
-2. Make the minimal fix
+2. Load the relevant project skills through `$implement-change` before making the minimal fix
 3. Note which comment it addresses
 
 ### Step 5: Lint, Format, and Test
