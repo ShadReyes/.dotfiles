@@ -19,13 +19,14 @@ assert_count() {
 # --- Setup: run sync in a temp HOME to avoid touching real config ---
 TEMP_HOME="$(mktemp -d)"
 trap 'rm -rf "$TEMP_HOME"' EXIT
+EXPECTED_SKILL_COUNT=$(find "$DOTFILES/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
 
 mkdir -p "$TEMP_HOME/.claude" "$TEMP_HOME/.codex" "$TEMP_HOME/.agents"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
 
 echo "Skills"
-assert_count "$TEMP_HOME/.claude/skills" '*' 24 "24 skills synced to Claude"
-assert_count "$TEMP_HOME/.agents/skills" '*' 24 "24 skills synced to Codex"
+assert_count "$TEMP_HOME/.claude/skills" '*' "$EXPECTED_SKILL_COUNT" "$EXPECTED_SKILL_COUNT skills synced to Claude"
+assert_count "$TEMP_HOME/.agents/skills" '*' "$EXPECTED_SKILL_COUNT" "$EXPECTED_SKILL_COUNT skills synced to Codex"
 
 assert_link "$TEMP_HOME/.claude/skills/orchestrator" "Claude skill: orchestrator is symlink"
 assert_link "$TEMP_HOME/.agents/skills/orchestrator" "Codex skill: orchestrator is symlink"
@@ -41,7 +42,7 @@ for skill in agent-config bug-to-plan code-search grilling solving-linear-issues
   assert_file "$TEMP_HOME/.agents/skills/$skill/agents/openai.yaml" "Codex skill: $skill has UI metadata"
 done
 
-for plugin in brando matt fluid herdr dotfiles; do
+for plugin in blowmage brando matt fluid herdr dotfiles; do
   assert_link "$TEMP_HOME/.claude/skills/$plugin" "Claude plugin: $plugin is symlink"
   assert_link "$TEMP_HOME/.agents/skills/$plugin" "Codex plugin: $plugin is symlink"
   assert_file "$TEMP_HOME/.agents/skills/$plugin/.claude-plugin/plugin.json" "Plugin: $plugin has manifest"
@@ -49,6 +50,9 @@ done
 
 assert_file "$TEMP_HOME/.agents/skills/herdr/skills/herdr/SKILL.md" "herdr:herdr readable"
 assert_file "$TEMP_HOME/.agents/skills/dotfiles/skills/manage-skills/SKILL.md" "dotfiles:manage-skills readable"
+assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/tdd/SKILL.md" "blowmage:tdd readable"
+assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/tdd/references/classicist-testing.md" "blowmage:tdd classicist reference readable"
+assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/tdd/references/worked-example.md" "blowmage:tdd worked example readable"
 
 for skill in react-doctor typescript-doctor turborepo prd-to-plan improve-codebase-architecture validate-startup-idea find-skills; do
   assert_file "$TEMP_HOME/.agents/skills/brando/skills/$skill/SKILL.md" "brando:$skill readable"
@@ -100,8 +104,8 @@ rd_lines=$(wc -l < "$TEMP_HOME/.claude/agents/remote-dom-specialist.md" | tr -d 
 echo ""
 echo "Idempotency"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
-assert_count "$TEMP_HOME/.claude/skills" '*' 24 "Re-run: still 24 skills"
-assert_count "$TEMP_HOME/.agents/skills" '*' 24 "Re-run: still 24 Codex skills"
+assert_count "$TEMP_HOME/.claude/skills" '*' "$EXPECTED_SKILL_COUNT" "Re-run: still $EXPECTED_SKILL_COUNT skills"
+assert_count "$TEMP_HOME/.agents/skills" '*' "$EXPECTED_SKILL_COUNT" "Re-run: still $EXPECTED_SKILL_COUNT Codex skills"
 assert_count "$TEMP_HOME/.claude/agents" '*.md' 2 "Re-run: still 2 agents"
 pass "sync-skills.sh is idempotent"
 

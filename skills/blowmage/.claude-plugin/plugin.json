@@ -1,0 +1,6 @@
+{
+  "name": "blowmage",
+  "version": "1.0.0",
+  "description": "Vendored skills from blowmage",
+  "skills": "./skills/"
+}
