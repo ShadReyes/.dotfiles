@@ -139,25 +139,13 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) auto-installs a
 
 ### Herdr
 
-Herdr configuration and named session profiles are managed from
-`shared/stow/herdr/`.
+Herdr configuration is managed from `shared/stow/herdr/`.
 
-- `~/.config/herdr/config.toml` — initial Herdr configuration
-- `~/.local/bin/herdr-init` — idempotent session/workspace initializer
+- `~/.config/herdr/config.toml` — Herdr configuration
 
 On macOS, Herdr is installed from the `Brewfile`. On Linux, bootstrap uses
 Herdr's official installer. When Claude or Codex configuration directories are
 present, bootstrap also installs and normalizes their Herdr integrations.
-
-Initialize the Fluid session and its `Orchestrator` workspace with:
-
-```bash
-herdr-init fluid
-```
-
-For session-only startup, use `herdr --session fluid`. Runtime session state
-stays machine-local; the configuration and initializer are restored by the
-dotfiles bootstrap.
 
 ### claude
 

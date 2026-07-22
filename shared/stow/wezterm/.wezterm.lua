@@ -254,29 +254,37 @@ config.keys = { -- Create new tab
 	{
 		key = "LeftArrow",
 		mods = "ALT",
-		action = navigate_pane_or_tab("Left"),
+		action = herdr_or_wezterm("\x02h", navigate_pane_or_tab("Left")),
 	},
 	{
 		key = "RightArrow",
 		mods = "ALT",
-		action = navigate_pane_or_tab("Right"),
+		action = herdr_or_wezterm("\x02l", navigate_pane_or_tab("Right")),
 	},
 	{
 		key = "h",
 		mods = "ALT",
-		action = navigate_pane_or_tab("Left"),
+		action = herdr_or_wezterm("\x02h", navigate_pane_or_tab("Left")),
 	},
 	{
 		key = "l",
 		mods = "ALT",
-		action = navigate_pane_or_tab("Right"),
+		action = herdr_or_wezterm("\x02l", navigate_pane_or_tab("Right")),
 	},
 
 	-- Ctrl+h/l for word navigation
 	{ key = "h", mods = "CTRL", action = act.SendString("\x1bb") },
 	{ key = "l", mods = "CTRL", action = act.SendString("\x1bf") },
-	{ key = "DownArrow", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Down") },
-	{ key = "UpArrow", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Up") },
+	{
+		key = "DownArrow",
+		mods = "ALT",
+		action = herdr_or_wezterm("\x02j", act.ActivatePaneDirection("Down")),
+	},
+	{
+		key = "UpArrow",
+		mods = "ALT",
+		action = herdr_or_wezterm("\x02k", act.ActivatePaneDirection("Up")),
+	},
 
 	{
 		key = "RightArrow",
@@ -296,10 +304,13 @@ config.keys = { -- Create new tab
 	{
 		key = "k",
 		mods = "SUPER",
-		action = act.Multiple({
-			act.ClearScrollback("ScrollbackAndViewport"),
-			act.SendKey({ key = "L", mods = "CTRL" }),
-		}),
+		action = herdr_or_wezterm(
+			"\x0c",
+			act.Multiple({
+				act.ClearScrollback("ScrollbackAndViewport"),
+				act.SendKey({ key = "L", mods = "CTRL" }),
+			})
+		),
 	},
 	{ key = "L", mods = "SHIFT|CTRL", action = act.ShowDebugOverlay },
 	{ key = "P", mods = "SHIFT|CTRL", action = act.ActivateCommandPalette },

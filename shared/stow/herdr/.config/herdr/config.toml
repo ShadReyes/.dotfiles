@@ -1,2 +1,9 @@
+onboarding = false
 [ui]
 agent_panel_sort = "spaces"
+
+[keys]
+focus_pane_left = "alt+h"
+focus_pane_right = "alt+l"
+focus_pane_up = "alt+up"
+focus_pane_down = "alt+down"
