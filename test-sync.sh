@@ -42,7 +42,7 @@ for skill in agent-config bug-to-plan code-search grilling solving-linear-issues
   assert_file "$TEMP_HOME/.agents/skills/$skill/agents/openai.yaml" "Codex skill: $skill has UI metadata"
 done
 
-for plugin in blowmage brando matt fluid herdr dotfiles; do
+for plugin in blowmage brando matt fluid herdr dotfiles vercel; do
   assert_link "$TEMP_HOME/.claude/skills/$plugin" "Claude plugin: $plugin is symlink"
   assert_link "$TEMP_HOME/.agents/skills/$plugin" "Codex plugin: $plugin is symlink"
   assert_file "$TEMP_HOME/.agents/skills/$plugin/.claude-plugin/plugin.json" "Plugin: $plugin has manifest"
@@ -53,6 +53,7 @@ assert_file "$TEMP_HOME/.agents/skills/dotfiles/skills/manage-skills/SKILL.md" "
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/tdd/SKILL.md" "blowmage:tdd readable"
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/tdd/references/classicist-testing.md" "blowmage:tdd classicist reference readable"
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/tdd/references/worked-example.md" "blowmage:tdd worked example readable"
+assert_file "$TEMP_HOME/.agents/skills/vercel/skills/ai-sdk/SKILL.md" "vercel:ai-sdk readable"
 
 for skill in react-doctor typescript-doctor turborepo prd-to-plan improve-codebase-architecture validate-startup-idea find-skills; do
   assert_file "$TEMP_HOME/.agents/skills/brando/skills/$skill/SKILL.md" "brando:$skill readable"
