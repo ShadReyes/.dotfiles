@@ -19,6 +19,8 @@ that one is shared/team-owned; this one is personal and version-controlled in my
 - `fluid:linear-fluid` — use Fluid's locked direct Linear GraphQL launcher.
 - `fluid:linear-graphql` — shared secure GraphQL transport and operations.
 - `fluid:linear-triage` — triage Current-team Project work by status and blockers.
+- `fluid:mist-desktop-debugging` — diagnose Mist chat and workflow issues from
+  local Fluid workspace evidence.
 - `fluid:to-prd` — synthesize a PRD locally or publish it to Fluid Linear.
 - `fluid:prd-to-plan` — turn a PRD into approved tracer-bullet implementation phases.
 - `fluid:product-bet` — guide product problems from intake through evidence,

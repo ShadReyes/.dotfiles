@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mist Desktop Debugging"
+  short_description: "Diagnose Fluid chat and workflow issues"
+  default_prompt: "Use $fluid:mist-desktop-debugging to investigate this Mist chat or workflow issue from local Fluid evidence."
