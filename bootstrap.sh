@@ -254,6 +254,9 @@ fi
 echo "Syncing skills..."
 "$DOTFILES/sync-skills.sh"
 
+echo "Syncing pi packages..."
+"$DOTFILES/sync-pi.sh"
+
 echo "Installing Herdr agent integrations..."
 install_herdr_integrations
 
