@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mist Desktop Debugging Preview"
+  short_description: "Debug Mist with local AI traces"
+  default_prompt: "Use $fluid:mist-desktop-debugging-preview to investigate this Mist issue with persisted evidence and local AI traces."
