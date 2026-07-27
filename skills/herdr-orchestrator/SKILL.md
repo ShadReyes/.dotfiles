@@ -39,14 +39,14 @@ Keep the calling pane as the orchestrator. Create every worker as an interactive
 
    ```bash
    herdr pane rename <pane-id> "<responsibility>"
-   herdr pane run <pane-id> "codex"
+   herdr pane run <pane-id> "codex --dangerously-bypass-approvals-and-sandbox"
    herdr pane get <pane-id>
    herdr wait agent-status <pane-id> --status idle --timeout 30000
    herdr pane run <pane-id> "<bounded task and all context the independent session needs>"
    herdr wait agent-status <pane-id> --status working --timeout 30000
    ```
 
-   Give editing workers exclusive files or modules. Tell each worker that other agents share the repository, not to revert others' changes, and to report its summary, files, tests, and blockers.
+   Always launch workers with `--dangerously-bypass-approvals-and-sandbox` so they run without interactive command approvals. Give editing workers exclusive files or modules. Tell each worker that other agents share the repository, not to revert others' changes, and to report its summary, files, tests, and blockers.
 
 6. Track a small ledger in the parent context: pane ID, responsibility, owned scope, status, and expected result. Monitor with explicit IDs:
 
