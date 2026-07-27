@@ -17,7 +17,7 @@ Keep the calling pane as the orchestrator. Create every worker as an interactive
 
    If this fails, explain that the skill must run inside Herdr and stop. Do not run even read-only Herdr discovery, fall back to hidden workers, or control the focused Herdr session from outside it.
 
-2. Learn the installed syntax with `herdr --help` and `herdr pane`. Capture the parent with `herdr pane current --current`. Treat every returned ID as opaque.
+2. Learn the installed syntax with `herdr --help` and `herdr pane`. Capture the parent with `herdr pane current --current` and store its pane ID separately as the orchestrator pane. Never add that ID to the worker ledger or pass it to a close command. Treat every returned ID as opaque.
 
 3. Split the objective into bounded tasks with non-overlapping ownership. Keep integration, conflict resolution, and final delivery in the parent pane. Default workers to the current tab and working directory; create another tab, workspace, worktree, or cwd only when the user requests it.
 
@@ -59,9 +59,19 @@ Keep the calling pane as the orchestrator. Create every worker as an interactive
 
 7. On timeout, inspect the pane before acting. Send a precise follow-up with `herdr pane run` when a worker is blocked or incomplete. Synthesize and validate all results from the parent pane.
 
+8. After capturing and integrating a completed worker's final result, verify that its pane ID is in the worker ledger and differs from the stored orchestrator pane ID. Then close it automatically and mark it closed:
+
+   ```bash
+   herdr pane close <worker-pane-id>
+   ```
+
+   Keep blocked or incomplete workers open until their work is resolved. Before final delivery, close every completed worker pane created by this orchestration.
+
 ## Preserve the session
 
 - Use `--no-focus`, `--current`, or explicit IDs.
 - Parse IDs from command responses; never construct or infer them.
-- Do not close panes or other resources unless the user requests cleanup.
+- Close only worker panes recorded as created by this orchestration.
+- Never close the calling orchestrator pane, even if it reports `idle` or `done`.
+- Do not close panes or other resources that this orchestration did not create.
 - Never stop the Herdr server or kill the main Herdr process.
