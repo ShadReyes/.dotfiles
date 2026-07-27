@@ -1,6 +1,6 @@
 ---
 name: herdr
-description: "Control Herdr, a terminal multiplexer for coding agents. Use only when the user explicitly mentions Herdr or asks to use Herdr to inspect or control panes, tabs, workspaces, terminals, commands, or communication with another agent. Do not use merely because a task could benefit from a background terminal, delegation, or parallel work. Requires HERDR_ENV=1."
+description: "Control Herdr, a terminal multiplexer for coding agents. Use only when the user explicitly mentions Herdr or asks to use Herdr to inspect or control panes, tabs, workspaces, worktrees, terminals, commands, or communication with another agent. Do not use merely because a task could benefit from a background terminal, delegation, or parallel work. Requires HERDR_ENV=1."
 ---
 
 # Herdr
@@ -73,11 +73,42 @@ herdr pane current --current
 herdr pane list --workspace "$HERDR_WORKSPACE_ID"
 ```
 
+## Make Git worktrees visible
+
+When the user asks to create a Git worktree while running inside Herdr, use `herdr worktree create` instead of `git worktree add`. Herdr creates the checkout and opens it as a visible worktree-backed workspace in the terminal UI.
+
+Learn the installed options with `herdr worktree`, then create without stealing focus:
+
+```bash
+herdr worktree create \
+  --workspace "$HERDR_WORKSPACE_ID" \
+  --branch <branch> \
+  --base <base> \
+  --label <label> \
+  --no-focus \
+  --json
+```
+
+To attach a worktree that already exists on disk, open it through Herdr so it also appears as a visible workspace:
+
+```bash
+herdr worktree open \
+  --workspace "$HERDR_WORKSPACE_ID" \
+  --path <existing-worktree-path> \
+  --label <label> \
+  --no-focus \
+  --json
+```
+
+Read the workspace and root-pane IDs from the JSON response; do not infer them. Use that pane to start and control the agent working in the isolated checkout. Use `herdr worktree list --json` to rediscover managed worktrees.
+
+`herdr worktree remove --workspace <worktree-workspace-id> --json` removes the worktree checkout as well as its Herdr workspace. Run it only when the user requested cleanup and the checkout is safe to delete. Closing an agent pane is not authorization to delete its worktree.
+
 ## Control agents through panes
 
 An agent runs inside a pane. Use the pane ID as the control target for agents, shells, servers, tests, and logs. This keeps spawning, input, reads, waits, and cleanup on one stable control surface.
 
-Use workspace and tab commands for organization. Use worktree commands only when you intentionally want Herdr to create, open, or remove a Git checkout.
+Use workspace and tab commands for organization. Use Herdr worktree commands whenever a requested Git worktree should be created or attached visibly in the UI.
 
 Pane records expose `agent`, `agent_status`, and native session metadata when available. Agent status is `idle`, `working`, `blocked`, `done`, or `unknown`.
 
