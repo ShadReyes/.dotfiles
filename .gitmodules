@@ -1,0 +1,3 @@
+[submodule "pi/orca-pi"]
+	path = pi/orca-pi
+	url = git@github.com:OrcaSpec/orca-pi.git
