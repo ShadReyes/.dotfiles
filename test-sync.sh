@@ -50,6 +50,12 @@ done
 
 assert_file "$TEMP_HOME/.agents/skills/herdr/skills/herdr/SKILL.md" "herdr:herdr readable"
 assert_file "$TEMP_HOME/.agents/skills/dotfiles/skills/manage-skills/SKILL.md" "dotfiles:manage-skills readable"
+assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/assess-me/SKILL.md" "blowmage:assess-me readable"
+assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/assess-me/references/assessment-format.md" "blowmage:assess-me format reference readable"
+assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/assess-me/references/transcript-sources.md" "blowmage:assess-me transcript reference readable"
+assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/assess-me/scripts/collect.py" "blowmage:assess-me collector readable"
+assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/assess-me/scripts/extract_prompts.py" "blowmage:assess-me prompt extractor readable"
+assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/assess-me/scripts/git_stats.py" "blowmage:assess-me git miner readable"
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/tdd/SKILL.md" "blowmage:tdd readable"
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/tdd/references/classicist-testing.md" "blowmage:tdd classicist reference readable"
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/tdd/references/worked-example.md" "blowmage:tdd worked example readable"

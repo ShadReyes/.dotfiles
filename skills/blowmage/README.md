@@ -9,4 +9,6 @@ and is symlinked into `~/.agents/skills/blowmage` by `sync-skills.sh`.
 
 ## Skills
 
+- `blowmage:assess-me` — adopted from
+  [`blowmage/harness`](https://github.com/blowmage/harness)
 - `blowmage:tdd`
