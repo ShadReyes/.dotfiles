@@ -7,8 +7,9 @@ Vercel AI SDK implementation guide.
 
 Never infer behavior from a remembered AI SDK version. Locate the relevant `package.json` and
 lockfile, then record the installed package names and resolved versions. Commonly relevant
-packages can include `ai`, `@ai-sdk/openai`, `@ai-sdk/gateway`, `@ai-sdk/mcp`, and other
-`@ai-sdk/*` providers.
+packages can include `ai`, `@ai-sdk/openai`, `@ai-sdk/gateway`, `@ai-sdk/mcp`, other
+`@ai-sdk/*` providers, and `@ai-sdk/devtools` (devDependency backing the local trace
+viewer — see local-ai-devtools.md).
 
 ```bash
 jq -r '(.dependencies // {}) + (.devDependencies // {}) |

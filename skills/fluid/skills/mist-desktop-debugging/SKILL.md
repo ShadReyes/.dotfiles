@@ -1,6 +1,6 @@
 ---
 name: mist-desktop-debugging
-description: Diagnose Mist chat sessions and Fluid workflows from evidence stored under /Users/shadrac/Fluid. Use when a Mist conversation, tool call, workflow, attachment, generated artifact, or state-changing action behaves unexpectedly; when a chat appears missing, stalled, duplicated, or incomplete; or when correlating chat activity with Fluid workspace history. Locate and interpret local artifacts without documenting Mist Desktop's implementation.
+description: Diagnose Mist chat sessions, AI harness operations, and Fluid workflows from evidence under /Users/shadrac/Fluid plus local AI DevTools traces. Use when a Mist conversation, tool call, workflow, attachment, generated artifact, or state-changing action behaves unexpectedly; when a chat appears missing, stalled, duplicated, or incomplete; when runtime AI sequencing, provider behavior, or token/timing evidence is needed; or when correlating chat activity with Fluid workspace history. Locate and interpret local artifacts without documenting Mist Desktop's implementation.
 ---
 
 # Mist Desktop Debugging
@@ -20,7 +20,8 @@ Mist Desktop application.
 - Do not assume a display-cased directory under `.workspace` maps to a similarly named
   lower-case working directory. Confirm the relationship from identifiers, timestamps, and
   contents.
-- Do not assume a persisted schema is the canonical schema of an AI library.
+- Do not assume a persisted schema is the canonical schema of an AI library. Treat the local
+  DevTools trace store as an observed third-party schema, not a canonical AI SDK contract.
 
 ## Load references
 
@@ -28,6 +29,8 @@ Mist Desktop application.
   `/Users/shadrac/Fluid`.
 - Read [ai-tooling.md](references/ai-tooling.md) when the symptom involves streaming, model
   output, message persistence, tool calls, tool results, or an AI SDK/provider error.
+- Read [local-ai-devtools.md](references/local-ai-devtools.md) before starting, attaching to,
+  inspecting, or clearing a local AI trace session.
 
 ## Investigation workflow
 
@@ -37,7 +40,18 @@ Capture the workspace or company, workflow or skill name, approximate local time
 ID if known, expected behavior, observed behavior, and whether any state-changing action
 completed. If some details are missing, continue with the narrowest defensible time window.
 
-### 2. Locate the evidence surface
+### 2. Choose the evidence path
+
+Start with existing chat, workflow, history, attachment, and generated-file evidence. Add a
+local AI trace (see [local-ai-devtools.md](references/local-ai-devtools.md)) when the issue is
+reproducible and runtime sequencing, provider behavior, timing, token usage, or
+cross-operation correlation would discriminate between hypotheses that persisted artifacts
+cannot separate.
+
+Do not rerun a state-changing workflow merely to obtain a trace. Require explicit
+authorization and confirm the workflow's recovery policy before replaying any mutation.
+
+### 3. Locate the evidence surface
 
 Set the root explicitly:
 
@@ -50,7 +64,7 @@ find "$fluid_root" -path '*/.mist-desktop/chats/index.json' -type f -print
 Use chat indexes and modification times to narrow candidates before searching full chat files.
 Include nested workflow surfaces under `skills/.chats` when the issue occurred inside a workflow.
 
-### 3. Identify the chat without dumping it
+### 4. Identify the chat without dumping it
 
 Inspect an index structurally:
 
@@ -74,15 +88,18 @@ rg -l -F --glob 'chat-*.json' -- '<needle>' "$fluid_root"
 
 Read the minimum matching fragment only after locating the correct file.
 
-### 4. Correlate across artifacts
+### 5. Correlate across artifacts
 
 Build a single chronology from:
 
 1. chat index `createdAt` and `lastActiveAt`;
 2. message `ts` values and tool-use identifiers;
-3. workflow-specific chat artifacts;
+3. workflow-specific chat artifacts, run snapshots (`<userData>/workflows/<runId>.json`), and
+   diagnostic summaries;
 4. `.history/index.json` rows and dated history records;
-5. attachment and generated-file modification times.
+5. local AI trace runs and steps, joined by the correlation keys in their function
+   identifiers (`chatId`, `turnId`, `runId`, `stepId`, `attemptId`);
+6. attachment and generated-file modification times.
 
 Search history by stable identifiers before searching prompt text:
 
@@ -94,12 +111,13 @@ jq -r '.rows[] | select(.chatTurnId == "<id>" or .workflowId == "<id>") |
 Use `stat` to compare filesystem times when timestamps are absent. Account for ISO timestamps,
 epoch values, and local filesystem time before claiming an ordering.
 
-If the persisted artifacts do not expose a completion marker or runtime error, state that limit.
-Do not treat complete-looking text as proof that a stream closed normally. Search for runtime
-logs by filename and time window; if their location is not discoverable, identify runtime logs
-as the next evidence source without inventing a path.
+If the persisted artifacts do not expose a completion marker or runtime error, state that
+limit. Do not treat complete-looking text as proof that a stream closed normally — a local AI
+trace of a reproduction is the discriminating evidence for stream lifecycle, and a trace in
+turn proves only that an instrumented operation emitted events, not that persistence or a
+domain mutation completed.
 
-### 5. Classify the failure boundary
+### 6. Classify the failure boundary
 
 Classify the strongest supported boundary:
 
@@ -114,7 +132,7 @@ Classify the strongest supported boundary:
 Do not assign a root cause merely because a file is absent; first establish whether that artifact
 should exist for the observed action.
 
-### 6. Report and recommend
+### 7. Report and recommend
 
 Return:
 
