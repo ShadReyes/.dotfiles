@@ -77,8 +77,12 @@ Three constraints, all measured:
   returns the last painted frame — byte-identical across 10 minutes in testing,
   with no staleness signal in the response. You will confidently analyse an
   hours-old picture.
-- **Capture only; do not drive.** Screenshot consent/HITL cards, never click
-  them — an agent-satisfied gate is not evidence, and it is not a decision.
+- **For debugging, capture — don't drive.** The harness *is* able to press
+  HITL/consent cards (see the `mist-comp:hackathon` runbook §8.4), but that is
+  an operational capability, not an investigative one. Clicking a card while
+  diagnosing changes the state you are trying to explain, and an
+  agent-satisfied gate is never evidence that the gate works for a user.
+  Screenshot it and keep investigating.
 
 ### 3. Locate the evidence surface
 
