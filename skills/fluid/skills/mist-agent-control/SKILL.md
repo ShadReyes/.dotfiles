@@ -146,7 +146,7 @@ pnpm start
 |---|---|---|
 | `MIST_BRIDGE_ENABLED` | unset | `=1` mounts `/v1/tools*` (needs `MIST_AGENT_CONTROL_ENABLED=1` too) |
 | `MIST_BRIDGE_ALLOW_WRITES` | unset | `=1` permits calls classified as production mutations. **Does not defeat Safe Mode** — that still refuses inside `buildTools` |
-| `MIST_BRIDGE_ALLOWED_COMPANIES` | unset | Comma-separated profile names / slugs. **Fails closed**: set-but-empty blocks everything, and there is no active-profile fallback |
+| `MIST_BRIDGE_ALLOWED_COMPANIES` | unset | Comma-separated companies. Each entry may be the profile display name (`Hiya Health Test 2`), the storefront slug (`hiya-health-test-2`), or the `*.fluid.app` host — both sides are normalized through Mist's own `slugifyCompany` / `slugifyFluidShop`, so the spellings are interchangeable. **Fails closed**: set-but-empty blocks everything, and there is no active-profile fallback |
 | `MIST_BRIDGE_TOOLS` | unset | Comma-separated tool allowlist; when set, only these are exposed |
 | `MIST_BRIDGE_MAX_OUTPUT_BYTES` | `16384` | Output cap before truncation |
 | `MIST_BRIDGE_DEFAULT_WAIT_MS` | `55000` | Long-poll budget before a call switches to job mode |
@@ -272,3 +272,21 @@ content result, never a JSON-RPC error.
   (set `MIST_AGENT_CONTROL_PORT`).
 - Turn `failed` with a terse `error` → open the chat in the Mist UI; full context is in
   the transcript and `<userData>/.devtools` traces when `MIST_AI_DEVTOOLS=1`.
+- **Turn "succeeded" but you don't believe it, or a card should have rendered** →
+  screenshot the window instead of guessing. The `cua-driver` skill captures the
+  Mist window *and* its Electron DevTools (Network/console) in ~0.2s, in the
+  background, without stealing focus:
+
+  ```bash
+  cua-driver list_windows '{"pid":<MIST_PID>}' \
+    | jq -r '.windows[] | select(.title|test("Fluid Mist|Developer Tools"))
+             | "\(.window_id)\t\(.title)\ton_screen=\(.is_on_screen)"'
+  cua-driver get_window_state '{"pid":<MIST_PID>,"window_id":<ID>}' \
+    --screenshot-out-file /tmp/mist-evidence.png
+  ```
+
+  Two constraints: always pass `--screenshot-out-file` (inline base64 is ~165 KB
+  of context per snapshot), and **assert `on_screen=true`** — an off-Space window
+  returns a frozen frame (byte-identical over 10 minutes when measured) with no
+  staleness signal. Capture only: screenshot HITL/consent cards, never click
+  them. A bridge-originated proposal is *meant* to need a human.

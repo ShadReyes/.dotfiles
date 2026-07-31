@@ -51,6 +51,35 @@ cannot separate.
 Do not rerun a state-changing workflow merely to obtain a trace. Require explicit
 authorization and confirm the workflow's recovery policy before replaying any mutation.
 
+**Visual evidence — `cua-driver`.** Persisted artifacts tell you what Mist
+recorded; they do not tell you what the user actually saw. When the report is
+about rendering, a card that did or didn't appear, a control in the wrong state,
+or a renderer-side error, capture the window itself. See the `cua-driver` skill;
+it drives GUI apps in the **background without stealing focus**.
+
+```bash
+cua-driver list_windows '{"pid":<MIST_PID>}' \
+  | jq -r '.windows[] | select(.title|test("Fluid Mist|Developer Tools"))
+           | "\(.window_id)\t\(.title)\ton_screen=\(.is_on_screen)"'
+cua-driver get_window_state '{"pid":<MIST_PID>,"window_id":<ID>}' \
+  --screenshot-out-file /tmp/mist-evidence.png     # ~0.2s
+```
+
+The Electron **DevTools window captures legibly too** (Network panel, request
+table, console badges), so you can pull renderer-side evidence without attaching
+a debugger.
+
+Three constraints, all measured:
+
+- **Always pass `--screenshot-out-file`.** Inline base64 was ~165 KB per
+  snapshot straight into context.
+- **Assert `on_screen=true` before believing the image.** An off-Space window
+  returns the last painted frame — byte-identical across 10 minutes in testing,
+  with no staleness signal in the response. You will confidently analyse an
+  hours-old picture.
+- **Capture only; do not drive.** Screenshot consent/HITL cards, never click
+  them — an agent-satisfied gate is not evidence, and it is not a decision.
+
 ### 3. Locate the evidence surface
 
 Set the root explicitly:
