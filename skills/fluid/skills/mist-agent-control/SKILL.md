@@ -117,6 +117,118 @@ format so the UI, abort, and live-turn snapshots agree:
   Progress is visible in the Mist UI and via `workflow_status` in follow-up turns; run
   state persists under Electron `userData/workflows/<runId>.json`.
 
+## Tool bridge — call Mist's tools directly, no model turn
+
+The same server can expose Mist's **individual agent tools** as one HTTP call each, with
+no agent turn in between. Use this when you want `fluid_api`, `db_query`,
+`screenshot_preview`, `crawl`, … as native tools in *your* harness; use `/v1/turns`
+(above) when you want Mist's model to reason.
+
+Source: `apps/mist-desktop/src/main/services/tool-bridge.service.ts`,
+`src/main/tools/bridge-policy.ts`, `src/shared/tool-bridge.ts`.
+
+Every call still goes through `buildTools`, so it inherits Safe Mode, the project
+sandbox, Time Machine recording, and signed evidence receipts unchanged.
+
+### Enabling
+
+Second gate on top of agent control — **off by default even when agent control is on**:
+
+```bash
+MIST_AGENT_CONTROL_ENABLED=1 \
+MIST_BRIDGE_ENABLED=1 \
+MIST_AGENT_CONTROL_TOKEN='<secret ≥20 chars>' \
+MIST_BRIDGE_ALLOWED_COMPANIES=hiya-health-test-2 \
+pnpm start
+```
+
+| Var | Default | Effect |
+|---|---|---|
+| `MIST_BRIDGE_ENABLED` | unset | `=1` mounts `/v1/tools*` (needs `MIST_AGENT_CONTROL_ENABLED=1` too) |
+| `MIST_BRIDGE_ALLOW_WRITES` | unset | `=1` permits calls classified as production mutations. **Does not defeat Safe Mode** — that still refuses inside `buildTools` |
+| `MIST_BRIDGE_ALLOWED_COMPANIES` | unset | Comma-separated profile names / slugs. **Fails closed**: set-but-empty blocks everything, and there is no active-profile fallback |
+| `MIST_BRIDGE_TOOLS` | unset | Comma-separated tool allowlist; when set, only these are exposed |
+| `MIST_BRIDGE_MAX_OUTPUT_BYTES` | `16384` | Output cap before truncation |
+| `MIST_BRIDGE_DEFAULT_WAIT_MS` | `55000` | Long-poll budget before a call switches to job mode |
+
+### Endpoints
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/v1/tools` | Catalog. `?readOnly=1` for the QA-reviewer tool semantics; `?includeUnavailable=0` to hide tools the current flags refuse (default is to list them **with** the env var that would unlock each) |
+| POST | `/v1/tools/invoke` | Run one tool. `200` when it finishes inside `waitMs`, `202` + `invocationId` when it does not |
+| GET | `/v1/tools/invocations/:id` | Poll a job |
+| POST | `/v1/tools/invocations/:id/abort` | Abort it (`409` if already terminal) |
+
+Invoke body: `{tool, args, projectPath?, projectId?, projectName?, projectKind?,
+connectionId?, companySlug?, readOnly?, waitMs?, images?, clientId?}`. `projectPath` is
+path-jailed exactly like `/v1/turns`; omit it and the sandbox roots at the workspace.
+`connectionId` overrides `projectInfo.id` for `db_query` / `db_schema` /
+`sql_answer_card`, which resolve their database from it. `images` defaults to `"paths"`
+(you read the PNG off disk); `"inline"` returns base64, capped at 2 images / 1.5MB.
+
+Response: `{invocationId, tool, status, output, isError, truncated?, images?,
+historyEntryIds?, surfaceReceiptId?, error?}`. **`historyEntryIds` are Time Machine
+entries** — hand one back to Mist to revert the mutation.
+
+Status codes: policy refusals are **`200` with `status:"refused"`** on purpose (a model
+must read the reason and adapt, not see a transport error). Only `404` unknown tool,
+`400` bad args / path-jail violation, `429` over the 8-invocation cap, `501` bridge off.
+
+### Exposed surface
+
+65 of Mist's 68 tools. Never exposed, each with a refusal naming the alternative:
+
+- `create_page` — gated on per-turn facts only the chat history can prove. Use `/v1/turns`.
+- `steps` — means "end your turn and wait for the human". Use `/v1/turns`.
+  (`steps_answer` / `steps_mark_item` *are* exposed.)
+- `send_message` — fires a nested agent turn in another project. Use `/v1/turns` there.
+- Any `mcp__*` tool — proxying Mist's own MCP servers back out would bypass their consent.
+
+Write classification reuses Safe Mode's audited `checkSafeModeTool`, so it is
+argument-sensitive: `fluid_api` GET is allowed while POST is not, `theme_media_reconcile`
+with `verify_only:true` is allowed, `run_cli git status` is allowed while
+`run_cli fluid theme push` is not.
+
+### Registering the MCP proxy
+
+`packages/mist/mcp` ships a second binary, `mist-bridge`, that turns all of this into
+native MCP tools:
+
+```bash
+cd fluid-mono/packages/mist/mcp && pnpm build
+claude mcp add --scope user mist-bridge \
+  --env MIST_AGENT_CONTROL_TOKEN="$MIST_AGENT_CONTROL_TOKEN" \
+  -- node /Volumes/Code/Fluid/fluid-mono/packages/mist/mcp/dist/bridge-cli.mjs
+```
+
+Tools arrive as `mcp__mist-bridge__<mist name>` (names kept verbatim so mist-skills
+markdown stays portable), plus `mist_bridge_status` / `mist_bridge_poll` /
+`mist_bridge_abort`. Proxy env: `MIST_AGENT_CONTROL_URL` (default
+`http://127.0.0.1:9846`), `MIST_AGENT_CONTROL_TOKEN` (required),
+`MIST_BRIDGE_TOOL_TIMEOUT_MS` (default `900000`), and `MIST_BRIDGE_PROJECT_PATH` /
+`MIST_BRIDGE_COMPANY`, which fill `projectPath` / `companySlug` on every call without the
+model seeing them.
+
+With Mist down the proxy does not exit: it serves only `mist_bridge_status`, re-probes on
+every `tools/list` and every tool call, and emits `tools/list_changed` when Mist comes
+back. Every failure — host down, 401, refusal, the tool's own error — is an `isError`
+content result, never a JSON-RPC error.
+
+### Bridge caveats
+
+- **In-memory records.** A Mist restart drops every invocation record. Work that already
+  landed is not lost (mutations still have Time Machine entries), but an `invocationId`
+  from before the restart is gone.
+- **8 concurrent invocations**, separate from the 20-turn cap.
+- **No chat.** `projectInfo.chatId` is deliberately omitted, so `run_workflow`'s progress
+  card has no chat to link back to and `human_in_the_loop` returns a `pending` payload
+  that no Mist bubble renders — the external caller *is* the human.
+- **Prompt-injection reach.** A user-scope registration puts production-write tools in
+  every Claude Code session, including ones reading untrusted pages. Keep
+  `MIST_BRIDGE_ALLOW_WRITES` off for everyday use and pin
+  `MIST_BRIDGE_ALLOWED_COMPANIES` to sandbox companies.
+
 ## Limitations (as of mist-desktop 0.32.0)
 
 - **Dev builds only.** The server starts only when the app is unpackaged and throws if
