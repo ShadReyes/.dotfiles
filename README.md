@@ -106,6 +106,7 @@ WezTerm terminal configuration.
 When Herdr is the active foreground process, the pane shortcuts are routed to
 Herdr automatically. Otherwise, they retain their native WezTerm behavior:
 
+- `Alt+Arrow` — focus the pane in that direction
 - `Cmd+Alt+Right` — split right
 - `Cmd+Alt+Down` — split down
 - `Cmd+Alt+X` — close the pane
