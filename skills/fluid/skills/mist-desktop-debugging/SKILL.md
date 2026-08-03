@@ -78,7 +78,7 @@ Three constraints, all measured:
   with no staleness signal in the response. You will confidently analyse an
   hours-old picture.
 - **For debugging, capture — don't drive.** The harness *is* able to press
-  HITL/consent cards (see the `mist-comp:hackathon` runbook §8.4), but that is
+  HITL/consent cards (via cua-driver's accessibility rung), but that is
   an operational capability, not an investigative one. Clicking a card while
   diagnosing changes the state you are trying to explain, and an
   agent-satisfied gate is never evidence that the gate works for a user.
