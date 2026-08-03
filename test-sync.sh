@@ -50,6 +50,8 @@ done
 
 assert_file "$TEMP_HOME/.agents/skills/herdr/skills/herdr/SKILL.md" "herdr:herdr readable"
 assert_file "$TEMP_HOME/.agents/skills/dotfiles/skills/manage-skills/SKILL.md" "dotfiles:manage-skills readable"
+assert_file "$TEMP_HOME/.agents/skills/fluid/skills/posthog/SKILL.md" "fluid:posthog readable"
+assert_file "$TEMP_HOME/.agents/skills/fluid/skills/posthog/agents/openai.yaml" "fluid:posthog UI metadata readable"
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/assess-me/SKILL.md" "blowmage:assess-me readable"
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/assess-me/references/assessment-format.md" "blowmage:assess-me format reference readable"
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/assess-me/references/transcript-sources.md" "blowmage:assess-me transcript reference readable"
