@@ -103,9 +103,16 @@ WezTerm terminal configuration.
 - `~/.wezterm.lua` — keybindings, appearance, fonts
 - Source: `shared/stow/wezterm/`
 
-When Herdr is the active foreground process, the pane shortcuts are routed to
-Herdr automatically. Otherwise, they retain their native WezTerm behavior:
+When Herdr is the active foreground process, pane, tab, space, and agent shortcuts
+are routed to Herdr automatically. Otherwise, they retain their native WezTerm behavior:
 
+- `Cmd+T` — create a tab
+- `Alt+1..9` — switch directly to a tab
+- `Alt+Shift+H/L` — switch to the previous/next tab
+- `Cmd+Alt+1..9` — switch directly to a space
+- `Cmd+Alt+H/L` — switch to the previous/next space
+- `Ctrl+Alt+1..9` — switch directly to an agent
+- `Ctrl+Alt+H/L` — switch to the previous/next agent
 - `Alt+Arrow` — focus the pane in that direction
 - `Cmd+Alt+Right` — split right
 - `Cmd+Alt+Down` — split down

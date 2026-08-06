@@ -147,6 +147,11 @@ config.keys = { -- Create new tab
 		mods = "CTRL",
 		action = act.SpawnTab("CurrentPaneDomain"),
 	},
+	{
+		key = "t",
+		mods = "SUPER",
+		action = herdr_or_wezterm("\x02c", act.SpawnTab("CurrentPaneDomain")),
+	},
 	{ key = "Enter", mods = "SHIFT", action = wezterm.action({ SendString = "\x1b\r" }) },
 	-- Close tab
 	{
@@ -164,24 +169,47 @@ config.keys = { -- Create new tab
 	{
 		key = "1",
 		mods = "SUPER|ALT",
-		action = act.SwitchToWorkspace({
-			name = "default",
-		}),
+		action = herdr_or_wezterm(
+			"\x02!",
+			act.SwitchToWorkspace({
+				name = "default",
+			})
+		),
 	},
 	-- Switch to config workspace
 	{
 		key = "2",
 		mods = "SUPER|ALT",
-		action = act.SwitchToWorkspace({
-			name = "config",
-			spawn = {
-				args = {
-					os.getenv("SHELL"),
-					"-c",
-					"cd ~/.dotfiles && nvim",
+		action = herdr_or_wezterm(
+			"\x02@",
+			act.SwitchToWorkspace({
+				name = "config",
+				spawn = {
+					args = {
+						os.getenv("SHELL"),
+						"-c",
+						"cd ~/.dotfiles && nvim",
+					},
 				},
-			},
-		}),
+			})
+		),
+	},
+	{ key = "3", mods = "SUPER|ALT", action = herdr_or_wezterm("\x02#", act.SendKey({ key = "3", mods = "SUPER|ALT" })) },
+	{ key = "4", mods = "SUPER|ALT", action = herdr_or_wezterm("\x02$", act.SendKey({ key = "4", mods = "SUPER|ALT" })) },
+	{ key = "5", mods = "SUPER|ALT", action = herdr_or_wezterm("\x02%", act.SendKey({ key = "5", mods = "SUPER|ALT" })) },
+	{ key = "6", mods = "SUPER|ALT", action = herdr_or_wezterm("\x02^", act.SendKey({ key = "6", mods = "SUPER|ALT" })) },
+	{ key = "7", mods = "SUPER|ALT", action = herdr_or_wezterm("\x02&", act.SendKey({ key = "7", mods = "SUPER|ALT" })) },
+	{ key = "8", mods = "SUPER|ALT", action = herdr_or_wezterm("\x02*", act.SendKey({ key = "8", mods = "SUPER|ALT" })) },
+	{ key = "9", mods = "SUPER|ALT", action = herdr_or_wezterm("\x02(", act.SendKey({ key = "9", mods = "SUPER|ALT" })) },
+	{
+		key = "h",
+		mods = "SUPER|ALT",
+		action = herdr_or_wezterm("\x02H", act.SendKey({ key = "h", mods = "SUPER|ALT" })),
+	},
+	{
+		key = "l",
+		mods = "SUPER|ALT",
+		action = herdr_or_wezterm("\x02L", act.SendKey({ key = "l", mods = "SUPER|ALT" })),
 	},
 	-- Switch to work workspace
 	-- {
@@ -232,16 +260,45 @@ config.keys = { -- Create new tab
 
 	{ key = "Enter", mods = "ALT", action = act.ToggleFullScreen },
 
-	{ key = "1", mods = "ALT", action = act.ActivateTab(0) },
-	{ key = "2", mods = "ALT", action = act.ActivateTab(1) },
-	{ key = "3", mods = "ALT", action = act.ActivateTab(2) },
-	{ key = "4", mods = "ALT", action = act.ActivateTab(3) },
-	{ key = "5", mods = "ALT", action = act.ActivateTab(4) },
-	{ key = "6", mods = "ALT", action = act.ActivateTab(5) },
-	{ key = "7", mods = "ALT", action = act.ActivateTab(6) },
-	{ key = "8", mods = "ALT", action = act.ActivateTab(7) },
-	{ key = "9", mods = "ALT", action = act.ActivateTab(8) },
+	{ key = "1", mods = "ALT", action = herdr_or_wezterm("\x021", act.ActivateTab(0)) },
+	{ key = "2", mods = "ALT", action = herdr_or_wezterm("\x022", act.ActivateTab(1)) },
+	{ key = "3", mods = "ALT", action = herdr_or_wezterm("\x023", act.ActivateTab(2)) },
+	{ key = "4", mods = "ALT", action = herdr_or_wezterm("\x024", act.ActivateTab(3)) },
+	{ key = "5", mods = "ALT", action = herdr_or_wezterm("\x025", act.ActivateTab(4)) },
+	{ key = "6", mods = "ALT", action = herdr_or_wezterm("\x026", act.ActivateTab(5)) },
+	{ key = "7", mods = "ALT", action = herdr_or_wezterm("\x027", act.ActivateTab(6)) },
+	{ key = "8", mods = "ALT", action = herdr_or_wezterm("\x028", act.ActivateTab(7)) },
+	{ key = "9", mods = "ALT", action = herdr_or_wezterm("\x029", act.ActivateTab(8)) },
 	{ key = "0", mods = "ALT", action = act.ActivateTab(9) },
+	{
+		key = "h",
+		mods = "ALT|SHIFT",
+		action = herdr_or_wezterm("\x02p", act.ActivateTabRelative(-1)),
+	},
+	{
+		key = "l",
+		mods = "ALT|SHIFT",
+		action = herdr_or_wezterm("\x02n", act.ActivateTabRelative(1)),
+	},
+	{ key = "1", mods = "CTRL|ALT", action = herdr_or_wezterm("\x02\x1b1", act.SendKey({ key = "1", mods = "CTRL|ALT" })) },
+	{ key = "2", mods = "CTRL|ALT", action = herdr_or_wezterm("\x02\x1b2", act.SendKey({ key = "2", mods = "CTRL|ALT" })) },
+	{ key = "3", mods = "CTRL|ALT", action = herdr_or_wezterm("\x02\x1b3", act.SendKey({ key = "3", mods = "CTRL|ALT" })) },
+	{ key = "4", mods = "CTRL|ALT", action = herdr_or_wezterm("\x02\x1b4", act.SendKey({ key = "4", mods = "CTRL|ALT" })) },
+	{ key = "5", mods = "CTRL|ALT", action = herdr_or_wezterm("\x02\x1b5", act.SendKey({ key = "5", mods = "CTRL|ALT" })) },
+	{ key = "6", mods = "CTRL|ALT", action = herdr_or_wezterm("\x02\x1b6", act.SendKey({ key = "6", mods = "CTRL|ALT" })) },
+	{ key = "7", mods = "CTRL|ALT", action = herdr_or_wezterm("\x02\x1b7", act.SendKey({ key = "7", mods = "CTRL|ALT" })) },
+	{ key = "8", mods = "CTRL|ALT", action = herdr_or_wezterm("\x02\x1b8", act.SendKey({ key = "8", mods = "CTRL|ALT" })) },
+	{ key = "9", mods = "CTRL|ALT", action = herdr_or_wezterm("\x02\x1b9", act.SendKey({ key = "9", mods = "CTRL|ALT" })) },
+	{
+		key = "h",
+		mods = "CTRL|ALT",
+		action = herdr_or_wezterm("\x02\x1bh", act.SendKey({ key = "h", mods = "CTRL|ALT" })),
+	},
+	{
+		key = "l",
+		mods = "CTRL|ALT",
+		action = herdr_or_wezterm("\x02\x1bl", act.SendKey({ key = "l", mods = "CTRL|ALT" })),
+	},
 
 	-- Cmd+Arrow for start/end of line
 	{ key = "LeftArrow", mods = "SUPER", action = act.SendString("\x01") },
