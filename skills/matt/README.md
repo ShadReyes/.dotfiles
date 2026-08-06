@@ -11,6 +11,6 @@ and is symlinked into `~/.agents/skills/matt` by `sync-skills.sh`.
 - `matt:writing-great-skills`
 - `matt:grill-me`
 - `matt:teach`
-- `matt:tdd`
-- `matt:to-prd`
+- `matt:matt-tdd` (globally unique skill name: `matt-tdd`)
+- `matt:matt-to-prd` (globally unique skill name: `matt-to-prd`)
 - `matt:grill-with-docs`

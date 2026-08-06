@@ -1,6 +1,6 @@
 ---
-name: prd-to-plan
-description: Turn a Fluid PRD from the conversation, a local Markdown file, or a Fluid Linear issue into an approved multi-phase implementation plan using tracer-bullet vertical slices.
+name: fluid-prd-to-plan
+description: Turn a Fluid PRD from the conversation, a local Markdown file, or a Fluid Linear issue into an approved multi-phase implementation plan using tracer-bullet vertical slices. Use this Fluid-specific alternative when Fluid terminology, Linear, or workflow constraints apply.
 ---
 
 # Fluid PRD to Plan

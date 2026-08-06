@@ -18,6 +18,10 @@ workflow.
   nested `skills/<name>/SKILL.md` entries, like `fluid`, `brando`, and `matt`.
 - The pool (`~/.agents/skills/<name>`) holds symlinks back into the repo.
 - `~/.claude/skills` points at the same pool, so one sync updates both Claude Code and Codex.
+- Every `SKILL.md` frontmatter `name` is globally unique across root skills and nested plugin
+  skills. Keep the preferred implementation's short name and prefix alternatives with their
+  bundle or author. Preserve compatibility renames documented in `~/.dotfiles/skills/README.md`
+  when refreshing vendored skills.
 
 ## Common tasks
 
@@ -58,7 +62,7 @@ with `"skills": "./skills/"`.
 **Audit / verify sync behavior:**
 
 ```bash
-~/.dotfiles/test-sync.sh
+~/.dotfiles/test-sync.sh  # includes a global frontmatter-name collision check
 find ~/.agents/skills -maxdepth 1 -type l -print
 ```
 

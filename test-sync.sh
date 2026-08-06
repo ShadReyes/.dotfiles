@@ -15,6 +15,46 @@ assert_count() {
   actual=$(find "$1" -mindepth 1 -maxdepth 1 -name "$2" | wc -l | tr -d ' ')
   [ "$actual" -eq "$3" ] && pass "$4 ($actual)" || fail "$4: expected $3, got $actual"
 }
+assert_unique_skill_names() {
+  local output
+
+  if output=$(python3 - "$DOTFILES/skills" <<'PY'
+from collections import defaultdict
+from pathlib import Path
+import re
+import sys
+
+skills_dir = Path(sys.argv[1])
+locations = defaultdict(list)
+
+for skill_file in sorted(skills_dir.rglob("SKILL.md")):
+    lines = skill_file.read_text(encoding="utf-8").splitlines()
+    if not lines or lines[0].strip() != "---":
+        continue
+
+    for line in lines[1:]:
+        if line.strip() == "---":
+            break
+        match = re.fullmatch(r"name:\s*['\"]?([a-z0-9-]+)['\"]?\s*", line)
+        if match:
+            locations[match.group(1)].append(skill_file.relative_to(skills_dir))
+            break
+
+duplicates = {name: paths for name, paths in locations.items() if len(paths) > 1}
+if duplicates:
+    for name, paths in sorted(duplicates.items()):
+        print(f'duplicate skill name "{name}":')
+        for path in paths:
+            print(f"  skills/{path}")
+    raise SystemExit(1)
+PY
+  ); then
+    pass "skill frontmatter names are globally unique"
+  else
+    fail "skill frontmatter names must be globally unique"
+    printf '%s\n' "$output" | sed 's/^/    /'
+  fi
+}
 
 # --- Setup: run sync in a temp HOME to avoid touching real config ---
 TEMP_HOME="$(mktemp -d)"
@@ -25,6 +65,7 @@ mkdir -p "$TEMP_HOME/.claude" "$TEMP_HOME/.codex" "$TEMP_HOME/.agents"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
 
 echo "Skills"
+assert_unique_skill_names
 assert_count "$TEMP_HOME/.claude/skills" '*' "$EXPECTED_SKILL_COUNT" "$EXPECTED_SKILL_COUNT skills synced to Claude"
 assert_count "$TEMP_HOME/.agents/skills" '*' "$EXPECTED_SKILL_COUNT" "$EXPECTED_SKILL_COUNT skills synced to Codex"
 
@@ -67,7 +108,7 @@ for skill in react-doctor typescript-doctor turborepo prd-to-plan improve-codeba
   assert_file "$TEMP_HOME/.agents/skills/brando/skills/$skill/SKILL.md" "brando:$skill readable"
 done
 
-for skill in writing-great-skills grill-me teach tdd to-prd grill-with-docs; do
+for skill in writing-great-skills grill-me teach matt-tdd matt-to-prd grill-with-docs; do
   assert_file "$TEMP_HOME/.agents/skills/matt/skills/$skill/SKILL.md" "matt:$skill readable"
 done
 

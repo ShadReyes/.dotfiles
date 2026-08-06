@@ -1,6 +1,6 @@
 ---
-name: tdd
-description: Test-driven development. Use when the user wants to build features or fix bugs test-first, mentions "red-green-refactor", or wants integration tests.
+name: matt-tdd
+description: Matt Pocock's alternative test-driven development workflow. Use when the user explicitly requests Matt's TDD approach, mentions "red-green-refactor", or wants integration tests.
 ---
 
 # Test-Driven Development

@@ -9,6 +9,21 @@ Imported upstream skills:
 - `herdr` is a local plugin bundle vendored from `ogulcancelik/herdr`.
 - `grilling` remains a root skill vendored from `mattpocock/skills`.
 
+## Skill naming policy
+
+Every `name` in `SKILL.md` frontmatter must be globally unique because universal skill
+harnesses recursively discover nested plugin skills without applying plugin namespaces.
+Keep the preferred implementation of a workflow under its short name and prefix alternative
+implementations with their bundle or author, such as `tdd` and `matt-tdd`.
+
+`../test-sync.sh` enforces this invariant and reports every path involved in a collision.
+When refreshing vendored copies, preserve these local compatibility renames:
+
+- upstream `matt/skills/tdd` → local `matt/skills/matt-tdd` (`name: matt-tdd`)
+- upstream `matt/skills/to-prd` → local `matt/skills/matt-to-prd` (`name: matt-to-prd`)
+- original `fluid/skills/prd-to-plan` → local `fluid/skills/fluid-prd-to-plan`
+  (`name: fluid-prd-to-plan`)
+
 To refresh the imported copies from upstream:
 
 ```sh
