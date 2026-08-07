@@ -103,6 +103,7 @@ assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/tdd/SKILL.md" "blowmage:t
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/tdd/references/classicist-testing.md" "blowmage:tdd classicist reference readable"
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/tdd/references/worked-example.md" "blowmage:tdd worked example readable"
 assert_file "$TEMP_HOME/.agents/skills/vercel/skills/ai-sdk/SKILL.md" "vercel:ai-sdk readable"
+assert_file "$TEMP_HOME/.agents/skills/vercel/skills/vercel-cli/SKILL.md" "vercel:vercel-cli readable"
 
 for skill in react-doctor typescript-doctor turborepo prd-to-plan improve-codebase-architecture validate-startup-idea find-skills; do
   assert_file "$TEMP_HOME/.agents/skills/brando/skills/$skill/SKILL.md" "brando:$skill readable"

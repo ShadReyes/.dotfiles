@@ -1,22 +1,23 @@
 {
   "name": "vercel",
-  "version": "0.1.0",
-  "description": "Official Vercel skills for AI SDK development",
+  "version": "0.2.0",
+  "description": "Official Vercel skills for AI SDK development and CLI operations",
   "author": {
     "name": "Vercel"
   },
   "skills": "./skills/",
   "interface": {
     "displayName": "Vercel",
-    "shortDescription": "Build with the Vercel AI SDK.",
-    "longDescription": "Official guidance for answering AI SDK questions and building AI-powered features.",
+    "shortDescription": "Build with AI SDK and operate Vercel.",
+    "longDescription": "Official guidance for building AI-powered features and managing Vercel projects from the command line.",
     "developerName": "Vercel",
     "category": "Developer Tools",
-    "capabilities": ["Read"],
+    "capabilities": ["Interactive", "Read", "Write"],
     "websiteURL": "https://ai-sdk.dev/",
     "defaultPrompt": [
       "Search the AI SDK docs and answer my question.",
-      "Help me build a feature with the AI SDK."
+      "Help me build a feature with the AI SDK.",
+      "Deploy and manage my project with the Vercel CLI."
     ]
   }
 }

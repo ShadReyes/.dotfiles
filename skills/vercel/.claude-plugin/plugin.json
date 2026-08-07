@@ -1,6 +1,6 @@
 {
   "name": "vercel",
-  "version": "0.1.0",
-  "description": "Official Vercel skills for AI SDK development",
+  "version": "0.2.0",
+  "description": "Official Vercel skills for AI SDK development and CLI operations",
   "skills": "./skills/"
 }
