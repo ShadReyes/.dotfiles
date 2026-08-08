@@ -1,69 +1,100 @@
 ---
 name: write-ste100
-description: Draft, rewrite, and review technical documentation with ASD-STE100 Simplified Technical English (STE). Use for procedures, descriptions, safety instructions, maintenance content, software documentation, specifications, and terminology work when the user requests ASD-STE100, Simplified Technical English, controlled English, STE compliance, or an STE-style clarity review.
+description: Draft, rewrite, review, and run an offline ASD-STE100 Issue 9 preflight on Markdown or plain-text technical documentation. Use for procedures, descriptions, safety instructions, controlled English, STE terminology lookup, glossary validation, or requests to check ASD-STE100 compliance. The automated result is never certification or verification.
 ---
 
 # Write ASD-STE100
 
-Write technical content that is accurate, consistent, and easy to understand for an international audience. Preserve the technical meaning and the user's required document structure.
+Write technical content that is accurate, consistent, and easy to understand for an international audience. Preserve the technical meaning and required structure.
 
-## Establish the conformance target
+## Establish the target
 
-Classify the request before you edit:
+Classify the request before editing:
 
-- **Verified STE**: Apply the current official ASD-STE100 standard and its dictionary. Require access to the applicable issue, the project terminology, and any governing style or contractual rules.
-- **STE draft**: Apply the official writing rules and check vocabulary against the official dictionary when it is available. Identify unresolved terms for human review.
-- **STE-informed clarity**: Apply the core principles without claiming ASD-STE100 compliance.
+- **STE draft**: Apply Issue 9 writing rules, use the private dictionary index when available, and list unresolved terms.
+- **STE-informed clarity**: Apply the core principles without an exact dictionary check.
+- **Human-reviewed STE deliverable**: Use the official standard, authoritative project terminology, governing directives, and qualified technical and linguistic reviewers.
 
-If the user does not specify a target, produce an **STE draft**. Do not describe text as compliant, certified, or verified unless you checked it against the applicable official standard and project terminology.
+Default to an **STE draft**. Never describe an automated or agent-produced result as compliant, certified, or verified. The strongest CLI result is `ready_for_human_review`.
 
 ## Prepare the source
 
 1. Identify the audience, task, document type, safety context, and required meaning.
-2. Separate procedural text from descriptive text. Treat warnings and cautions as safety instructions.
-3. Preserve code, commands, identifiers, UI labels, legal text, quoted text, measurements, and product names exactly unless the user authorizes changes.
-4. Collect the approved project terms. Keep one technical noun for each item and one technical verb for each action.
-5. Resolve factual ambiguity before you simplify the language. Do not make a technically unclear sentence look authoritative.
+2. Separate procedures from descriptions. Treat warnings and cautions as safety procedures and notes as descriptions.
+3. Preserve code, commands, identifiers, UI labels, legal text, quoted text, measurements, and product names unless the user authorizes changes.
+4. Collect approved project terms. Keep one technical noun for each item and one technical verb for each action.
+5. Resolve factual ambiguity before simplifying language.
+
+## Use the offline preflight
+
+The CLI is [scripts/ste100](scripts/ste100). It requires `uv`, uses its committed script lock, makes no network requests during indexing or analysis, and supports only UTF-8 Markdown and plain text in v1.
+
+Run `doctor` before dictionary or document checks:
+
+```sh
+skills/write-ste100/scripts/ste100 doctor --format json
+```
+
+If the index is absent, ask the user for their officially obtained Issue 9 PDF. Do not download the standard, use OCR, or copy the PDF or index into the skill. Then run:
+
+```sh
+skills/write-ste100/scripts/ste100 setup --pdf /path/to/official-issue-9.pdf --format json
+```
+
+The private index is stored below `${STE100_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/ste100}` with source-hash provenance and private permissions. Setup rejects other issues, scanned copies, incomplete content, and changed table geometry.
+
+Use bounded dictionary evidence when a term needs review:
+
+```sh
+skills/write-ste100/scripts/ste100 lookup WORD --part-of-speech POS --format json
+skills/write-ste100/scripts/ste100 search "approved meaning" --limit 10 --format json
+```
+
+Validate a project glossary before using it. Read [references/glossary-schema.md](references/glossary-schema.md) for the YAML contract.
+
+```sh
+skills/write-ste100/scripts/ste100 glossary validate project-terms.yaml --format json
+```
+
+Check a document or write a durable report:
+
+```sh
+skills/write-ste100/scripts/ste100 check document.md --type auto --glossary project-terms.yaml --format json
+skills/write-ste100/scripts/ste100 report document.md --type auto --glossary project-terms.yaml --format markdown --output ste-preflight.md
+```
+
+Interpret results as follows:
+
+- Exit `0`: No finding met the selected threshold and coverage is complete. Human review is still required.
+- Exit `1`: A finding met the threshold or terminology coverage is incomplete.
+- Exit `2`: Setup, index, input, glossary, or output error.
+- `coverage.status: incomplete`: Resolve every listed term; do not weaken the threshold or invent a glossary classification.
+- `mode: exact`: Deterministic preflight check, not proof that meaning or part of speech is correct in context.
+- `mode: heuristic`: Review warning only. A confidence label never turns a heuristic into an error.
+
+Use `--fail-on error` by default. Use `--fail-on warning` when the workflow requires warnings to fail. Never treat the CLI result as release approval.
 
 ## Apply the standard
 
-Read [references/rule-guide.md](references/rule-guide.md) before you draft or review text. Use the current official ASD-STE100 issue as the source of truth for exact rule and dictionary decisions.
+Read [references/rule-guide.md](references/rule-guide.md) before drafting or reviewing. Use the user's official Issue 9 copy as the authority for exact rules, examples, exceptions, and dictionary decisions.
 
 Rewrite in this order:
 
 1. Preserve the exact technical intent, conditions, sequence, and risk.
-2. Normalize terminology and classify necessary domain terms as technical nouns or technical verbs.
-3. Replace unapproved general vocabulary with approved words or a different sentence construction.
-4. Use approved meanings, parts of speech, word forms, and verb forms.
-5. Use active voice. Use the imperative form for procedural steps.
-6. Put one instruction in each procedural sentence, except for actions that occur at the same time.
-7. Keep procedural sentences at 20 words or fewer and descriptive sentences at 25 words or fewer. Apply the official word-count rules.
-8. Give descriptive information gradually. Keep one topic in each paragraph and no more than six sentences in a paragraph.
-9. Make safety text identify the risk level, state the command or condition, and explain the possible result.
-10. Review punctuation, articles, references, lists, spelling, and consistency.
+2. Normalize terminology and classify necessary domain terms only from an authoritative source.
+3. Replace unapproved general vocabulary by rewriting the sentence when necessary.
+4. Use approved meanings, parts of speech, and forms.
+5. Use active voice and imperative procedural steps.
+6. Put one instruction in each procedural sentence unless actions occur at the same time.
+7. Keep procedure sentences at 20 words or fewer and description sentences at 25 words or fewer, with the official exceptions.
+8. Keep one topic and no more than six sentences in each descriptive paragraph.
+9. Make safety text identify the risk level, command or condition, and possible result.
+10. Review punctuation, references, lists, spelling, terminology, and literal content.
 
-Do not mechanically substitute synonyms. Rewrite the sentence when a word-for-word replacement changes the meaning or produces unnatural text.
+Do not mechanically substitute synonyms. Rewrite when substitution changes meaning or produces unnatural text.
 
-## Review in separate passes
+## Review and report
 
-Perform these passes in order:
+Review technical fidelity, terminology, grammar and structure, safety, and literal content in separate passes. Return rewritten text first when the user asks for a rewrite. Then state Issue 9, the target, material changes, unresolved terms, coverage, and useful findings by location.
 
-1. **Technical fidelity**: Compare the draft with the source. Confirm that no prerequisite, limit, result, or hazard changed.
-2. **Terminology**: Check each general word in the official dictionary. Check each domain term against the project glossary and the permitted technical-term categories.
-3. **Grammar and structure**: Check voice, verb tense, sentence type, sentence length, paragraph structure, and list structure.
-4. **Safety**: Check risk level, command or condition, consequence, placement, and consistency with the governing safety standard.
-5. **Literal content**: Confirm that commands, code, identifiers, values, units, labels, and quoted text remain exact.
-
-Treat automated results as findings, not proof. Use human technical and linguistic review for a verified deliverable.
-
-## Report the result
-
-Return the rewritten text first. Then include only the review information that helps the user:
-
-- State the conformance target and the ASD-STE100 issue used.
-- List unresolved vocabulary, technical terms, or source ambiguities.
-- Explain material changes that affect terminology, structure, or safety wording.
-- For a review request, identify each finding by location, rule area, reason, and proposed correction.
-- If exact dictionary or project-term checks were not possible, label the result **STE draft—not verified**.
-
-Do not add a compliance statement when the user only asks for clearer writing.
+Label work without a complete dictionary and authoritative project-term review **STE draft—not verified**. Always require qualified human review for meaning in context, technical accuracy, term classification, safety risk, and final release approval.

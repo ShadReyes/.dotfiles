@@ -9,6 +9,7 @@ pass() { PASS=$((PASS + 1)); echo "  ✓ $1"; }
 fail() { FAIL=$((FAIL + 1)); echo "  ✗ $1"; }
 assert_link() { [ -L "$1" ] && pass "$2" || fail "$2: not a symlink"; }
 assert_file() { [ -f "$1" ] && pass "$2" || fail "$2: not found"; }
+assert_executable() { [ -x "$1" ] && pass "$2" || fail "$2: not executable"; }
 assert_contains() { grep -q "$2" "$1" 2>/dev/null && pass "$3" || fail "$3"; }
 assert_count() {
   local actual
@@ -74,6 +75,11 @@ assert_link "$TEMP_HOME/.agents/skills/orchestrator" "Codex skill: orchestrator 
 assert_file "$TEMP_HOME/.claude/skills/orchestrator/SKILL.md" "Claude skill: orchestrator/SKILL.md readable"
 assert_file "$TEMP_HOME/.agents/skills/orchestrator/SKILL.md" "Codex skill: orchestrator/SKILL.md readable"
 assert_file "$TEMP_HOME/.agents/skills/orchestrator/agents/openai.yaml" "Codex skill: orchestrator has UI metadata"
+assert_file "$TEMP_HOME/.agents/skills/write-ste100/SKILL.md" "Codex skill: write-ste100/SKILL.md readable"
+assert_file "$TEMP_HOME/.agents/skills/write-ste100/agents/openai.yaml" "Codex skill: write-ste100 has UI metadata"
+assert_file "$TEMP_HOME/.agents/skills/write-ste100/references/glossary-schema.md" "Codex skill: write-ste100 glossary schema readable"
+assert_file "$TEMP_HOME/.agents/skills/write-ste100/scripts/ste100.lock" "Codex skill: write-ste100 script lock readable"
+assert_executable "$TEMP_HOME/.agents/skills/write-ste100/scripts/ste100" "Codex skill: write-ste100 CLI is executable"
 
 for skill in agent-config bug-to-plan grilling solving-linear-issues rust-best-practices patchtree present-plan present-issue; do
   assert_link "$TEMP_HOME/.claude/skills/$skill" "Claude skill: $skill is symlink"

@@ -122,7 +122,7 @@ Before you label a deliverable verified, confirm all of these items:
 ## Sources
 
 - [Official ASD-STE100 site](https://www.asd-ste100.org/)
-- [ASD-STE100 Simplified Technical English, Issue 9](https://www.asd-ste100.org/assets/files/ASD-STE100_ISSUE9.pdf)
+- [Official ASD-STE100 downloads](https://www.asd-ste100.org/STE_downloads.html)
 - [Official ASD-STE100 FAQ](https://www.asd-ste100.org/STE_faq.html)
 - [Official guidance about STE training](https://www.asd-ste100.org/STE_training.html)
 - [Official guidance about STE software and checkers](https://www.asd-ste100.org/STEsoftware.html)

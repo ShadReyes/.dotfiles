@@ -1,4 +1,4 @@
 interface:
   display_name: "Write ASD-STE100"
-  short_description: "Write clear documentation in controlled English"
-  default_prompt: "Use $write-ste100 to rewrite this technical documentation in ASD-STE100 Simplified Technical English."
+  short_description: "Draft and preflight ASD-STE100 documentation"
+  default_prompt: "Use $write-ste100 to draft this documentation and run the offline Issue 9 preflight before human review."
