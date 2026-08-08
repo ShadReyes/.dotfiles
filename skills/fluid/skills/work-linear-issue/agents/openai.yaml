@@ -1,0 +1,6 @@
+interface:
+  display_name: "Work Fluid Linear Issue"
+  short_description: "Prepare or implement a Fluid Linear issue"
+  default_prompt: "Use $fluid:work-linear-issue to prepare or implement a Current-team Linear issue."
+policy:
+  allow_implicit_invocation: false
