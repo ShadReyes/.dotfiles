@@ -1,4 +1,0 @@
-interface:
-  display_name: "Code Search"
-  short_description: "Explore code with semantic search"
-  default_prompt: "Use $code-search to find relevant implementation paths in this repo."

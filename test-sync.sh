@@ -75,7 +75,7 @@ assert_file "$TEMP_HOME/.claude/skills/orchestrator/SKILL.md" "Claude skill: orc
 assert_file "$TEMP_HOME/.agents/skills/orchestrator/SKILL.md" "Codex skill: orchestrator/SKILL.md readable"
 assert_file "$TEMP_HOME/.agents/skills/orchestrator/agents/openai.yaml" "Codex skill: orchestrator has UI metadata"
 
-for skill in agent-config bug-to-plan code-search grilling solving-linear-issues rust-best-practices patchtree present-plan present-issue; do
+for skill in agent-config bug-to-plan grilling solving-linear-issues rust-best-practices patchtree present-plan present-issue; do
   assert_link "$TEMP_HOME/.claude/skills/$skill" "Claude skill: $skill is symlink"
   assert_link "$TEMP_HOME/.agents/skills/$skill" "Codex skill: $skill is symlink"
   assert_file "$TEMP_HOME/.claude/skills/$skill/SKILL.md" "Claude skill: $skill/SKILL.md readable"
