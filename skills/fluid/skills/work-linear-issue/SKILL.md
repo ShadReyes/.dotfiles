@@ -12,8 +12,9 @@ Never continue from preparation into implementation in the same invocation.
 ## Shared preflight
 
 1. Require one Fluid Linear issue ID or URL.
-2. Read and follow `fluid:linear-fluid`. Fetch the issue, Project, relations,
-   labels, state, and full description from the locked Fluid workspace.
+2. Read and follow `fluid:linear-fluid`. Fetch the issue, Project, hierarchy,
+   relations, labels, state, and full description from the locked Fluid
+   workspace.
 3. Read and follow `fluid:linear-triage`. Run it for the issue's Project before
    recommending or starting work.
 4. Treat the issue description as the implementation contract. Treat linked
@@ -33,7 +34,9 @@ exists.
 
 ## Context budget
 
-- Fetch the selected issue and its direct relations, not the full Project history.
+- Fetch the selected issue, its parent chain, and its direct relations. In the
+  preparation phase, inspect bounded sibling and candidate-parent metadata only
+  when required to explain the issue's role. Do not load full Project history.
 - Determine the likely repository and file scope before loading technical skills.
 - Read the applicable repository instructions and only the specialist skills
   required by the likely changed files.

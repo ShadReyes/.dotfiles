@@ -16,6 +16,38 @@ When a material product choice is missing, stop and identify the decision. Use
 `fluid:to-prd` only when the user asks to resolve the gap as a PRD. Do not create
 a redundant PRD for a sufficient issue.
 
+## Establish the issue's role
+
+Use this bounded context ladder before repository exploration:
+
+1. Read the selected issue in full.
+2. Follow each explicit `parent` link to the top ancestor. Read every ancestor
+   description because each one constrains the selected issue's purpose.
+3. Read active `blocks` and `blockedBy` relations from Linear triage.
+4. If the issue has a parent, inspect that parent's direct children as sibling
+   summaries: identifier, title, state, and dependency relations.
+5. Read a sibling description only when its ownership overlaps the selected
+   issue or the boundary is unclear.
+6. If the issue has children, inspect their summaries to determine whether the
+   selected issue is an actionable slice or a coordination parent.
+7. If no explicit parent exists and the role remains unclear, scan issue
+   summaries in the same Project for an obvious containing outcome. Read only
+   plausible candidate descriptions and report the missing hierarchy. Never
+   infer or create a parent silently.
+8. Read linked Project documents only when the hierarchy and relations do not
+   supply a necessary constraint.
+
+Record a concise role statement with:
+
+- the parent outcome or candidate parent;
+- the selected issue's responsibility;
+- sibling responsibilities that bound its scope;
+- upstream and downstream dependencies;
+- explicit boundaries that prevent duplicate work.
+
+Hierarchy supplies context only. Blocking relations remain the source of work
+order and readiness.
+
 ## Explore narrowly
 
 1. Read all applicable `AGENTS.md` files and repository-local guidance.
@@ -34,6 +66,7 @@ repository.
 The plan must:
 
 - preserve the issue URL and scope boundaries;
+- include the issue role statement and relevant parent outcome;
 - extract durable schema, route, authorization, and external-system decisions;
 - use thin, end-to-end tracer-bullet phases;
 - map every acceptance criterion to at least one phase;
@@ -59,6 +92,8 @@ Finish only when:
 - the contract is sufficient or every material gap is explicit;
 - the plan candidate exists at the reported path;
 - every acceptance criterion maps to a phase;
+- the issue's parent outcome, responsibility, sibling boundaries, and dependency
+  role are explicit;
 - blockers, risks, validation, and proposed child boundaries are visible;
 - the user has received the phase list and a request for granularity approval;
 - no product code or Linear data changed.
