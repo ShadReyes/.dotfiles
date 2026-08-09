@@ -30,12 +30,17 @@ The script uses the locked Fluid GraphQL profile and reads the API key from
 - `RECOMMENDED WORK ORDER`: topological ordering derived from blocking
   relationships, with status markers.
 - `DEPENDENCY GRAPH`: active blockers and blocked issues.
+- Parent/child relationships are reported with their current statuses as
+  context.
 
 Projects and Initiatives are reported as context. They do not determine work
 priority or ownership. Priority is determined only by issue status and active
 blocking relationships. Linear priority, estimates, assignees, labels other
 than `ready-for-agent`, and Initiative membership must not reorder work.
 
-Parent/child issues are supported as optional context. A parent issue is not a
-special planning container and should not be recommended over its actionable
-children.
+Treat parent/child structure as an actionability signal, not a hard rule. When
+a parent primarily groups actionable sub-issues, treat the children as likely
+implementation units and the parent as coordination context. A parent may
+still contain distinct implementation work, so inspect its scope before
+classifying it. Use this distinction only to explain what appears actionable;
+do not infer or recommend Linear issue updates from the hierarchy.

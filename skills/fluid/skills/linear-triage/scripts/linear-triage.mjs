@@ -94,8 +94,16 @@ async function fetchIssues(teamId, projectId = null) {
             state { name type }
             labels { nodes { name } }
             project { id name }
-            parent { id identifier }
-            children { nodes { id identifier } }
+            parent {
+              identifier
+              state { name }
+            }
+            children {
+              nodes {
+                identifier
+                state { name type }
+              }
+            }
             relations {
               nodes {
                 type
@@ -132,20 +140,19 @@ function buildGraph(rawIssues) {
       assigneeId: raw.assignee?.id || null,
       labels: (raw.labels?.nodes || []).map((label) => label.name),
       project: raw.project || null,
-      parentId: raw.parent?.id || null,
       parentIdentifier: raw.parent?.identifier || null,
-      children: [],
+      parentState: raw.parent?.state?.name || null,
+      children: (raw.children?.nodes || []).map((child) => ({
+        identifier: child.identifier,
+        state: child.state?.name || "Unknown",
+        stateType: child.state?.type || "unknown",
+      })),
     });
     blockedBy.set(raw.id, new Set());
     blocks.set(raw.id, new Set());
   }
 
   for (const raw of rawIssues) {
-    const issue = issueMap.get(raw.id);
-    if (issue.parentId && issueMap.has(issue.parentId)) {
-      issueMap.get(issue.parentId).children.push(issue.id);
-    }
-
     for (const relation of raw.relations?.nodes || []) {
       const relatedId = relation.relatedIssue?.id;
       if (!relatedId || !issueMap.has(relatedId)) continue;
@@ -225,6 +232,12 @@ function issueJson(issue, graph, projects) {
     project: projectLabel(issue),
     initiatives: initiativeNames(issue, projects),
     parent: issue.parentIdentifier,
+    parentState: issue.parentState,
+    children: issue.children.map((child) => ({
+      identifier: child.identifier,
+      state: child.state,
+      stateType: child.stateType,
+    })),
     agentReady: isAgentReady(issue),
     blockedBy: activeBlockers(issue, graph).map((blocker) => blocker.identifier),
   };
@@ -243,7 +256,13 @@ function printIssue(issue, graph, projects, prefix = "") {
   const initiatives = initiativeNames(issue, projects);
   const context = `${projectLabel(issue)}${initiatives.length ? ` | ${initiatives.join(", ")}` : ""}`;
   const assignee = issue.assignee ? ` | ${issue.assignee}` : "";
-  console.log(`${prefix}${issue.identifier}: ${issue.title} [${issue.state}] (${context}${assignee})`);
+  const parent = issue.parentIdentifier
+    ? ` | parent ${issue.parentIdentifier} [${issue.parentState || "Unknown"}]`
+    : "";
+  const children = issue.children.length
+    ? ` | children ${issue.children.map((child) => `${child.identifier} [${child.state}]`).join(", ")}`
+    : "";
+  console.log(`${prefix}${issue.identifier}: ${issue.title} [${issue.state}] (${context}${assignee}${parent}${children})`);
 }
 
 async function main() {
