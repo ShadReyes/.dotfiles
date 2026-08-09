@@ -74,16 +74,27 @@ The plan must:
 - name unresolved decisions without inventing answers;
 - list proportional verification for each phase.
 
-## Recommend issue granularity
+## Decide issue granularity
 
-Recommend a child issue when a phase is independently mergeable and verifiable,
-has a distinct blocker or owner, crosses a repository boundary, or warrants a
-separate pull request. Keep blocking relations as the source of work order;
-parent relationships do not inherit blockers.
+Default to implementing the approved plan as one issue. Evaluate the plan as a
+whole before proposing children. Recommend decomposition only when the plan is
+too large or structurally unsuitable to implement, review, and verify as one
+change. Strong signals are separate repository or pull-request boundaries,
+distinct owners or active blockers that require independent scheduling, or a
+dependency or deployment order that requires independent delivery.
 
-Propose child titles, descriptions, and blocking order when useful. Do not
-create them without approval. Keep `ready-for-agent` off unless the user
-explicitly approves it for each actionable issue.
+Do not recommend a child merely because a tracer-bullet phase is independently
+mergeable or verifiable. Multiple phases are normal within one issue.
+
+When decomposition is not warranted, hand off the original issue and approved
+plan for implementation without proposing children. When it is warranted,
+propose child titles, descriptions, and blocking order, then ask for explicit
+approval before creating them. Keep blocking relations as the source of work
+order; parent relationships do not inherit blockers. Treat approved children as
+implementation-ready slices of the parent plan; do not recursively prepare or
+decompose them unless a newly discovered material gap makes one non-actionable.
+Keep `ready-for-agent` off unless the user explicitly approves it for each
+actionable issue.
 
 ## Completion criterion
 
@@ -95,5 +106,7 @@ Finish only when:
 - the issue's parent outcome, responsibility, sibling boundaries, and dependency
   role are explicit;
 - blockers, risks, validation, and proposed child boundaries are visible;
-- the user has received the phase list and a request for granularity approval;
+- the user has received the phase list and either a direct implementation
+  handoff or, only when decomposition is warranted, a request to approve the
+  proposed children;
 - no product code or Linear data changed.

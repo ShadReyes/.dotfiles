@@ -1,6 +1,6 @@
 # Implement a Fluid Linear issue
 
-Implement one approved, actionable slice. Do not ship it unless the user asks.
+Implement one approved, actionable issue. Do not ship it unless the user asks.
 
 ## Resolve the implementation source
 
@@ -14,9 +14,12 @@ $fluid:work-linear-issue prepare <issue-id>
 ```
 
 Proceed without a durable plan only when the issue is a single narrow slice and
-the user explicitly asks for direct implementation. If an approved plan contains
-multiple independently shippable phases and the user did not select one, stop
-and ask for the target phase or child issue.
+the user explicitly asks for direct implementation. Treat the approved plan's
+granularity decision as authoritative: implement all phases assigned to the
+selected issue, even when they are independently shippable. If the plan assigns
+work to child issues, require one actionable child and implement only its
+assigned phases. Do not return to preparation merely because a plan contains
+multiple phases.
 
 ## Prepare the worktree
 
