@@ -1,90 +1,81 @@
 ---
 name: herdr-orchestrator
-description: "Orchestrate delegated Codex work in visible Herdr panes while keeping the calling pane as coordinator. Use when the user explicitly asks to orchestrate, delegate, or run sub-agents through Herdr so their progress is visible in the terminal UI. Requires HERDR_ENV=1."
+description: "Launch and coordinate visible Codex agents through Herdr panes and worktree-backed workspaces. Use when the user explicitly asks to orchestrate, delegate, or parallelize work through Herdr. Requires HERDR_ENV=1."
 ---
 
 # Herdr Orchestrator
 
-Keep the calling pane as the orchestrator. Create every worker as an interactive Codex session in a visible Herdr pane so the user can watch progress. Use sibling panes for shared-checkout work and worktree-backed workspaces for isolated Git work. Do not also create invisible collaboration sub-agents for the same work.
+Use Herdr as the visible execution substrate for the orchestration described by
+the user's prompt. Keep the calling pane available as the coordinator unless
+the prompt explicitly assigns a different topology.
 
-## Orchestrate
+Load and follow the `herdr:herdr` skill for current CLI discovery, pane and
+workspace control, worktree setup, agent-status semantics, focus preservation,
+and cleanup safety. The installed `herdr` binary remains the syntax authority.
 
-1. Run this as the first command, before any `herdr` command:
+This skill does not choose how orchestration is expressed. Do not add, remove,
+or reinterpret delegation layers, worker prompts, skill invocations, task
+ownership, integration responsibilities, or validation steps supplied by the
+user. A worker prompt is opaque task input: submit it verbatim, including
+prompts that invoke `$orchestrator`, other skills, or their own sub-agents.
+
+## Run the requested topology
+
+1. Before any `herdr` command, run:
 
    ```bash
    test "${HERDR_ENV:-}" = 1
    ```
 
-   If this fails, explain that the skill must run inside Herdr and stop. Do not run even read-only Herdr discovery, fall back to hidden workers, or control the focused Herdr session from outside it.
+   If this fails, explain that the skill must run inside Herdr and stop. Do not
+   inspect or control a focused Herdr session from outside it.
 
-2. Learn the installed syntax with `herdr --help`, `herdr pane`, and `herdr worktree`. Capture the parent with `herdr pane current --current` and store its pane ID separately as the orchestrator pane. Never add that ID to the worker ledger or pass it to a close command. Treat every returned ID as opaque.
+2. Use `herdr:herdr` to learn the installed syntax. Capture
+   `herdr pane current --current` and store the returned pane ID separately as
+   the coordinator pane. Treat every returned ID as opaque.
 
-3. Split the objective into bounded tasks with non-overlapping ownership. Keep integration, conflict resolution, and final delivery in the parent pane. Use a Herdr worktree-backed workspace whenever the user asks for a worktree, isolated checkout, separate branch, or separate workspace. Otherwise default workers to sibling panes in the current tab and working directory.
+3. Create the panes, tabs, workspaces, or worktree-backed workspaces requested
+   by the prompt. Herdr can parallelize work within one checkout, across
+   isolated worktrees in one repository, or across multiple repositories.
+   Use `herdr worktree create` or `herdr worktree open` whenever the requested
+   topology includes Git worktrees; never create an invisible raw worktree.
 
-4. Create one visible pane per worker using the selected topology:
+4. Record every resource created by this orchestration and the returned pane
+   used to control it. Never add the coordinator pane to the worker-resource
+   ledger.
 
-   - For a shared-checkout worker, inspect the parent rectangle with `herdr pane layout --pane "$HERDR_PANE_ID"`. Split a wide pane right and a narrow or tall pane down. Re-check geometry before additional splits and avoid unusably small panes. Preserve the user's focus:
-
-     ```bash
-     herdr pane split --current --direction right --no-focus
-     ```
-
-     Read `result.pane.pane_id` from the JSON response and rename the pane for its responsibility.
-
-   - For a new isolated worktree, use Herdr instead of `git worktree add` so the checkout appears as a visible workspace:
-
-     ```bash
-     herdr worktree create \
-       --workspace "$HERDR_WORKSPACE_ID" \
-       --branch <branch> \
-       --base <base> \
-       --label <responsibility> \
-       --no-focus \
-       --json
-     ```
-
-     To attach an existing worktree, use `herdr worktree open --workspace "$HERDR_WORKSPACE_ID" --path <path> --label <responsibility> --no-focus --json`.
-
-     Parse the returned workspace and root-pane IDs. Use the root pane as `<pane-id>` for the worker and record the worktree workspace, path, and branch in the ledger. Never create a raw Git worktree and leave it invisible to Herdr.
-
-5. Launch and brief the worker:
+5. Start each requested Codex worker in its returned pane with:
 
    ```bash
-   herdr pane rename <pane-id> "<responsibility>"
    herdr pane run <pane-id> "codex --dangerously-bypass-approvals-and-sandbox"
    herdr pane get <pane-id>
    herdr wait agent-status <pane-id> --status idle --timeout 30000
-   herdr pane run <pane-id> "<bounded task and all context the independent session needs>"
+   ```
+
+6. Submit the worker prompt exactly as provided. Quote it safely so shell
+   expansion does not consume `$skill` invocations or alter other prompt text:
+
+   ```bash
+   herdr pane run <pane-id> '<verbatim worker prompt>'
    herdr wait agent-status <pane-id> --status working --timeout 30000
    ```
 
-   Always launch workers with `--dangerously-bypass-approvals-and-sandbox` so they run without interactive command approvals. Give editing workers exclusive files or modules. Tell each worker that other agents share the repository, not to revert others' changes, and to report its summary, files, tests, and blockers.
+7. Monitor workers through their explicit pane IDs. Inspect current status and
+   recent unwrapped output before waiting. On timeout or `blocked`, read the
+   transcript and apply only the follow-up behavior requested by the prompt.
 
-6. Track a small ledger in the parent context: pane ID, topology, worktree workspace/path/branch when applicable, responsibility, owned scope, status, and expected result. Monitor with explicit IDs:
+8. Report the created topology, worker status, and results requested by the
+   prompt. Preserve the calling pane and all unrelated Herdr resources.
 
-   ```bash
-   herdr pane get <pane-id>
-   herdr pane read <pane-id> --source recent-unwrapped --lines 120
-   ```
+## Resource safety
 
-   Read existing output before waiting. Background completion normally becomes `done`; a pane visible to the user may return to `idle`. Treat either as complete only after inspecting status and transcript.
-
-7. On timeout, inspect the pane before acting. Send a precise follow-up with `herdr pane run` when a worker is blocked or incomplete. Synthesize and validate all results from the parent pane.
-
-8. After capturing and integrating a completed worker's final result, verify that its pane ID is in the worker ledger and differs from the stored orchestrator pane ID. Then close it automatically and mark it closed:
-
-   ```bash
-   herdr pane close <worker-pane-id>
-   ```
-
-   Keep blocked or incomplete workers open until their work is resolved. Before final delivery, close every completed worker pane created by this orchestration. For a worktree-backed worker, closing its pane is not authorization to run `herdr worktree remove`; remove the checkout and workspace only when the user explicitly requested cleanup and the worktree is safe to delete.
-
-## Preserve the session
-
-- Use `--no-focus`, `--current`, or explicit IDs.
-- Parse IDs from command responses; never construct or infer them.
-- Close only worker panes recorded as created by this orchestration.
-- Never close the calling orchestrator pane, even if it reports `idle` or `done`.
-- Do not close panes or other resources that this orchestration did not create.
+- Use `--no-focus`, `--current`, or explicit opaque IDs as directed by
+  `herdr:herdr`.
+- Never close the coordinator pane or a resource this orchestration did not
+  create.
+- Close created worker panes only when the prompt's requested lifecycle calls
+  for it.
 - Do not remove a worktree checkout merely because its worker completed.
+- Use `herdr worktree remove` only when the user explicitly requests cleanup
+  and the checkout is safe to delete.
 - Never stop the Herdr server or kill the main Herdr process.
