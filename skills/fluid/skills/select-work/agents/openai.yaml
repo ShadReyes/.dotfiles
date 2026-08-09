@@ -1,0 +1,4 @@
+interface:
+  display_name: "Select Fluid Work"
+  short_description: "Orient, triage, and select Fluid Linear work"
+  default_prompt: "Use $fluid:select-work to orient to this Project or issue and recommend the next coherent work batch."
