@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan Feature"
+  short_description: "Create adaptable, reviewable feature plans"
+  default_prompt: "Use $plan-feature to create a reviewable feature plan that fits this repository."
