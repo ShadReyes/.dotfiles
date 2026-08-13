@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan Features with STE100"
+  short_description: "Plan features with feature-local STE100 terms"
+  default_prompt: "Use $plan-feature-with-ste100 to create a feature plan with a feature-local glossary and run the STE100 preflight."
