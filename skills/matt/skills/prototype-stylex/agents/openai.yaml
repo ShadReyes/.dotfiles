@@ -1,0 +1,4 @@
+interface:
+  display_name: "StyleX Prototype"
+  short_description: "Build throwaway UI variants with StyleX"
+  default_prompt: "Use $matt:prototype-stylex to explore radically different UI variants styled with StyleX."
