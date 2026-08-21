@@ -67,7 +67,7 @@ config.initial_rows = 35
 -- Window configuration
 config.window_decorations = "RESIZE"
 config.window_background_opacity = 0.7
-config.enable_kitty_keyboard = true
+config.enable_kitty_keyboard = false
 config.enable_csi_u_key_encoding = false
 
 -- macOS-specific improvements
