@@ -1,6 +1,7 @@
 # Core tools
 brew "stow"
 brew "neovim"
+brew "tree-sitter-cli"
 brew "git"
 brew "gh"
 brew "ripgrep"

@@ -1,78 +1,82 @@
-return { -- Highlight, edit, and navigate code
-	"nvim-treesitter/nvim-treesitter",
-	build = ":TSUpdate",
-	config = function()
-		-- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+local parsers = {
+	"bash",
+	"c",
+	"css",
+	"csv",
+	"dockerfile",
+	"hoon",
+	"html",
+	"javascript",
+	"json",
+	"kdl",
+	"lua",
+	"markdown",
+	"nix",
+	"prisma",
+	"python",
+	"rust",
+	"sql",
+	"svelte",
+	"typescript",
+	"vim",
+	"vimdoc",
+	"yaml",
+}
 
-		---@diagnostic disable-next-line: missing-fields
-		require("nvim-treesitter.configs").setup({
-			ensure_installed = {
-				"bash",
-				"c",
-				"html",
-				"lua",
-				"markdown",
-				"vim",
-				"vimdoc",
-				"css",
-				"csv",
-				"dockerfile",
-				"hoon",
-				"javascript",
-				"json",
-				"kdl",
-				"nix",
-				"prisma",
-				"python",
-				"rust",
-				"sql",
-				"svelte",
-				"typescript",
-				"yaml",
-			},
-			-- Autoinstall languages that are not installed
-			auto_install = true,
-			highlight = { enable = true },
-			-- Tree-sitter's indent module overrides TypeScript's reliable built-in
-			-- indent expression and leaves new block lines at column 1.
-			indent = { enable = false },
-			incremental_selection = {
-				enable = true,
-				keymaps = {
-					init_selection = "<C-space>",
-					node_incremental = "<C-space>",
-					scope_incremental = false,
-					node_decremental = "<bs>",
-				},
-			},
-			textobjects = {
-				move = {
-					enable = true,
-					goto_next_start = {
-						["]f"] = "@function.outer",
-						["]c"] = "@class.outer",
-						["]a"] = "@parameter.inner",
-					},
-					goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer", ["]A"] = "@parameter.inner" },
-					goto_previous_start = {
-						["[f"] = "@function.outer",
-						["[c"] = "@class.outer",
-						["[a"] = "@parameter.inner",
-					},
-					goto_previous_end = {
-						["[F"] = "@function.outer",
-						["[C"] = "@class.outer",
-						["[A"] = "@parameter.inner",
-					},
-				},
-			},
+return {
+	"nvim-treesitter/nvim-treesitter",
+	branch = "main",
+	lazy = false,
+	build = ":TSUpdate",
+	dependencies = {
+		{
+			"nvim-treesitter/nvim-treesitter-textobjects",
+			branch = "main",
+		},
+	},
+	config = function()
+		local treesitter = require("nvim-treesitter")
+
+		treesitter.setup()
+		treesitter.install(parsers)
+
+		vim.api.nvim_create_autocmd("FileType", {
+			desc = "Enable Treesitter highlighting when a parser is available",
+			group = vim.api.nvim_create_augroup("treesitter-highlight", { clear = true }),
+			callback = function(event)
+				pcall(vim.treesitter.start, event.buf)
+			end,
 		})
 
-		-- There are additional nvim-treesitter modules that you can use to interact
-		-- with nvim-treesitter. You should go explore a few and see what interests you:
-		--
-		--    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-		--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-		--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+		vim.keymap.set({ "n", "x" }, "<C-Space>", function()
+			vim.treesitter.select("parent")
+		end, { desc = "Expand Treesitter selection" })
+		vim.keymap.set("x", "<BS>", function()
+			vim.treesitter.select("child")
+		end, { desc = "Shrink Treesitter selection" })
+
+		require("nvim-treesitter-textobjects").setup({
+			move = { set_jumps = true },
+		})
+
+		local move = require("nvim-treesitter-textobjects.move")
+		local function set_move(key, callback, capture, description)
+			vim.keymap.set({ "n", "x", "o" }, key, function()
+				callback(capture, "textobjects")
+			end, { desc = description })
+		end
+
+		set_move("]f", move.goto_next_start, "@function.outer", "Next function start")
+		set_move("]c", move.goto_next_start, "@class.outer", "Next class start")
+		set_move("]a", move.goto_next_start, "@parameter.inner", "Next parameter start")
+		set_move("]F", move.goto_next_end, "@function.outer", "Next function end")
+		set_move("]C", move.goto_next_end, "@class.outer", "Next class end")
+		set_move("]A", move.goto_next_end, "@parameter.inner", "Next parameter end")
+		set_move("[f", move.goto_previous_start, "@function.outer", "Previous function start")
+		set_move("[c", move.goto_previous_start, "@class.outer", "Previous class start")
+		set_move("[a", move.goto_previous_start, "@parameter.inner", "Previous parameter start")
+		set_move("[F", move.goto_previous_end, "@function.outer", "Previous function end")
+		set_move("[C", move.goto_previous_end, "@class.outer", "Previous class end")
+		set_move("[A", move.goto_previous_end, "@parameter.inner", "Previous parameter end")
 	end,
 }
