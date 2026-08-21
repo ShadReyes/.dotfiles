@@ -12,6 +12,8 @@ the prompt explicitly assigns a different topology.
 Load and follow the `herdr:herdr` skill for current CLI discovery, pane and
 workspace control, worktree setup, agent-status semantics, focus preservation,
 and cleanup safety. The installed `herdr` binary remains the syntax authority.
+Do not reproduce executable Herdr CLI examples here; describe the orchestration
+outcome and use the procedures from `herdr:herdr`.
 
 This skill does not choose how orchestration is expressed. Do not add, remove,
 or reinterpret delegation layers, worker prompts, skill invocations, task
@@ -21,48 +23,39 @@ prompts that invoke `$orchestrator`, other skills, or their own sub-agents.
 
 ## Run the requested topology
 
-1. Before any `herdr` command, run:
+1. Before any Herdr command, use `herdr:herdr` to verify the environment and
+   learn the installed syntax. If its environment check fails, stop as directed
+   by that skill.
 
-   ```bash
-   test "${HERDR_ENV:-}" = 1
-   ```
-
-   If this fails, explain that the skill must run inside Herdr and stop. Do not
-   inspect or control a focused Herdr session from outside it.
-
-2. Use `herdr:herdr` to learn the installed syntax. Capture
-   `herdr pane current --current` and store the returned pane ID separately as
-   the coordinator pane. Treat every returned ID as opaque.
+2. Use the current-pane discovery procedure from `herdr:herdr` and store the
+   returned pane ID separately as the coordinator pane. Treat every returned ID
+   as opaque.
 
 3. Create the panes, tabs, workspaces, or worktree-backed workspaces requested
    by the prompt. Herdr can parallelize work within one checkout, across
    isolated worktrees in one repository, or across multiple repositories.
-   Use `herdr worktree create` or `herdr worktree open` whenever the requested
-   topology includes Git worktrees; never create an invisible raw worktree.
+   Use the worktree create or open procedure from `herdr:herdr` whenever the
+   requested topology includes Git worktrees; never create an invisible raw
+   worktree.
 
 4. Record every resource created by this orchestration and the returned pane
    used to control it. Never add the coordinator pane to the worker-resource
    ledger.
 
-5. Start each requested Codex worker in its returned pane with:
+5. Give each requested worker a useful unique agent name. Start it through the
+   agent-start procedure in `herdr:herdr`, using the returned pane, Codex as the
+   agent kind, and `--dangerously-bypass-approvals-and-sandbox` as a native
+   Codex argument. Record both the live agent name and its hosting pane ID.
 
-   ```bash
-   herdr pane run <pane-id> "codex --dangerously-bypass-approvals-and-sandbox"
-   herdr pane get <pane-id>
-   herdr wait agent-status <pane-id> --status idle --timeout 30000
-   ```
+6. Submit the worker prompt exactly as provided through the agent-prompt
+   procedure in `herdr:herdr`. Pass the full prompt as one text argument so
+   shell expansion does not consume `$skill` invocations or alter other prompt
+   text.
 
-6. Submit the worker prompt exactly as provided. Quote it safely so shell
-   expansion does not consume `$skill` invocations or alter other prompt text:
-
-   ```bash
-   herdr pane run <pane-id> '<verbatim worker prompt>'
-   herdr wait agent-status <pane-id> --status working --timeout 30000
-   ```
-
-7. Monitor workers through their explicit pane IDs. Inspect current status and
-   recent unwrapped output before waiting. On timeout or `blocked`, read the
-   transcript and apply only the follow-up behavior requested by the prompt.
+7. Monitor workers through their unique agent names or explicit hosting pane
+   IDs, using the agent status, wait, and read procedures from `herdr:herdr`.
+   On timeout or `blocked`, inspect the agent and apply only the follow-up
+   behavior requested by the prompt.
 
 8. Report the created topology, worker status, and results requested by the
    prompt. Preserve the calling pane and all unrelated Herdr resources.
