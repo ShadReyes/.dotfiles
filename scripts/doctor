@@ -78,6 +78,7 @@ for cmd in nvim wezterm claude codex; do
 done
 
 printf '\nKey links\n'
+check_path "$HOME/.zshrc" '~/.zshrc'
 check_path "$HOME/.wezterm.lua" '~/.wezterm.lua'
 check_path "$HOME/.codex/AGENTS.md" '~/.codex/AGENTS.md'
 check_path "$HOME/.claude/CLAUDE.md" '~/.claude/CLAUDE.md'
@@ -95,6 +96,7 @@ printf '\nBroken symlinks\n'
 broken_file="$(mktemp)"
 trap 'rm -f "$broken_file"' EXIT
 for root in \
+  "$HOME/.zshrc" \
   "$HOME/.claude/CLAUDE.md" \
   "$HOME/.claude/settings.json" \
   "$HOME/.claude/statusline-command.js" \

@@ -20,8 +20,9 @@ cd ~/.dotfiles
 On macOS, `bootstrap.sh` will:
 1. Install [Homebrew](https://brew.sh) if missing
 2. Install all dependencies from `Brewfile` (including Herdr on macOS)
-3. Symlink shared and macOS-specific stow packages into `$HOME`
-4. Run `sync-skills.sh` to symlink skills, agents, and commands to all AI CLIs
+3. Install Oh My Zsh when `~/.oh-my-zsh` is absent
+4. Symlink shared and macOS-specific stow packages into `$HOME`
+5. Run `sync-skills.sh` to symlink skills, agents, and commands to all AI CLIs
 
 ### Linux / headless setup
 
@@ -48,7 +49,8 @@ If you do want Linux packages installed and have passwordless sudo, run:
 ```
 
 On Linux, package mode currently installs a small apt-based dependency set (`stow`,
-`neovim`, `ripgrep`, `git`, `curl`) and then links shared + Linux-specific packages.
+`neovim`, `ripgrep`, `git`, `curl`), installs Oh My Zsh, and then links shared +
+Linux-specific packages.
 If passwordless sudo is unavailable, package installation is skipped with instructions
 and the script continues only if `stow` is already on `PATH`.
 
@@ -64,6 +66,9 @@ from the existing symlinks.
 ./bootstrap.sh --stow-only  # skip packages; link configs and sync AI resources only
 ./bootstrap.sh --no-packages # alias for --stow-only
 ```
+
+Package mode preserves an existing Oh My Zsh installation. `--stow-only` and
+`--no-packages` do not install Oh My Zsh.
 
 The ricekit CLI is not on Homebrew (private, proprietary repo) — see [ricekit setup](#ricekit-setup) below to build it.
 
@@ -95,6 +100,16 @@ Shared stow packages live in `shared/stow/`. Platform stow packages live in
 `mac/stow/` or `linux/stow/`. Direct symlink packages can live in the matching
 `shared/symlink/`, `mac/symlink/`, or `linux/symlink/` layer when Stow is the
 wrong tool for a config.
+
+### zsh
+
+The shared Zsh package manages `~/.zshrc`, including Oh My Zsh, PATH, plugin,
+theme, and alias settings.
+
+- Source: `shared/stow/zsh/`
+- Package mode installs Oh My Zsh before Stow links the configuration.
+- `--stow-only` links the configuration without installing Oh My Zsh. The
+  configuration loads Oh My Zsh only when its loader is present.
 
 ### wezterm
 

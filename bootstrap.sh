@@ -65,6 +65,21 @@ install_linux_packages() {
   fi
 }
 
+install_oh_my_zsh() {
+  if [ -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
+    echo "Oh My Zsh already installed; skipping."
+    return 0
+  fi
+
+  if [ -e "$HOME/.oh-my-zsh" ] || [ -L "$HOME/.oh-my-zsh" ]; then
+    echo "$HOME/.oh-my-zsh exists but is not a complete Oh My Zsh installation." >&2
+    return 1
+  fi
+
+  echo "Installing Oh My Zsh..."
+  git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh"
+}
+
 install_linux_herdr() {
   export PATH="$HOME/.local/bin:$PATH"
   if command -v herdr >/dev/null 2>&1; then
@@ -90,7 +105,10 @@ install_packages() {
   else
     echo "Unsupported OS for automatic package install: $(uname -s)"
     echo "Continuing without package installation."
+    return 0
   fi
+
+  install_oh_my_zsh
 }
 
 install_herdr_integrations() {
