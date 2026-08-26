@@ -139,11 +139,17 @@ DOTFILES_TEST_OS=macos run_bootstrap "$tmp_macos" --packages
 assert_contains "$tmp_macos/log" '^brew bundle --file=' "macOS package mode uses brew bundle"
 assert_contains "$tmp_macos/log" '^git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ' "macOS package mode installs Oh My Zsh"
 assert_file "$tmp_macos/.oh-my-zsh/oh-my-zsh.sh" "Oh My Zsh installation is usable"
+assert_contains "$DOTFILES/Brewfile" '^tap "FelixKratz/formulae"' "macOS Brewfile adds the JankyBorders tap"
+assert_contains "$DOTFILES/Brewfile" '^brew "borders"' "macOS Brewfile installs JankyBorders"
 if grep -q '^sudo apt-get' "$tmp_macos/log" 2>/dev/null; then
   fail "macOS package mode should not use apt-get"
 else
   pass "macOS package mode does not use apt-get"
 fi
+
+echo ""
+echo "Ricekit marketplace state"
+assert_contains "$DOTFILES/mac/stow/ricekit/.config/ricekit/marketplace.toml" 'name = "jankyborders-colors"' "Ricekit marketplace state includes JankyBorders colors"
 
 echo ""
 echo "Existing Oh My Zsh installation"

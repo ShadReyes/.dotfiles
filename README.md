@@ -19,7 +19,7 @@ cd ~/.dotfiles
 
 On macOS, `bootstrap.sh` will:
 1. Install [Homebrew](https://brew.sh) if missing
-2. Install all dependencies from `Brewfile` (including Herdr on macOS)
+2. Install all dependencies from `Brewfile` (including Herdr and JankyBorders)
 3. Install Oh My Zsh when `~/.oh-my-zsh` is absent
 4. Symlink shared and macOS-specific stow packages into `$HOME`
 5. Run `sync-skills.sh` to symlink skills, agents, and commands to all AI CLIs
@@ -140,8 +140,8 @@ around the focused macOS window. The border colors are managed by RiceKit so
 they follow the active theme alongside WezTerm. The local launcher uses a
 slightly thicker `7.0` width than RiceKit’s default.
 
-- Install the dependency with `brew bundle --file=~/.dotfiles/Brewfile`
-- Enable the RiceKit config with `ricekit config enable jankyborders-colors`
+- `bootstrap.sh` installs the dependency through the macOS `Brewfile`.
+- Install and enable the RiceKit config with `ricekit marketplace install jankyborders-colors`.
 - Stow the LaunchAgent with `stow -v --no-folding --dir=mac/stow --target="$HOME" borders`
 - Load it for the current login with `launchctl bootstrap gui/$(id -u) "$HOME/Library/LaunchAgents/dev.dotfiles.borders.plist"`
 
@@ -224,7 +224,7 @@ The community configs listed in `marketplace.toml` are not bundled with the repo
 
 ```sh
 ricekit marketplace refresh
-for cfg in wezterm-colors slack-desktop linear-desktop chrome-colors userstyles; do
+for cfg in wezterm-colors slack-desktop linear-desktop chrome-colors userstyles jankyborders-colors; do
   ricekit marketplace install "$cfg"
 done
 ricekit apply <theme>

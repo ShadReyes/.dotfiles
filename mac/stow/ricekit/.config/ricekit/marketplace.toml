@@ -27,3 +27,10 @@ kind = "config"
 installed_version = "2.20260813.17"
 installed_at = "2026-08-25T23:43:23.889104+00:00"
 source_release = "2.20260813.17"
+
+[[installed]]
+name = "jankyborders-colors"
+kind = "config"
+installed_version = "2.20260813.17"
+installed_at = "2026-08-26T20:16:43.474084+00:00"
+source_release = "2.20260813.17"
