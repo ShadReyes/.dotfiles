@@ -1,36 +1,29 @@
-schema_version = 1
-
-[[installed]]
-name = "slack-desktop"
-kind = "config"
-installed_version = "1.0.5"
-installed_at = "2026-05-04T22:30:05.333346+00:00"
-source_release = "1.0.5"
-
-[[installed]]
-name = "linear-desktop"
-kind = "config"
-installed_version = "1.0.5"
-installed_at = "2026-05-04T22:32:04.791601+00:00"
-source_release = "1.0.5"
-
-[[installed]]
-name = "chrome-colors"
-kind = "config"
-installed_version = "1.0.6"
-installed_at = "2026-05-04T23:01:33.221466+00:00"
-source_release = "1.0.6"
-
-[[installed]]
-name = "userstyles"
-kind = "config"
-installed_version = "1.0.6"
-installed_at = "2026-05-04T23:13:01.074826+00:00"
-source_release = "1.0.6"
+schema_version = 3
 
 [[installed]]
 name = "wezterm-colors"
 kind = "config"
-installed_version = "1.0.6"
-installed_at = "2026-05-14T17:30:06.195550+00:00"
-source_release = "1.0.6"
+installed_version = "2.20260813.17"
+installed_at = "2026-08-25T23:42:50.185932+00:00"
+source_release = "2.20260813.17"
+
+[[installed]]
+name = "slack-desktop"
+kind = "config"
+installed_version = "2.20260813.17"
+installed_at = "2026-08-25T23:42:53.363552+00:00"
+source_release = "2.20260813.17"
+
+[[installed]]
+name = "linear-desktop"
+kind = "config"
+installed_version = "2.20260813.17"
+installed_at = "2026-08-25T23:42:54.886088+00:00"
+source_release = "2.20260813.17"
+
+[[installed]]
+name = "userstyles"
+kind = "config"
+installed_version = "2.20260813.17"
+installed_at = "2026-08-25T23:43:23.889104+00:00"
+source_release = "2.20260813.17"
