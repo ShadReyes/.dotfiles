@@ -1,4 +1,0 @@
-interface:
-  display_name: "Herdr Orchestrate Linear Work"
-  short_description: "Prepare or implement Fluid issues through Herdr"
-  default_prompt: "Use $fluid:herdr-orchestrate-linear-work to prepare or implement this approved Fluid issue batch in Herdr."

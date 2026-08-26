@@ -21,9 +21,6 @@ When refreshing vendored copies, preserve these local compatibility renames:
 
 - upstream `matt/skills/tdd` → local `matt/skills/matt-tdd` (`name: matt-tdd`)
 - upstream `matt/skills/to-prd` → local `matt/skills/matt-to-prd` (`name: matt-to-prd`)
-- original `fluid/skills/prd-to-plan` → local `fluid/skills/fluid-prd-to-plan`
-  (`name: fluid-prd-to-plan`)
-
 To refresh the imported copies from upstream:
 
 ```sh

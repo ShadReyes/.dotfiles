@@ -1,4 +1,0 @@
-interface:
-  display_name: "Fluid PRD to Plan"
-  short_description: "Turn a Fluid PRD into approved vertical slices"
-  default_prompt: "Turn this PRD into an approved tracer-bullet implementation plan."

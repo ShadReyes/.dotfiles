@@ -1,4 +1,0 @@
-interface:
-  display_name: "Fluid PRD"
-  short_description: "Create a local or Linear-backed Fluid PRD"
-  default_prompt: "Create a PRD from the current conversation and save it locally or publish it to Fluid Linear."

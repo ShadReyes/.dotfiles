@@ -128,7 +128,7 @@ for skill in agent-config bug-to-plan grilling solving-linear-issues rust-best-p
   assert_file "$TEMP_HOME/.agents/skills/$skill/agents/openai.yaml" "Codex skill: $skill has UI metadata"
 done
 
-for plugin in blowmage brando matt fluid herdr dotfiles vercel; do
+for plugin in blowmage brando matt herdr dotfiles vercel; do
   assert_link "$TEMP_HOME/.claude/skills/$plugin" "Claude plugin: $plugin is symlink"
   assert_link "$TEMP_HOME/.agents/skills/$plugin" "Codex plugin: $plugin is symlink"
   assert_file "$TEMP_HOME/.agents/skills/$plugin/.claude-plugin/plugin.json" "Plugin: $plugin has manifest"
@@ -136,8 +136,6 @@ done
 
 assert_file "$TEMP_HOME/.agents/skills/herdr/skills/herdr/SKILL.md" "herdr:herdr readable"
 assert_file "$TEMP_HOME/.agents/skills/dotfiles/skills/manage-skills/SKILL.md" "dotfiles:manage-skills readable"
-assert_file "$TEMP_HOME/.agents/skills/fluid/skills/posthog/SKILL.md" "fluid:posthog readable"
-assert_file "$TEMP_HOME/.agents/skills/fluid/skills/posthog/agents/openai.yaml" "fluid:posthog UI metadata readable"
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/assess-me/SKILL.md" "blowmage:assess-me readable"
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/assess-me/references/assessment-format.md" "blowmage:assess-me format reference readable"
 assert_file "$TEMP_HOME/.agents/skills/blowmage/skills/assess-me/references/transcript-sources.md" "blowmage:assess-me transcript reference readable"

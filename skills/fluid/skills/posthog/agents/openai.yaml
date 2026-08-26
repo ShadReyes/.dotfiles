@@ -1,4 +1,0 @@
-interface:
-  display_name: "Fluid PostHog"
-  short_description: "Use PostHog tools for Fluid product data"
-  default_prompt: "Use $fluid:posthog to investigate this Fluid product question with the live PostHog MCP or CLI catalog."

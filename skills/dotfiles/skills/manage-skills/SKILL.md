@@ -15,7 +15,7 @@ workflow.
 - The dotfiles repo is the **one physical home** for local skills.
 - Root skills live at `~/.dotfiles/skills/<name>/SKILL.md`.
 - Local plugin bundles live at `~/.dotfiles/skills/<plugin>/.claude-plugin/plugin.json` with
-  nested `skills/<name>/SKILL.md` entries, like `fluid`, `brando`, and `matt`.
+  nested `skills/<name>/SKILL.md` entries, like `brando`, `matt`, and `vercel`.
 - The pool (`~/.agents/skills/<name>`) holds symlinks back into the repo.
 - `~/.claude/skills` points at the same pool, so one sync updates both Claude Code and Codex.
 - Every `SKILL.md` frontmatter `name` is globally unique across root skills and nested plugin

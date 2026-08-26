@@ -1,6 +1,0 @@
-query Labels($first: Int = 25, $after: String) {
-  issueLabels(first: $first, after: $after) {
-    nodes { id name color }
-    pageInfo { hasNextPage endCursor }
-  }
-}
