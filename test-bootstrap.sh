@@ -133,6 +133,13 @@ assert_file "$tmp/home/.claude/skills/address-pr-comments/SKILL.md" "--stow-only
 assert_link "$tmp/home/.zshrc" "--stow-only links the shared Zsh configuration"
 
 echo ""
+echo "WezTerm theme reload"
+# WezTerm supplies HOME; the Ricekit installation owns the color file's presence.
+assert_contains "$DOTFILES/shared/stow/wezterm/.wezterm.lua" '^local ricekit_colors_path = os.getenv("HOME") .. "/.config/wezterm/ricekit-colors.lua"$' "WezTerm defines the Ricekit color path once"
+assert_contains "$DOTFILES/shared/stow/wezterm/.wezterm.lua" '^wezterm.add_to_config_reload_watch_list(ricekit_colors_path)$' "WezTerm watches Ricekit color changes"
+assert_contains "$DOTFILES/shared/stow/wezterm/.wezterm.lua" '^config.colors = dofile(ricekit_colors_path)$' "WezTerm loads colors from the watched path"
+
+echo ""
 echo "macOS package install remains Homebrew-first"
 tmp_macos="$test_root/macos"
 DOTFILES_TEST_OS=macos run_bootstrap "$tmp_macos" --packages
