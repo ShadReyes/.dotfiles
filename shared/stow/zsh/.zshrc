@@ -1,6 +1,10 @@
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 
+codex() {
+  NO_COLOR=1 command codex "$@"
+}
+
 alias yolo='codex --dangerously-bypass-approvals-and-sandbox'
 
 # If you come from bash you might have to change your $PATH.
