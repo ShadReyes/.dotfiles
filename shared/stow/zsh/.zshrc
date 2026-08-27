@@ -109,3 +109,8 @@ fi
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/shad/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions

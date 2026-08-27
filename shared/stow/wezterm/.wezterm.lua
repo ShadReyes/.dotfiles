@@ -69,7 +69,7 @@ config.initial_rows = 35
 -- Window configuration
 config.window_decorations = "RESIZE"
 config.window_background_opacity = 0.7
-config.text_background_opacity = 0.6
+config.text_background_opacity = 0.55
 config.enable_kitty_keyboard = false
 config.enable_csi_u_key_encoding = false
 

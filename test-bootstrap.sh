@@ -139,7 +139,7 @@ echo "WezTerm theme reload"
 assert_contains "$DOTFILES/shared/stow/wezterm/.wezterm.lua" '^local ricekit_colors_path = os.getenv("HOME") .. "/.config/wezterm/ricekit-colors.lua"$' "WezTerm defines the Ricekit color path once"
 assert_contains "$DOTFILES/shared/stow/wezterm/.wezterm.lua" '^wezterm.add_to_config_reload_watch_list(ricekit_colors_path)$' "WezTerm watches Ricekit color changes"
 assert_contains "$DOTFILES/shared/stow/wezterm/.wezterm.lua" '^config.colors = dofile(ricekit_colors_path)$' "WezTerm loads colors from the watched path"
-assert_contains "$DOTFILES/shared/stow/wezterm/.wezterm.lua" '^config.text_background_opacity = 0.6$' "WezTerm softens application background colors"
+assert_contains "$DOTFILES/shared/stow/wezterm/.wezterm.lua" '^config.text_background_opacity = 0.55$' "WezTerm softens application background colors"
 assert_not_contains "$DOTFILES/shared/stow/zsh/.zshrc" 'NO_COLOR=1 command codex' "Zsh preserves Codex colors"
 
 echo ""

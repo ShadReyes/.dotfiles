@@ -1,6 +1,7 @@
 # Core tools
 brew "stow"
 brew "neovim"
+brew "go"  # required by Mason to build sqls
 brew "tree-sitter-cli"
 brew "git"
 brew "gh"
