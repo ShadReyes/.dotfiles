@@ -152,13 +152,20 @@ for skill in react-doctor typescript-doctor turborepo prd-to-plan improve-codeba
   assert_file "$TEMP_HOME/.agents/skills/brando/skills/$skill/SKILL.md" "brando:$skill readable"
 done
 
-for skill in writing-great-skills grill-me teach matt-tdd matt-to-prd grill-with-docs; do
-  assert_file "$TEMP_HOME/.agents/skills/matt/skills/$skill/SKILL.md" "matt:$skill readable"
+for skill in ask-matt code-review codebase-design diagnosing-bugs domain-modeling grill-with-docs implement matt-improve-codebase-architecture matt-tdd prototype research resolving-merge-conflicts setup-matt-pocock-skills to-spec to-tickets triage wayfinder wizard; do
+  assert_file "$TEMP_HOME/.agents/skills/matt/skills/engineering/$skill/SKILL.md" "matt:$skill readable"
+done
+
+for skill in grill-me grilling handoff teach to-questionnaire wait-what writing-for-agents; do
+  assert_file "$TEMP_HOME/.agents/skills/matt/skills/productivity/$skill/SKILL.md" "matt:$skill readable"
 done
 
 for doc in MISSION-FORMAT.md RESOURCES-FORMAT.md LEARNING-RECORD-FORMAT.md GLOSSARY-FORMAT.md; do
-  assert_file "$TEMP_HOME/.agents/skills/matt/skills/teach/$doc" "Codex skill: matt:teach includes $doc"
+  assert_file "$TEMP_HOME/.agents/skills/matt/skills/productivity/teach/$doc" "Codex skill: matt:teach includes $doc"
 done
+
+assert_file "$TEMP_HOME/.agents/skills/matt/skills/engineering/setup-matt-pocock-skills/issue-tracker-github.md" "Codex skill: matt:setup-matt-pocock-skills includes GitHub template"
+assert_file "$TEMP_HOME/.agents/skills/matt/skills/engineering/diagnosing-bugs/scripts/hitl-loop.template.sh" "Codex skill: matt:diagnosing-bugs includes HITL loop template"
 
 echo ""
 echo "Agents"

@@ -18,8 +18,11 @@ implementations with their bundle or author, such as `tdd` and `matt-tdd`.
 `../test-sync.sh` enforces this invariant and reports every path involved in a collision.
 When refreshing vendored copies, preserve these local compatibility renames:
 
-- upstream `matt/skills/tdd` → local `matt/skills/matt-tdd` (`name: matt-tdd`)
-- upstream `matt/skills/to-prd` → local `matt/skills/matt-to-prd` (`name: matt-to-prd`)
+- upstream `matt/skills/engineering/tdd` → local
+  `matt/skills/engineering/matt-tdd` (`name: matt-tdd`)
+- upstream `matt/skills/engineering/improve-codebase-architecture` → local
+  `matt/skills/engineering/matt-improve-codebase-architecture`
+  (`name: matt-improve-codebase-architecture`)
 To refresh the imported copies from upstream:
 
 ```sh
