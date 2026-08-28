@@ -120,7 +120,7 @@ assert_file "$TEMP_HOME/.agents/skills/write-ste100/references/glossary-schema.m
 assert_file "$TEMP_HOME/.agents/skills/write-ste100/scripts/ste100.lock" "Codex skill: write-ste100 script lock readable"
 assert_executable "$TEMP_HOME/.agents/skills/write-ste100/scripts/ste100" "Codex skill: write-ste100 CLI is executable"
 
-for skill in agent-config bug-to-plan grilling solving-linear-issues rust-best-practices patchtree present-plan present-issue; do
+for skill in agent-config bug-to-plan solving-linear-issues rust-best-practices patchtree present-plan present-issue; do
   assert_link "$TEMP_HOME/.claude/skills/$skill" "Claude skill: $skill is symlink"
   assert_link "$TEMP_HOME/.agents/skills/$skill" "Codex skill: $skill is symlink"
   assert_file "$TEMP_HOME/.claude/skills/$skill/SKILL.md" "Claude skill: $skill/SKILL.md readable"

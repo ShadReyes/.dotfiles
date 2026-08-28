@@ -1,4 +1,0 @@
-interface:
-  display_name: "Grilling"
-  short_description: "Interview a plan or design"
-  default_prompt: "Use $grilling to interview this plan one decision at a time."

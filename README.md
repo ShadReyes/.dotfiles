@@ -247,9 +247,6 @@ for a skill such as `address` or type `$address-pr-comments` directly.
 
 The `brando` and `matt` directories are local plugin bundles for vendored skill sets.
 Plugin skills are namespaced, such as `brando:react-doctor` and `matt:tdd`.
-The root `grilling` skill is still vendored from
-[`mattpocock/skills`](https://github.com/mattpocock/skills).
-
 ### agents/
 
 Custom agent definitions in canonical TOML format. `sync-skills.sh` symlinks the TOML to Codex and generates Claude Code markdown.
