@@ -63,14 +63,6 @@
     "superpowers@superpowers-marketplace": true,
     "typescript-lsp@claude-plugins-official": true
   },
-  "extraKnownMarketplaces": {
-    "fluid-skills-marketplace": {
-      "source": {
-        "source": "git",
-        "url": "https://github.com/fluid-commerce/fluid-skills.git"
-      }
-    }
-  },
   "effortLevel": "xhigh",
   "autoMemoryEnabled": false,
   "skipDangerousModePermissionPrompt": true,

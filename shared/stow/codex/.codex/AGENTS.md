@@ -4,10 +4,6 @@
 
 - Never include AI attribution, signatures, or self-identification in code comments or commit messages.
 
-## Devcontainer
-
-The Rails backend (`fluid`) runs inside a Docker devcontainer. All Rails/Ruby/bundle/rake commands must go through `docker exec`.
-
 ## PR Summaries
 
 When creating pull requests:
