@@ -10,8 +10,9 @@ Imported upstream skills:
 
 ## Skill naming policy
 
-Every `name` in `SKILL.md` frontmatter must be globally unique because universal skill
-harnesses recursively discover nested plugin skills without applying plugin namespaces.
+Every `name` in `SKILL.md` frontmatter must be globally unique because some skill harnesses
+discover nested plugin skills without applying plugin namespaces. Global uniqueness also keeps
+the flat `~/.agents/skills-index/` discovery index unambiguous.
 Keep the preferred implementation of a workflow under its short name and prefix alternative
 implementations with their bundle or author, such as `tdd` and `matt-tdd`.
 

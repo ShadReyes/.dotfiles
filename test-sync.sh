@@ -9,10 +9,15 @@ pass() { PASS=$((PASS + 1)); echo "  ✓ $1"; }
 fail() { FAIL=$((FAIL + 1)); echo "  ✗ $1"; }
 assert_link() { [ -L "$1" ] && pass "$2" || fail "$2: not a symlink"; }
 assert_file() { [ -f "$1" ] && pass "$2" || fail "$2: not found"; }
+assert_missing() { [ ! -e "$1" ] && [ ! -L "$1" ] && pass "$2" || fail "$2"; }
 assert_executable() { [ -x "$1" ] && pass "$2" || fail "$2: not executable"; }
 assert_contains() { grep -q "$2" "$1" 2>/dev/null && pass "$3" || fail "$3"; }
 assert_count() {
   local actual
+  if [ ! -d "$1" ]; then
+    fail "$4: directory not found"
+    return
+  fi
   actual=$(find "$1" -mindepth 1 -maxdepth 1 -name "$2" | wc -l | tr -d ' ')
   [ "$actual" -eq "$3" ] && pass "$4 ($actual)" || fail "$4: expected $3, got $actual"
 }
@@ -99,6 +104,7 @@ PY
 TEMP_HOME="$(mktemp -d)"
 trap 'rm -rf "$TEMP_HOME"' EXIT
 EXPECTED_SKILL_COUNT=$(find "$DOTFILES/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
+EXPECTED_INDEXED_SKILL_COUNT=$(find "$DOTFILES/skills" -name SKILL.md -type f | wc -l | tr -d ' ')
 
 mkdir -p "$TEMP_HOME/.claude" "$TEMP_HOME/.codex" "$TEMP_HOME/.agents"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
@@ -108,11 +114,15 @@ assert_unique_skill_names
 assert_herdr_cli_single_source
 assert_count "$TEMP_HOME/.claude/skills" '*' "$EXPECTED_SKILL_COUNT" "$EXPECTED_SKILL_COUNT skills synced to Claude"
 assert_count "$TEMP_HOME/.agents/skills" '*' "$EXPECTED_SKILL_COUNT" "$EXPECTED_SKILL_COUNT skills synced to Codex"
+assert_count "$TEMP_HOME/.agents/skills-index" '*' "$EXPECTED_INDEXED_SKILL_COUNT" "$EXPECTED_INDEXED_SKILL_COUNT skills added to the flat index"
 
 assert_link "$TEMP_HOME/.claude/skills/orchestrator" "Claude skill: orchestrator is symlink"
 assert_link "$TEMP_HOME/.agents/skills/orchestrator" "Codex skill: orchestrator is symlink"
+assert_link "$TEMP_HOME/.agents/skills-index/orchestrator" "Flat index: root skill is symlink"
+assert_link "$TEMP_HOME/.agents/skills-index/code-review" "Flat index: nested skill is symlink"
 assert_file "$TEMP_HOME/.claude/skills/orchestrator/SKILL.md" "Claude skill: orchestrator/SKILL.md readable"
 assert_file "$TEMP_HOME/.agents/skills/orchestrator/SKILL.md" "Codex skill: orchestrator/SKILL.md readable"
+assert_file "$TEMP_HOME/.agents/skills-index/code-review/SKILL.md" "Flat index: nested skill is readable"
 assert_file "$TEMP_HOME/.agents/skills/orchestrator/agents/openai.yaml" "Codex skill: orchestrator has UI metadata"
 assert_file "$TEMP_HOME/.agents/skills/write-ste100/SKILL.md" "Codex skill: write-ste100/SKILL.md readable"
 assert_file "$TEMP_HOME/.agents/skills/write-ste100/agents/openai.yaml" "Codex skill: write-ste100 has UI metadata"
@@ -167,6 +177,26 @@ done
 assert_file "$TEMP_HOME/.agents/skills/matt/skills/engineering/setup-matt-pocock-skills/issue-tracker-github.md" "Codex skill: matt:setup-matt-pocock-skills includes GitHub template"
 assert_file "$TEMP_HOME/.agents/skills/matt/skills/engineering/diagnosing-bugs/scripts/hitl-loop.template.sh" "Codex skill: matt:diagnosing-bugs includes HITL loop template"
 
+ln -s "$DOTFILES/skills" "$TEMP_HOME/.agents/skills-index/stale-skill"
+HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
+assert_missing "$TEMP_HOME/.agents/skills-index/stale-skill" "Flat index prunes stale managed links"
+
+CONFLICT_HOME="$TEMP_HOME/conflict-home"
+mkdir -p "$TEMP_HOME/manual-skill-source"
+HOME="$CONFLICT_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
+rm "$CONFLICT_HOME/.agents/skills-index/address-pr-comments"
+ln -s "$TEMP_HOME/manual-skill-source" "$CONFLICT_HOME/.agents/skills-index/address-pr-comments"
+if HOME="$CONFLICT_HOME" "$DOTFILES/sync-skills.sh" > /dev/null 2>&1; then
+  fail "Flat index rejects links it does not manage"
+else
+  pass "Flat index rejects links it does not manage"
+fi
+target=$(readlink "$CONFLICT_HOME/.agents/skills-index/address-pr-comments")
+[[ "$target" == "$TEMP_HOME/manual-skill-source" ]] \
+  && pass "Flat index preserves conflicting external links" \
+  || fail "Flat index replaced a conflicting external link"
+assert_file "$CONFLICT_HOME/.agents/skills-index/code-review/SKILL.md" "Rejected index sync preserves managed links"
+
 echo ""
 echo "Agents"
 assert_count "$TEMP_HOME/.codex/agents" '*.toml' 2 "2 TOML agents synced to Codex"
@@ -207,6 +237,7 @@ echo "Idempotency"
 HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
 assert_count "$TEMP_HOME/.claude/skills" '*' "$EXPECTED_SKILL_COUNT" "Re-run: still $EXPECTED_SKILL_COUNT skills"
 assert_count "$TEMP_HOME/.agents/skills" '*' "$EXPECTED_SKILL_COUNT" "Re-run: still $EXPECTED_SKILL_COUNT Codex skills"
+assert_count "$TEMP_HOME/.agents/skills-index" '*' "$EXPECTED_INDEXED_SKILL_COUNT" "Re-run: still $EXPECTED_INDEXED_SKILL_COUNT indexed skills"
 assert_count "$TEMP_HOME/.claude/agents" '*.md' 2 "Re-run: still 2 agents"
 pass "sync-skills.sh is idempotent"
 
@@ -216,6 +247,11 @@ echo "Symlink targets"
 target=$(readlink "$TEMP_HOME/.claude/skills/matt")
 [[ "$target" == "$DOTFILES/skills/matt/" ]] && pass "Skill plugin symlink points to .dotfiles repo" \
                                                  || fail "Skill symlink points to: $target"
+
+target=$(readlink "$TEMP_HOME/.agents/skills-index/code-review")
+[[ "$target" == "$DOTFILES/skills/matt/skills/engineering/code-review" ]] \
+  && pass "Flat index symlink points to nested skill source" \
+  || fail "Flat index symlink points to: $target"
 
 target=$(readlink "$TEMP_HOME/.codex/agents/bottom-sheet-specialist.toml")
 [[ "$target" == "$DOTFILES/agents/bottom-sheet-specialist.toml" ]] && pass "Agent symlink points to .dotfiles repo" \

@@ -84,7 +84,7 @@ remove_symlink_packages_in() {
 }
 
 remove_synced_ai_resources() {
-  local skill_dir name agent_file command_file generated_agent
+  local skill_dir name agent_file command_file generated_agent index_link
 
   echo "Removing skill/agent/command symlinks managed by this repo..."
 
@@ -94,6 +94,10 @@ remove_synced_ai_resources() {
     remove_managed_path "$HOME/.claude/skills/$name"
     remove_managed_path "$HOME/.agents/skills/$name"
     remove_managed_path "$HOME/.codex/skills/$name"
+  done
+
+  for index_link in "$HOME/.agents/skills-index"/*; do
+    remove_managed_path "$index_link"
   done
 
   for agent_file in "$DOTFILES/agents"/*.toml; do
@@ -118,6 +122,7 @@ remove_synced_ai_resources() {
   remove_empty_dir "$HOME/.codex/agents"
   remove_empty_dir "$HOME/.codex/skills"
   remove_empty_dir "$HOME/.agents/skills"
+  remove_empty_dir "$HOME/.agents/skills-index"
   remove_empty_dir "$HOME/.agents"
 }
 

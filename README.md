@@ -242,6 +242,10 @@ Synced to `~/.claude/skills/` and `~/.agents/skills/`.
 Direct root skills also have `agents/openai.yaml` metadata so they appear cleanly in Codex skill
 UI lists.
 
+The sync also creates `~/.agents/skills-index/`. This flat discovery index contains one symlink
+for each root or nested skill. Use this index with clients that inspect only direct children of a
+skill root. The index is generated output. The skill files remain in this repository.
+
 In Codex, `/skills` opens a menu. Choose `List skills` to open the `$` mention picker, then search
 for a skill such as `address` or type `$address-pr-comments` directly.
 

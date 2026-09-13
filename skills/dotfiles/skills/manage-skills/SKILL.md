@@ -17,6 +17,8 @@ workflow.
 - Local plugin bundles live at `~/.dotfiles/skills/<plugin>/.claude-plugin/plugin.json` with
   nested `skills/<name>/SKILL.md` entries, like `brando`, `matt`, and `vercel`.
 - The pool (`~/.agents/skills/<name>`) holds symlinks back into the repo.
+- The flat index (`~/.agents/skills-index/<name>`) holds generated symlinks to every root or
+  nested skill for clients that inspect only direct children.
 - `~/.claude/skills` points at the same pool, so one sync updates both Claude Code and Codex.
 - Every `SKILL.md` frontmatter `name` is globally unique across root skills and nested plugin
   skills. Keep the preferred implementation's short name and prefix alternatives with their
@@ -64,6 +66,7 @@ with `"skills": "./skills/"`.
 ```bash
 ~/.dotfiles/test-sync.sh  # includes a global frontmatter-name collision check
 find ~/.agents/skills -maxdepth 1 -type l -print
+find ~/.agents/skills-index -maxdepth 1 -type l -print
 ```
 
 ## Always commit afterwards
@@ -80,5 +83,6 @@ git -C ~/.dotfiles add skills && git -C ~/.dotfiles commit -m "skills: <what cha
 `~/.dotfiles/sync-skills.sh`
 
 - Links every top-level directory in `~/.dotfiles/skills/` into `~/.agents/skills/`.
+- Recursively finds each `SKILL.md` and links its directory into `~/.agents/skills-index/`.
 - Links `~/.claude/skills` to the same pool.
 - Also syncs local agents and commands.
