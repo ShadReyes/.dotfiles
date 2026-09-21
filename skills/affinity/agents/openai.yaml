@@ -1,0 +1,9 @@
+interface:
+  display_name: "Affinity"
+  short_description: "Edit Affinity documents with the local MCP server"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "affinity"
+      description: "Local Affinity desktop MCP server"
+      transport: "stdio"
