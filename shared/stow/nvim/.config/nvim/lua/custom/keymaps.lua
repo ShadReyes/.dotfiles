@@ -77,6 +77,31 @@ vim.keymap.set("n", "<leader>cq", vim.diagnostic.setloclist, addDescription("Ope
 vim.keymap.set("n", "<leader>q", ":copen<CR>", addDescription("Open [Q]uickfix"))
 vim.keymap.set("n", "<leader>Q", ":cclose<CR>", addDescription("Close [Q]uickfix"))
 
+-- Run the current JS/TS file, show output in a quickfix
+vim.keymap.set("n", "<leader>cr", function()
+  local ext = vim.fn.fnamemodify(vim.fn.expand("%"), ":e")
+  local runnable = { js = true, mjs = true, ts = true, tsx = true, jsx = true }
+  if not runnable[ext] then
+    vim.notify("Not a runnable JS/TS file", vim.log.levels.Warn)
+    return
+  end
+  vim.system({ "npx", "tsx", vim.fn.expand("%") }, {
+    text = true,
+    cwd = vim.fn.getcwd(),
+    on_exit = function(res)
+      local out = vim.trim((res.stdout or "") .. (res.stderr or ""))
+      vim.fn.setqflist({ {
+        bufnr = 0,
+        lnum = 1,
+        cols = 1,
+        text = out == "" and "(no output)" or out,
+        type = res.code == 0 and "n" or "E",
+      }})
+      vim.cmd.copen()
+    end,
+  })
+end, addDescription("Run current file ([C]urrent [R]un)"))
+
 -------------------------------------------------------------
 --------------------- END NORMAL MODE -----------------------
 -------------------------------------------------------------

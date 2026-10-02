@@ -1,0 +1,1 @@
+../../../../../../../.config/ricekit/active/neovim/ricekit.lua

@@ -32,11 +32,12 @@ return { -- Autoformat
 			return { timeout_ms = 1000, lsp_format = "fallback" }
 		end,
 		formatters_by_ft = {
+			ruby = { "rubocop" },
 			lua = { "stylua" },
 			-- Conform can also run multiple formatters sequentially
 			-- python = { "isort", "black" },
 			--
-			-- Use the first available formatter in the list.
+			-- Prefer the daemon, but fall back to prettier when it is unavailable.
 			javascript = { "prettierd", "prettier", stop_after_first = true },
 			javascriptreact = { "prettier" },
 			typescript = { "prettier" },
