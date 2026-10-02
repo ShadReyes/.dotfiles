@@ -6,7 +6,7 @@ local config = wezterm.config_builder()
 
 config.enable_wayland = false
 
-local ricekit_colors_path = os.getenv("HOME") .. "/.config/wezterm/ricekit-colors.lua"
+local ricekit_colors_path = os.getenv("HOME") .. "/.config/ricekit/active/wezterm/ricekit-colors.lua"
 wezterm.add_to_config_reload_watch_list(ricekit_colors_path)
 config.colors = dofile(ricekit_colors_path)
 
