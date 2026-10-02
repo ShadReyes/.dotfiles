@@ -1,6 +1,6 @@
 ---
 name: herdr-orchestrator
-description: "Launch and coordinate visible Codex agents through Herdr panes and worktree-backed workspaces. Use when the user explicitly asks to orchestrate, delegate, or parallelize work through Herdr. Requires HERDR_ENV=1."
+description: "Launch and coordinate coding agents through Herdr panes and worktree-backed workspaces. Use when the user explicitly asks to orchestrate, delegate, or parallelize work through Herdr. Requires HERDR_ENV=1."
 ---
 
 # Herdr Orchestrator
@@ -43,9 +43,10 @@ prompts that invoke `$orchestrator`, other skills, or their own sub-agents.
    ledger.
 
 5. Give each requested worker a useful unique agent name. Start it through the
-   agent-start procedure in `herdr:herdr`, using the returned pane, Codex as the
-   agent kind, and `--dangerously-bypass-approvals-and-sandbox` as a native
-   Codex argument. Record both the live agent name and its hosting pane ID.
+   agent-start procedure in `herdr:herdr`, using the returned pane, an available
+   agent kind (discover via `herdr agent start --help` or use `omp` as the safe
+   default), and any native arguments the chosen kind requires. Record both the
+   live agent name and its hosting pane ID.
 
 6. Submit the worker prompt exactly as provided through the agent-prompt
    procedure in `herdr:herdr`. Pass the full prompt as one text argument so
