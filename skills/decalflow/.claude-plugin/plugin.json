@@ -1,0 +1,6 @@
+{
+  "name": "decalflow",
+  "version": "1.0.0",
+  "description": "Reference-based decal design and production skills",
+  "skills": "./skills/"
+}

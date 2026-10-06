@@ -1,4 +1,0 @@
-interface:
-  display_name: "Recreate Listing Design"
-  short_description: "Match listing lettering with editable production SVGs"
-  default_prompt: "Use $recreate-listing-design to closely reconstruct these listing designs as editable SVGs, with outlined production files and a side-by-side reference comparison."
