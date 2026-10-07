@@ -30,6 +30,8 @@ The Installation Guide contains the old phrase inside its installation photograp
 
 Production rule confirmed by the user on 2026-10-06: request only the SVG display color (white, black, or gold) and shipped-piece count. The remaining template text is fixed. Preserve all three size-guide bullets exactly, including the 2–3 inch guidance and 23-inch mirror/20-inch decal example. Retain the `23"` label above the mirror arrow. Preserve the About personalization and crafting copy, the installation instructions, and mirror-not-included disclaimers. This user-confirmed adaptation rule takes precedence over older guidance that treated template examples as unconfirmed listing facts. Consult `BRAND.md` for visual brand rules without editing that protected file.
 
+One-piece placement rule confirmed by the user on 2026-10-06: unless the design calls for another placement, put the complete one-piece design at the top of the size-guide mirror, above the sizing arrow. Shift the arrow down when necessary and keep its `23"` label above it. Preserve the artwork proportions and all fixed template text. Apply this rule after the shipped-piece count is confirmed.
+
 Suggested order: `01-hero`, `02-about-this-design`, `03-size-guide`, `04-installation-guide`. Use explicit image extensions and preserve template dimensions. Choose hero dimensions for the requested crop and export quality; verify current marketplace guidance if claiming platform compliance.
 
 ## Initial example
