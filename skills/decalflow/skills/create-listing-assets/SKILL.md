@@ -17,7 +17,12 @@ For The Decal Company, read [references/company-templates.md](references/company
 
 ## Establish the listing
 
-Inspect the supplied design and every template/export pair. Record the intended product name, artwork path, confirmed sale sizes and colors, personalization, actual shipped piece count, and included items. Distinguish product facts from example names, SVG canvas dimensions, and template copy. Ask only for missing facts that affect the output; continue independent scene and layout work. Keep unresolved claims out of final exports.
+Inspect the supplied design and every template/export pair. Record the product name and artwork path. For The Decal Company, request only these missing production details, preferably together:
+
+- SVG display color: white, black, or gold.
+- Number of separate pieces the design ships in.
+
+Reuse answers already supplied. Continue independent scene and layout work while awaiting either answer. Treat the remaining template copy as approved and fixed, including personalization instructions, sizing bullets, measurement examples and disclaimers. These examples are template content, not sale-option data to collect. Preserve them instead of substituting placeholders or adding questions about sale sizes, available color ranges, personalization policies or included items. Expand the intake only when the user explicitly requests changes that need additional facts. For another shop, follow its supplied template rules.
 
 Choose a descriptive listing slug and create a new folder. If it already exists, inspect it and create a new revision directory unless the user explicitly requests replacement. Each run uses this structure unless an established production convention applies:
 
@@ -30,7 +35,7 @@ Choose a descriptive listing slug and create a new folder. If it already exists,
   listing.json              # Facts, provenance, output inventory, completion status
 ```
 
-In `listing.json`, record facts with their source and unknowns as null, the original and copied input paths, output order/dimensions, source document for each output, and status (`draft`, `blocked`, or `complete`). Store the original-input hash inventory under `review/`. Record why a template is unchanged or inapplicable; account for every template in the supplied set.
+In `listing.json`, record the selected SVG color and shipped piece count with their source; use null for either unanswered detail. Record the approved template-copy policy, the original and copied input paths, output order/dimensions, source document for each output, and status (`draft`, `blocked`, or `complete`). Store the original-input hash inventory under `review/`. Record why a template is unchanged or inapplicable; account for every template in the supplied set.
 
 ## Adapt the templates
 
@@ -38,7 +43,7 @@ Load `affinity` and follow its live SDK discovery procedure. Inspect only the wo
 
 Compare native renders with the reference PNGs before choosing replacement layers. Record actual document/spread/layer identifiers and roles in `review/template-map.json`; rediscover session-specific identifiers on later runs. Do not invent SDK methods or rely on layer names guessed from filenames.
 
-Replace every old-product occurrence: artwork, sample personalization, placement boxes, measurements, piece counts, and lettering inside photographs. Preserve fixed branding and applicable instruction copy. Place the exact SVG rather than asking a generator to redraw its letters. Fit by visible artwork bounds, preserving aspect ratio; use a perspective transform only when the photographed surface requires it. Retain a flat copy for comparison.
+Replace old artwork, sample names and dates within the artwork, artwork-specific placement boxes, and lettering inside photographs. Update only the shipped-piece count in the template copy, with singular/plural agreement where needed. Preserve all other template text, measurement labels, branding and instructions unless the user requests a text change. Keep approved sizing examples separate from the artwork being replaced. Place the exact SVG rather than asking a generator to redraw its letters. Fit by visible artwork bounds, preserving aspect ratio; use a perspective transform only when the photographed surface requires it. Retain a flat copy for comparison.
 
 Copy linked resources into `sources/` and relink the working document there, or embed them in the copy. Resolve font substitution before final export. Preserve outlined artwork as curves; an outlined SVG does not provide keyboard-editable personalization. If a raster photo contains old lettering, use the mockup procedure to replace the photographic region while preserving the template's editable layout.
 
@@ -50,7 +55,7 @@ Read [references/mockups.md](references/mockups.md) for imagegen scene generatio
 
 ## Verify and deliver
 
-Inspect every final image at full size and as a small thumbnail. Check exact lettering, old-design remnants, proportion, font substitution, placement, realistic material appearance, cropping, logo geometry, disclaimers, and confirmed product facts. Review a contact sheet for consistency and intended order. Measure export dimensions and verify the intended color profile; template dimensions are not universal Etsy requirements.
+Inspect every final image at full size and as a small thumbnail. Check exact lettering, old-design remnants, proportion, font substitution, placement, realistic material appearance, cropping, logo geometry, disclaimers, selected SVG color and shipped piece count. Compare template text and measurement labels against the originals; only the piece-count substitution and user-requested text changes should differ. Review a contact sheet for consistency and intended order. Measure export dimensions and verify the intended color profile; template dimensions are not universal Etsy requirements.
 
 Keep review previews and unfinished drafts outside `exports/`. Save the editable native files, then reopen the production copies to verify they render and retain their resources. Check original-input hashes again. Mark the listing complete only when the required outputs exist, the editable sources are usable, and visual review passes. Otherwise identify the missing deliverables and retain an accurate draft/blocked status.
 

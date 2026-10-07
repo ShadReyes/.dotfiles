@@ -24,11 +24,11 @@ Paths below are relative to `Design Assets`.
 
 `SourceFiles/mirror.png` is a possible linked resource; inspect native resource metadata before deciding where it is used. Other `.af` files in that directory serve branding or other purposes and are not automatically listing templates.
 
-The About and Size Guide references use a black arched mirror. Both contain the old design: initials, “Smile. You're on Camera.”, names, and year. About also has three placement boxes and copy claiming three shipped decals. Those are product-specific, not defaults for a new design.
+The About and Size Guide references use a black arched mirror. Both contain the old design: initials, “Smile. You're on Camera.”, names, and year. About also has three placement boxes and copy claiming three shipped decals. Replace the old artwork and its placement boxes; request the new shipped-piece count and change that count in the About copy.
 
 The Installation Guide contains the old phrase inside its installation photograph. It cannot automatically be copied unchanged for a request to update all listing graphics. Inspect whether that photo is layered; if flattened, create a replacement photo region with blank transfer material and composite the actual design. Preserve the six-step layout and applicable instructions.
 
-Preserve the mirror-not-included disclaimer in applicable graphics. Verify product-specific sizing guidance; the 23-inch mirror/20-inch decal example does not establish this product's sale options. Consult `BRAND.md` for fonts, colors, logo choices, and template content rather than duplicating those rules here.
+Production rule confirmed by the user on 2026-10-06: request only the SVG display color (white, black, or gold) and shipped-piece count. The remaining template text is fixed. Preserve all three size-guide bullets exactly, including the 2–3 inch guidance and 23-inch mirror/20-inch decal example. Retain the `23"` label above the mirror arrow. Preserve the About personalization and crafting copy, the installation instructions, and mirror-not-included disclaimers. This user-confirmed adaptation rule takes precedence over older guidance that treated template examples as unconfirmed listing facts. Consult `BRAND.md` for visual brand rules without editing that protected file.
 
 Suggested order: `01-hero`, `02-about-this-design`, `03-size-guide`, `04-installation-guide`. Use explicit image extensions and preserve template dimensions. Choose hero dimensions for the requested crop and export quality; verify current marketplace guidance if claiming platform compliance.
 
