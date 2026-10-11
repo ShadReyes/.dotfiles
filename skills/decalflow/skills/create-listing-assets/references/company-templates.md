@@ -1,6 +1,6 @@
 # The Decal Company template reference
 
-Inspected on 2026-10-05: filesystem inventory, all three listing PNGs, PNG dimensions, brand instructions, and example SVG structure. Native Affinity documents, layer IDs, installed fonts, and export behavior remain unverified. Recheck assets on each run; this map identifies candidates, not guaranteed matching revisions.
+Initial inspection on 2026-10-05: filesystem inventory, all three listing PNGs, PNG dimensions, brand instructions, and example SVG structure. Native Affinity documents, layer IDs, installed fonts, and export behavior remain unverified. Recheck assets on each run; this map identifies candidates, not guaranteed matching revisions.
 
 ## Locations and authority
 
@@ -20,19 +20,19 @@ Paths below are relative to `Design Assets`.
 |---|---|---|---|---|
 | About this design | `ListingGraphics/AboutThisProduct.png` | `SourceFiles/About this Product.af` | `EditableSVG/AboutThisDesign.svg` | 4000 × 4250 |
 | Size guide | `ListingGraphics/SizeGuide.png` | `SourceFiles/Size Guide.af` | `EditableSVG/SizeGuide.svg` | 4000 × 4250 |
-| Installation guide | `ListingGraphics/InstallationGuide.png` | `SourceFiles/InstallationGuide.af` | None identified | 4000 × 4000 |
+| Installation guide (shared unchanged) | `ListingGraphics/InstallationGuide.png` | `SourceFiles/InstallationGuide.af` | None | 3000 × 4000 |
 
 `SourceFiles/mirror.png` is a possible linked resource; inspect native resource metadata before deciding where it is used. Other `.af` files in that directory serve branding or other purposes and are not automatically listing templates.
 
 The About and Size Guide references use a black arched mirror. Both contain the old design: initials, “Smile. You're on Camera.”, names, and year. About also has three placement boxes and copy claiming three shipped decals. Replace the old artwork and its placement boxes; request the new shipped-piece count and change that count in the About copy.
 
-The Installation Guide contains the old phrase inside its installation photograph. It cannot automatically be copied unchanged for a request to update all listing graphics. Inspect whether that photo is layered; if flattened, create a replacement photo region with blank transfer material and composite the actual design. Preserve the six-step layout and applicable instructions.
+Installation guide policy confirmed on 2026-10-11: use the approved universal 3:4 portrait, eight-step guide with the dotted backing cut line in step 4. Its canonical paths are listed above. Reference this shared PNG as upload image 4 in every listing; do not adapt its artwork or copy its native source, export, or supporting assets into production listings. Earlier guides under `Design Assets/Archived/Installation Guides` are deprecated. Recheck the canonical asset and current brand instructions on each run.
 
 Production rule confirmed by the user on 2026-10-06: request only the SVG display color (white, black, or gold) and shipped-piece count. The remaining template text is fixed. Preserve all three size-guide bullets exactly, including the 2–3 inch guidance and 23-inch mirror/20-inch decal example. Retain the `23"` label above the mirror arrow. Preserve the About personalization and crafting copy, the installation instructions, and mirror-not-included disclaimers. This user-confirmed adaptation rule takes precedence over older guidance that treated template examples as unconfirmed listing facts. Consult `BRAND.md` for visual brand rules without editing that protected file.
 
 One-piece placement rule confirmed by the user on 2026-10-06: unless the design calls for another placement, put the complete one-piece design at the top of the size-guide mirror, above the sizing arrow. Shift the arrow down when necessary and keep its `23"` label above it. Preserve the artwork proportions and all fixed template text. Apply this rule after the shipped-piece count is confirmed.
 
-Suggested order: `01-hero`, `02-about-this-design`, `03-size-guide`, `04-installation-guide`. Use explicit image extensions and preserve template dimensions. Choose hero dimensions for the requested crop and export quality; verify current marketplace guidance if claiming platform compliance.
+Suggested order: `01-hero`, `02-about-this-design`, `03-size-guide`, `04-installation-guide`. Images 1–3 are product-specific exports; image 4 is a reference to the shared installation PNG. Use explicit image extensions and preserve template dimensions. Choose hero dimensions for the requested crop and export quality; verify current marketplace guidance if claiming platform compliance.
 
 ## Initial example
 
