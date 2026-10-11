@@ -27,9 +27,10 @@ prompts that invoke `$orchestrator`, other skills, or their own sub-agents.
    learn the installed syntax. If its environment check fails, stop as directed
    by that skill.
 
-2. Use the current-pane discovery procedure from `herdr:herdr` and store the
-   returned pane ID separately as the coordinator pane. Treat every returned ID
-   as opaque.
+2. Use the caller-validation procedure from `herdr:herdr` and store the
+   verified pane, tab, and workspace IDs separately as coordinator context.
+   Resolve any caller ambiguity before creating resources. Treat every ID as
+   opaque.
 
 3. Create the panes, tabs, workspaces, or worktree-backed workspaces requested
    by the prompt. Herdr can parallelize work within one checkout, across
@@ -38,9 +39,9 @@ prompts that invoke `$orchestrator`, other skills, or their own sub-agents.
    requested topology includes Git worktrees; never create an invisible raw
    worktree.
 
-4. Record every resource created by this orchestration and the returned pane
-   used to control it. Never add the coordinator pane to the worker-resource
-   ledger.
+4. Verify each created resource's destination through `herdr:herdr` before
+   starting workers. Record every resource and the returned pane used to
+   control it. Never add the coordinator pane to the worker-resource ledger.
 
 5. Give each requested worker a useful unique agent name. Start it through the
    agent-start procedure in `herdr:herdr`, using the returned pane, an available

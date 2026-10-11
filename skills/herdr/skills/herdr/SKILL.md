@@ -33,7 +33,6 @@ herdr pane
 herdr workspace
 herdr tab
 herdr worktree
-herdr terminal
 herdr notification
 herdr integration
 herdr session
@@ -73,19 +72,25 @@ Herdr injects the caller's context into each managed pane:
 printf '%s\n' "$HERDR_WORKSPACE_ID" "$HERDR_TAB_ID" "$HERDR_PANE_ID"
 ```
 
-Prefer `--current` when a pane command should target the calling pane. Omitting a target may use the UI-focused pane, which can belong to the user or another client.
+`--current` resolves inherited `HERDR_PANE_ID`; it does not independently identify the terminal showing this conversation. A persistent tool runner can carry another pane's environment. `HERDR_ENV=1` and a successful lookup establish connectivity, not caller identity. Omitting a target can also use inherited context or UI focus, depending on the command.
 
 Discover live state with:
 
 ```bash
 herdr workspace list
-herdr tab list --workspace "$HERDR_WORKSPACE_ID"
 herdr pane current --current
-herdr pane list --workspace "$HERDR_WORKSPACE_ID"
 herdr agent list
 ```
 
+Before changing layout, validate the returned pane against the active task. Compare its workspace, cwd, and agent identity with the conversation context. If these conflict, inspect candidate panes with `pane list --workspace <id>`, `pane get <id>`, and `pane process-info --pane <id>`. Process ancestry or available agent-session metadata can establish identity; cwd, title, and UI focus alone cannot when several agents share a task or checkout. A changed cwd alone does not prove stale context.
+
+Store the verified live IDs as `herdr_caller_pane`, `herdr_caller_tab`, and `herdr_caller_workspace`. Use these explicit IDs for subsequent commands rather than inherited workspace/tab variables. If the caller remains ambiguous, stop layout changes and ask which pane or workspace is intended, explaining the conflicting evidence. Do not silently substitute the focused pane or overwrite the inherited environment.
+
+Create sibling panes in the verified caller's tab. When tabs are requested, use `herdr tab create --workspace "$herdr_caller_workspace" --cwd "$PWD" --no-focus`; omitting `--workspace` uses the active workspace. Keep new panes and tabs in that workspace unless the user explicitly requests another workspace or a worktree-backed workspace.
+
 Creation responses expose the IDs to use next. `workspace create` returns `.result.workspace`, `.result.tab`, and `.result.root_pane`. `tab create` returns `.result.tab` and `.result.root_pane`. `pane split` returns the new pane as `.result.pane`.
+
+Before starting an agent or sending work, verify each returned pane's live workspace and tab against the requested destination. If they differ, stop dispatch and report the mismatch. Do not create replacement resources or move unrelated panes to conceal it.
 
 ## Make Git worktrees visible
 
@@ -95,7 +100,7 @@ Learn the installed options with `herdr worktree`, then create without stealing 
 
 ```bash
 herdr worktree create \
-  --workspace "$HERDR_WORKSPACE_ID" \
+  --workspace "$herdr_caller_workspace" \
   --branch <branch> \
   --base <base> \
   --label <label> \
@@ -106,13 +111,13 @@ To attach a worktree that already exists on disk, open it through Herdr so it al
 
 ```bash
 herdr worktree open \
-  --workspace "$HERDR_WORKSPACE_ID" \
+  --workspace "$herdr_caller_workspace" \
   --path <existing-worktree-path> \
   --label <label> \
   --no-focus
 ```
 
-Read `.result.workspace`, `.result.tab`, `.result.root_pane`, and `.result.worktree` from create and open responses; do not infer IDs. Use the root pane to start and control the agent working in the isolated checkout. Use `herdr worktree list --workspace "$HERDR_WORKSPACE_ID"` to rediscover managed worktrees.
+Read `.result.workspace`, `.result.tab`, `.result.root_pane`, and `.result.worktree` from create and open responses; do not infer IDs. Use the root pane to start and control the agent working in the isolated checkout. Use `herdr worktree list --workspace "$herdr_caller_workspace"` to rediscover managed worktrees. Worktree create/open produces a separate workspace; its `--workspace` selects the source repository, not a destination for panes. Do not use it for a same-workspace-only request.
 
 `herdr worktree remove --workspace <worktree-workspace-id>` removes the worktree checkout as well as its Herdr workspace. Run it only when the user requested cleanup and the checkout is safe to delete. Use `--force` only when the user explicitly authorizes forced removal. Closing an agent pane is not authorization to delete its worktree.
 
@@ -123,13 +128,13 @@ Default to a sibling pane in the current tab and the current working directory. 
 Honor a direction requested by the user. Otherwise inspect the caller pane:
 
 ```bash
-herdr pane layout --pane "$HERDR_PANE_ID"
+herdr pane layout --pane "$herdr_caller_pane"
 ```
 
 Split a wide pane to the right and a narrow or tall pane down. Avoid repeated same-direction splits that create unusably narrow columns or short rows. Keep the user's focus in the calling pane and explicitly preserve the caller's working directory:
 
 ```bash
-herdr pane split --current --direction right --cwd "$PWD" --no-focus
+herdr pane split --pane "$herdr_caller_pane" --direction right --cwd "$PWD" --no-focus
 ```
 
 Replace `right` with `down` when appropriate. Read the new pane ID from `.result.pane.pane_id`.
@@ -187,7 +192,7 @@ If a wait fails or returns `blocked`, inspect `agent get` and `agent read` befor
 Create a sibling pane with the same geometry rule, preserve the caller's working directory, and keep user focus unchanged:
 
 ```bash
-herdr pane split --current --direction right --cwd "$PWD" --no-focus
+herdr pane split --pane "$herdr_caller_pane" --direction right --cwd "$PWD" --no-focus
 ```
 
 Read the new pane ID from `.result.pane.pane_id`, then run and inspect the command:
@@ -205,7 +210,7 @@ Use the read source that matches the task:
 - `visible`: the currently rendered viewport.
 - `recent`: recent rendered output, including soft wraps.
 - `recent-unwrapped`: recent output with soft wraps joined; prefer it for logs and transcripts.
-- `detection`: the plain-text bottom-buffer snapshot used for agent detection.
+- `detection`: the plain-text bottom-buffer snapshot used for agent detection; available through `agent read`, not `pane read`.
 
 Use `--format ansi` when colors and terminal styling are evidence. Otherwise use text.
 
@@ -216,7 +221,7 @@ After that failed read, ask the agent to write its complete response as Markdown
 ## Safety and coordination rules
 
 - Use `--no-focus` for background work unless the user asked to switch context.
-- Use `--current`, an explicit pane ID, or a unique agent name. Do not rely on another client's focused pane.
+- Use a verified explicit pane ID or a unique agent name. Use `--current` only after validating inherited caller context. Do not rely on another client's focused pane.
 - Parse IDs from JSON responses. Do not derive them from sidebar order or examples.
 - Do not close workspaces, tabs, panes, or sessions you did not create unless the user explicitly asked.
 - Never run `herdr server stop` from an active session unless the user explicitly intends to stop the server and its pane processes.
