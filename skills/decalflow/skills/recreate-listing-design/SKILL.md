@@ -15,7 +15,7 @@ Deliver a close visual reconstruction of the requested lettering, with editable 
 - Use supplied names and dates. Otherwise retain the reference's sample wording for a direct comparison and label it as sample personalization.
 - If the user supplies an existing folder as a structural example, inspect its folder and SVG organization separately from visual references. Follow any restriction against taking design inspiration from that folder. Preserve originals in a separate output location.
 
-For competitor research requests, record current source links and distinguish item reviews, Bestseller badges, cart activity, and shop sales. None establishes exact item sales. Explain whether a ranking covers individual listings or grouped product types; do not silently replace the top three listings with three different categories.
+For competitor research or customer-facing listing previews, read [shared Etsy guidance](../../references/etsy-listing-guidance.md). Use its evidence rules for comparisons and its image guidance only for listing previews. Preserve reference fidelity and physical vector sizing; a thumbnail crop must not change the reconstructed lettering. Review previews do not become Etsy-ready listing images automatically.
 
 ## Assign design ownership
 

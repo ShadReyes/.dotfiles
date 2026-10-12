@@ -17,6 +17,8 @@ For The Decal Company, read [references/company-templates.md](references/company
 
 ## Establish the listing
 
+Read [shared Etsy guidance](../../references/etsy-listing-guidance.md) before choosing image dimensions, composition, or upload order. Use its export defaults for new images and its first-photo rule for Etsy-ready sets; preserve approved template dimensions.
+
 Inspect the supplied design and every template/export pair. Record the product name and artwork path. For The Decal Company, request only these missing production details, preferably together:
 
 - SVG display color: white, black, or gold.
@@ -55,11 +57,11 @@ If Affinity tools are unavailable or return an application restriction, report t
 
 ## Create mockups when requested
 
-Read [references/mockups.md](references/mockups.md) for imagegen scene generation, exact artwork compositing in Affinity, and thumbnail review. A complete set for the established workflow includes a hero mockup plus each applicable template graphic. Additional angles or scenes follow the request rather than an arbitrary image quota.
+Read [references/mockups.md](references/mockups.md) for imagegen scene generation, exact artwork compositing in Affinity, and thumbnail review. A complete Etsy-ready set includes a suitable first photo plus each applicable template graphic. Generated lifestyle mockups follow the roles in the shared Etsy guidance. If the first photo is missing, continue the requested asset work and record that gap in `listing.json`. Additional angles or scenes follow the request rather than an arbitrary image quota.
 
 ## Verify and deliver
 
-Inspect every final image at full size and as a small thumbnail. Check exact lettering, old-design remnants, proportion, font substitution, placement, realistic material appearance, cropping, logo geometry, disclaimers, selected SVG color and shipped piece count. Compare template text and measurement labels against the originals; only the piece-count substitution and user-requested text changes should differ. Compare the About and Size Guide side by side: verify consistent artwork height and scale relative to the mirror, top placement, and clearance above the sizing arrow and label. Record any design-specific reason for a different arrangement. Review a contact sheet for consistency and intended order. Measure export dimensions and verify the intended color profile; template dimensions are not universal Etsy requirements.
+Inspect every final image at full size and as a small thumbnail. Check exact lettering, old-design remnants, proportion, font substitution, placement, realistic material appearance, cropping, logo geometry, disclaimers, selected SVG color and shipped piece count. Compare template text and measurement labels against the originals; only the piece-count substitution and user-requested text changes should differ. Compare the About and Size Guide side by side: verify consistent artwork height and scale relative to the mirror, top placement, and clearance above the sizing arrow and label. Record any design-specific reason for a different arrangement. Review a contact sheet for consistency and intended order. Check export dimensions, color profile, thumbnail crops, and first-image eligibility against the shared Etsy guidance; record approved template exceptions.
 
 Keep review previews and unfinished drafts outside `exports/`. Save the editable native files, then reopen the production copies to verify they render and retain their resources. Check original-input hashes again. Verify every shared-asset path resolves and its recorded hash matches. Check that current sources contain no redundant pristine template copies and that manifests reference the current files. Mark the listing complete only when the required product-specific outputs and shared graphics exist, the editable sources are usable, and visual review passes. Otherwise identify the missing deliverables and retain an accurate draft/blocked status.
 

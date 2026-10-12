@@ -32,7 +32,7 @@ Production rule confirmed by the user on 2026-10-06: request only the SVG displa
 
 Mirror placement rule clarified by the user on 2026-10-11: place the sign design toward the top of the mirror in both About and Size Guide graphics, with matching relative position and scale. Use another arrangement when confirmed separate pieces, the design construction, or explicit user instructions require it. Follow the placement and clearance checks in the main skill. Placement does not confirm the shipped-piece count.
 
-Suggested order: `01-hero`, `02-about-this-design`, `03-size-guide`, `04-installation-guide`. Images 1–3 are product-specific exports; image 4 is a reference to the shared installation PNG. Use explicit image extensions and preserve template dimensions. Choose hero dimensions for the requested crop and export quality; verify current marketplace guidance if claiming platform compliance.
+Suggested order: `01-hero`, `02-about-this-design`, `03-size-guide`, `04-installation-guide`. Images 1–3 are product-specific exports; image 4 is a reference to the shared installation PNG. Use explicit image extensions and preserve template dimensions. Use [shared Etsy guidance](../../../references/etsy-listing-guidance.md) for new hero dimensions and first-image eligibility. Keep generated scenes in supporting roles; reserve image 1 for a suitable first photo and retain the shared installation guide at image 4.
 
 ## Initial example
 
