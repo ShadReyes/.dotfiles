@@ -19,6 +19,8 @@ For The Decal Company, read [references/company-templates.md](references/company
 
 Read [shared Etsy guidance](../../references/etsy-listing-guidance.md) before choosing image dimensions, composition, or upload order. Use its export defaults for new images and its first-photo rule for Etsy-ready sets; preserve approved template dimensions.
 
+Apply [finished artwork sizing](../../references/artwork-sizing.md) when inspecting SVG dimensions, placing artwork, or verifying size graphics. Record measured artwork bounds separately from artboard dimensions in `listing.json`; a decal-width claim refers to visible artwork. This does not expand the template intake below or change the supplied production master.
+
 Inspect the supplied design and every template/export pair. Record the product name and artwork path. For The Decal Company, request only these missing production details, preferably together:
 
 - SVG display color: white, black, or gold.

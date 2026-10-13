@@ -45,7 +45,7 @@ Match the reference's weight first. If the user also wants easier cutting, ident
 
 ## Build and review
 
-Read [references/vector-production.md](references/vector-production.md) when constructing or exporting the SVGs. It covers text shaping, script outlines, physical sizing, and preflight.
+Read [finished artwork sizing](../../references/artwork-sizing.md) before choosing physical dimensions: requested decal size refers to visible artwork. Read [references/vector-production.md](references/vector-production.md) when constructing or exporting the SVGs for shaping, script outlines and preflight.
 
 Maintain the user's requested folder convention. Otherwise use:
 

@@ -4,6 +4,8 @@ Use these mechanics when producing sign or decal vectors. Adapt to the available
 
 ## Editable source
 
+Apply [finished artwork sizing](../../../references/artwork-sizing.md) for the size reference, geometry measurement, uniform scaling and final dimension checks.
+
 - Specify physical `width` and `height` in inches or millimeters plus a consistent `viewBox`. A scale such as 100 viewBox units per inch makes measurements easy; it is not a required SVG convention.
 - Use `title`, `desc`, semantic group IDs, relative local font declarations, and separate text elements for personalization. Preserve the requested XML structure where practical.
 - Set actual font weight, tracking, and OpenType features. Use lining numerals when the reference date uses equal-height digits; some serif fonts default to oldstyle numerals.
@@ -43,8 +45,7 @@ Check every final design:
 - Production lettering is filled vector geometry with no live text, external font dependence, linked images, or unintended raster content.
 - Cut contours close, script overlaps are unioned, and counters remain open. Path count alone does not prove these conditions.
 - Rendered artwork lies inside the artboard with the intended margins. Check clipping and line collisions visually as well as through bounds.
-- The PDF page size equals the intended physical size; at 72 points per inch, a 24-inch page is 1728 points wide.
-- Record both artboard dimensions and actual artwork bounds. Cutters may crop transparent margins on import, so a 24-inch artboard does not necessarily contain 24-inch-wide lettering.
+- Verify artwork geometry independently from SVG viewport and PDF page dimensions. At 72 points per inch, 24-inch lettering spans 1728 points; the PDF page may be wider to include margins. Apply the shared sizing procedure to both exports.
 - Record useful physical measurements, such as smallest visible text height and nominal script/rule thickness. Do not call these a measured minimum stroke width: serif tips, tapers, and counters can be finer.
 - Inspect the actual final PNG or rendered SVG after the last change, including text legibility at the intended scale. Rerun relevant checks after corrections.
 
