@@ -54,7 +54,7 @@ If Affinity tools are unavailable or return an application restriction, report t
 
 Read [references/mockups.md](references/mockups.md) for imagegen scene generation, exact artwork compositing in Affinity, and thumbnail review. For every wedding mirror-decal design, generate the required [01A-style couple selfie](references/couple-selfie.md) as a product-specific supporting image. Generate a blank photographic scene, then place the exact supplied SVG. Include this output in the manifest and contact sheet; retain draft/blocked status if its scene or composite fails review. For a product that does not suit a wedding mirror selfie, record the reason it is inapplicable rather than forcing that setting onto it.
 
-A complete Etsy-ready set includes a suitable first photo, each applicable template graphic, and the required selfie. Generated lifestyle mockups follow the supporting roles in the shared Etsy guidance. If the first photo is missing, continue the requested asset work and record that gap in `listing.json`. Other staging variations remain optional unless requested.
+A complete Etsy-ready set includes a suitable first photo, each applicable template graphic, and the required selfie. Generated lifestyle mockups follow the supporting roles in the shared Etsy guidance. If the first photo is missing, continue the requested asset work and record that gap in `listing.json`. For additional staging, [choose the scene contextually from the design](references/mockups.md#choose-staging-for-the-design). Other staging variations remain optional unless requested.
 
 ## Verify and deliver
 

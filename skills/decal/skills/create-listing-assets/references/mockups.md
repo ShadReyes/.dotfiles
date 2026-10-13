@@ -10,11 +10,23 @@ The user supplied `https://www.etsy.com/shop/MMWeddingSigns` as a visual referen
 
 Use references to establish lighting, setting, materials, framing, and product prominence. Generate original scenes for this shop. Keep competitor artwork, branding, and photographs out of final customer-facing assets.
 
+## Choose staging for the design
+
+The user approved these three staging directions. Choose contextually from the actual decal's purpose, wording, typography, visible proportions and confirmed vinyl color; user-supplied venue preferences take precedence. These are visual directions, not blanket approval of the test images' reflection geometry.
+
+| Direction | Useful starting fit | Scene details and tradeoffs |
+|---|---|---|
+| Shaded terrace | Garden, romantic or relaxed welcome designs; lettering that remains clear over foliage | A simple brass rectangular mirror, pale exterior wall, terracotta flowers and an opposite lawn with irregular trees. Natural overcast light and weathered stone. Simplify the reflected foliage behind fine strokes. |
+| Blue indoor foyer | Classic or formal designs, delicate script, detailed personalization that benefits from a quieter reflection | Oak-framed mirror, muted blue plaster, linen welcome table and restrained flowers. Soft window light; simple opposite curtains. Adjust wall/curtain tone for the confirmed vinyl color. |
+| Garden porch | Informal, rustic or playful designs; short, bold wording that remains legible in a wider contextual view | Thin black arched mirror on a stable stand, cream wall, wood bench and modest planting. Include ordinary porch space and a coherent opposite lawn/tree reflection. Move closer if the design becomes too small. |
+
+Treat these matches as starting points, not a rigid classification. For example, delicate romantic lettering can suit the foyer better than a busy garden reflection. Fit mirror shape and framing to the artwork without changing its proportions. Choose the best-fitting scene rather than producing all three by default. Record the selected direction and a brief design-specific reason in `mockups/prompts.md`; retain the applicable output count from the requested listing scope.
+
 ## Generate the scene
 
 For each wedding mirror-decal design, follow [the required 01A-style couple selfie](couple-selfie.md). Its prompt and acceptance criteria govern that output. The general staging example below applies to additional requested scenes.
 
-Decide the physical surface and composition from the actual product and reference. A gold arched mirror in a wedding venue with soft window light and restrained flowers is a starting direction for this example, not a required setting for all decals.
+Use the selected staging direction to specify the physical surface, opposite reflected scene, camera position, lighting and peripheral props. Keep the venue attractive but attainable and the image like an ordinary phone photograph. Natural variation in materials and incidental framing should provide realism; artificial blur, repeated greenery and uniform hyper-sharp texture should not substitute for a believable scene. For other decal types, choose a setting appropriate to their actual use.
 
 Generate a blank surface so the final lettering can come from the supplied SVG. Favor a nearly frontal mirror, a quiet reflection behind the lettering, realistic glass and frame details, and sufficient crop margin. Keep props out of the design area. Record the exact final prompt, tool mode, selected output, and intended artwork placement in `mockups/prompts.md`.
 
