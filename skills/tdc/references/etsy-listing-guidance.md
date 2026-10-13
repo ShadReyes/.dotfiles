@@ -1,6 +1,6 @@
 # Etsy listing guidance
 
-Checked 2026-10-11. Shared reference for decalflow skills. Etsy sources govern platform rules; the production defaults below are local choices. Recheck the linked Etsy pages when publishing or when platform behavior changes.
+Checked 2026-10-11. Shared reference for tdc skills. Etsy sources govern platform rules; the production defaults below are local choices. Recheck the linked Etsy pages when publishing or when platform behavior changes.
 
 ## Size, orientation, and export
 
