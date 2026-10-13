@@ -49,7 +49,7 @@ In the Size Guide, keep the artwork above the sizing arrow and label. Move the a
 
 ## Upload order
 
-Suggested order: `01-hero`, `02-about-this-design`, `03-size-guide`, `04-installation-guide`. Images 1–3 are product-specific exports; image 4 is a reference to the shared installation PNG. Use explicit image extensions and preserve template dimensions. Use [shared Etsy guidance](../../../references/etsy-listing-guidance.md) for new hero dimensions and first-image eligibility. Keep generated scenes in supporting roles; reserve image 1 for a suitable first photo and retain the shared installation guide at image 4.
+Suggested order: `01-hero`, `02-about-this-design`, `03-size-guide`, `04-installation-guide`, `05-couple-selfie`. Images 1–3 and 5 are product-specific exports; image 4 is a reference to the shared installation PNG. Follow [the couple-selfie procedure](couple-selfie.md) for required image 5 on wedding mirror-decal listings. Use explicit image extensions and preserve template dimensions. Use [shared Etsy guidance](../../../references/etsy-listing-guidance.md) for new hero dimensions and first-image eligibility. Keep generated scenes in supporting roles; reserve image 1 for a suitable first photo and retain the shared installation guide at image 4.
 
 ## Initial example
 

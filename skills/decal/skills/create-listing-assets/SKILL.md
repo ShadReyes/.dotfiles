@@ -50,9 +50,11 @@ Copy linked resources into `sources/` and relink the working document there, or 
 
 If Affinity tools are unavailable or return an application restriction, report the specific limitation. Continue inventory, copying, scene preparation, and other independent work; mark native editing/export as blocked. Do not silently substitute Canva web, flatten the whole template, or claim untested native automation works. If the connector requires Desktop staging, work on another copy there and return saved results to the listing folder; inspect the copied resources and save destinations again.
 
-## Create mockups when requested
+## Create supporting mockups
 
-Read [references/mockups.md](references/mockups.md) for imagegen scene generation, exact artwork compositing in Affinity, and thumbnail review. A complete Etsy-ready set includes a suitable first photo plus each applicable template graphic. Generated lifestyle mockups follow the roles in the shared Etsy guidance. If the first photo is missing, continue the requested asset work and record that gap in `listing.json`. Additional angles or scenes follow the request rather than an arbitrary image quota.
+Read [references/mockups.md](references/mockups.md) for imagegen scene generation, exact artwork compositing in Affinity, and thumbnail review. For every wedding mirror-decal design, generate the required [01A-style couple selfie](references/couple-selfie.md) as a product-specific supporting image. Generate a blank photographic scene, then place the exact supplied SVG. Include this output in the manifest and contact sheet; retain draft/blocked status if its scene or composite fails review. For a product that does not suit a wedding mirror selfie, record the reason it is inapplicable rather than forcing that setting onto it.
+
+A complete Etsy-ready set includes a suitable first photo, each applicable template graphic, and the required selfie. Generated lifestyle mockups follow the supporting roles in the shared Etsy guidance. If the first photo is missing, continue the requested asset work and record that gap in `listing.json`. Other staging variations remain optional unless requested.
 
 ## Verify and deliver
 

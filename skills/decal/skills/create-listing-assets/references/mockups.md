@@ -12,6 +12,8 @@ Use references to establish lighting, setting, materials, framing, and product p
 
 ## Generate the scene
 
+For each wedding mirror-decal design, follow [the required 01A-style couple selfie](couple-selfie.md). Its prompt and acceptance criteria govern that output. The general staging example below applies to additional requested scenes.
+
 Decide the physical surface and composition from the actual product and reference. A gold arched mirror in a wedding venue with soft window light and restrained flowers is a starting direction for this example, not a required setting for all decals.
 
 Generate a blank surface so the final lettering can come from the supplied SVG. Favor a nearly frontal mirror, a quiet reflection behind the lettering, realistic glass and frame details, and sufficient crop margin. Keep props out of the design area. Record the exact final prompt, tool mode, selected output, and intended artwork placement in `mockups/prompts.md`.
