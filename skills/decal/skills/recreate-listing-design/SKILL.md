@@ -71,6 +71,15 @@ Completion requires all requested designs, visually inspected final renders, res
 
 ## Deliver
 
+When the requested delivery includes DecalFlow registration or production
+automation, use `decal:decalflow` after visual and vector review. Emit its versioned
+design package beside the production deliverables, retaining the outlined source
+hash, measured artwork bounds, object IDs and authored Cut Group alignment. A
+personalized template requires supported live-text bindings and exact fonts;
+outlined sample wording remains a fixed design. Record the package and returned
+application identities in the design delivery manifest. Artwork reconstruction
+alone does not authorize listing publication or cutting.
+
 Package the editable SVGs and allowed fonts, outlined SVGs, vector PDFs, previews, comparison, and concise production notes. Exclude discarded font candidates and temporary specimens. Check the archive opens and includes each design.
 
 Notes must distinguish live text from node-editable curves, sample personalization from customer data, and artboard size from artwork bounds. Explain that editing the source does not update the existing outlined SVG/PDF automatically. Report digital validation separately from physical print/cut testing. Link the comparison and complete package in the final response.

@@ -56,6 +56,12 @@ Read [references/mockups.md](references/mockups.md) for imagegen scene generatio
 
 ## Verify and deliver
 
+For a requested DecalFlow handoff, use `decal:decalflow` with the reviewed design
+package. Reference its package manifest in `listing.json`; preserve the design
+version, package hash and returned Product/mapping IDs under `decalflow`. Register
+or update local records only within the requested workflow. Listing-image
+completion does not imply registration, Etsy publication, or cutter start.
+
 Inspect every final image at full size and as a small thumbnail. Check exact lettering, old-design remnants, proportion, font substitution, placement, realistic material appearance, cropping, logo geometry, disclaimers, selected SVG color and shipped piece count. Compare template text and measurement labels against the originals using the shop's approved copy rules. For The Decal Company, compare About and Size Guide side by side against the mirror placement rules and record any permitted exception. Review a contact sheet for consistency and intended order. Check export dimensions, color profile, thumbnail crops, and first-image eligibility against the shared Etsy guidance; record approved template exceptions.
 
 Keep review previews and unfinished drafts outside `exports/`. Save the editable native files, then reopen the production copies to verify they render and retain their resources. Check original-input hashes again. Verify every shared-asset path resolves and its recorded hash matches. Check that current sources contain no redundant pristine template copies and that manifests reference the current files. Mark the listing complete only when the required product-specific outputs and shared graphics exist, the editable sources are usable, and visual review passes. Otherwise identify the missing deliverables and retain an accurate draft/blocked status.
