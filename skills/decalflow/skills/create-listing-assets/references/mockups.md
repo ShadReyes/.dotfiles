@@ -34,7 +34,7 @@ Copy selected generated images into the listing's `mockups/` before referencing 
 
 ## Place and inspect the exact artwork
 
-Place the copied product SVG over the scene in Affinity as a distinct editable object/group. Preserve a flat vector version and the clean background. Match the plane of the glass without changing the underlying letter shapes, spacing, or aspect ratio. Use a confirmed product color, with realistic vinyl opacity and minimal effects; avoid a floating sticker or embossed appearance unless that matches the product.
+For both template graphics and photographic composites, place the copied product SVG in Affinity as a distinct editable object/group. Fit by [visible artwork bounds](../../../references/artwork-sizing.md), preserving letter shapes, spacing, and aspect ratio. Keep a flat vector copy for comparison. For photographs, preserve the clean background and apply a perspective transform only when needed to match the surface plane. Use a confirmed product color, with realistic vinyl opacity and minimal effects; avoid a floating sticker or embossed appearance unless that matches the product.
 
 Only when the user explicitly requests a product-specific installation photograph, inspect the local edit target first. The Decal Company uses a shared illustrated installation guide, so its normal listing workflow does not include this step. Use imagegen to produce or edit the blank photographic region, then place the source artwork in Affinity with correct transfer-sheet positioning and hand/tool occlusion. Keep instructional text, logos, and layout outside the generated edit. Review whether the pictured installation action agrees with the accompanying instructions.
 

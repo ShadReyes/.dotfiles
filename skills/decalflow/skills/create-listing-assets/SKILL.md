@@ -13,7 +13,7 @@ Original brand assets, templates, reference exports, and supplied product design
 
 Resolve actual paths before writing: the production root must be outside the protected asset trees, including through symlinks. Use regular copies, never symlinks or hard links to editable originals. Record SHA-256 hashes of the original files used, including original linked resources, and verify them at completion. Hashes detect changes; they do not replace destination checks. If an original changes, report the discrepancy and investigate without automatically restoring over possible user work.
 
-For The Decal Company, read [references/company-templates.md](references/company-templates.md) before staging. It identifies the protected roots, current templates, and default production location. For another shop, use its supplied assets and instructions instead of importing these brand rules.
+For The Decal Company, read [references/company-templates.md](references/company-templates.md) before staging. It defines the protected roots, current templates, production location, intake, approved copy, and mirror placement rules. For another shop, use its supplied assets and instructions instead of importing these brand rules.
 
 ## Establish the listing
 
@@ -21,12 +21,7 @@ Read [shared Etsy guidance](../../references/etsy-listing-guidance.md) before ch
 
 Apply [finished artwork sizing](../../references/artwork-sizing.md) when inspecting SVG dimensions, placing artwork, or verifying size graphics. Record measured artwork bounds separately from artboard dimensions in `listing.json`; a decal-width claim refers to visible artwork. This does not expand the template intake below or change the supplied production master.
 
-Inspect the supplied design and every template/export pair. Record the product name and artwork path. For The Decal Company, request only these missing production details, preferably together:
-
-- SVG display color: white, black, or gold.
-- Number of separate pieces the design ships in.
-
-Reuse answers already supplied. Continue independent scene and layout work while awaiting either answer. Treat the remaining template copy as approved and fixed, including personalization instructions, sizing bullets, measurement examples and disclaimers. These examples are template content, not sale-option data to collect. Preserve them instead of substituting placeholders or adding questions about sale sizes, available color ranges, personalization policies or included items. Expand the intake only when the user explicitly requests changes that need additional facts. For another shop, follow its supplied template rules.
+Inspect the supplied design and every template/export pair. Record the product name and artwork path. For The Decal Company, follow the [intake and approved copy rules](references/company-templates.md#intake-and-approved-copy). For another shop, use its supplied template rules. Reuse answers already supplied and continue independent scene and layout work while awaiting missing details.
 
 Choose a descriptive listing slug and create a new folder. If it already exists, inspect it and create a new revision directory unless the user explicitly requests replacement. Each run uses this structure unless an established production convention applies:
 
@@ -49,9 +44,7 @@ Load `affinity` and follow its live SDK discovery procedure. Inspect only the wo
 
 Compare native renders with the reference PNGs before choosing replacement layers. Record actual document/spread/layer identifiers and roles in `review/template-map.json`; rediscover session-specific identifiers on later runs. Do not invent SDK methods or rely on layer names guessed from filenames.
 
-Replace old artwork, sample names and dates within the artwork, artwork-specific placement boxes, and lettering inside photographs. Update only the shipped-piece count in the template copy, with singular/plural agreement where needed. Preserve all other template text, measurement labels, branding and instructions unless the user requests a text change. Keep approved sizing examples separate from the artwork being replaced. Place the exact SVG rather than asking a generator to redraw its letters. Fit by visible artwork bounds, preserving aspect ratio; use a perspective transform only when the photographed surface requires it. Retain a flat copy for comparison.
-
-For The Decal Company, place the complete sign design toward the top of the mirror in both the About and Size Guide graphics. Match its relative position within the mirror across both graphics, rather than using equal page coordinates when mirror sizes or positions differ. Preserve the exact artwork proportions and use consistent scale relative to mirror width. Use another arrangement when confirmed separate pieces, the supplied design, or user instructions require it; record that reason. This placement default does not establish the shipped-piece count, which must still be confirmed separately. In the Size Guide, keep the artwork above the sizing arrow and label. Move the arrow and label down together if clearance is needed, keeping the label above the arrow and preserving all measurement text and sizing bullets.
+Replace old artwork, sample names and dates within the artwork, artwork-specific placement boxes, and lettering inside photographs. Apply the shop's approved copy rules. For SVG placement on templates or photographs, follow [exact artwork placement](references/mockups.md#place-and-inspect-the-exact-artwork). For The Decal Company, also apply the [mirror placement rules](references/company-templates.md#mirror-placement).
 
 Copy linked resources into `sources/` and relink the working document there, or embed them in the copy. Resolve font substitution before final export. Preserve outlined artwork as curves; an outlined SVG does not provide keyboard-editable personalization. If a raster photo contains old lettering, use the mockup procedure to replace the photographic region while preserving the template's editable layout.
 
@@ -63,7 +56,7 @@ Read [references/mockups.md](references/mockups.md) for imagegen scene generatio
 
 ## Verify and deliver
 
-Inspect every final image at full size and as a small thumbnail. Check exact lettering, old-design remnants, proportion, font substitution, placement, realistic material appearance, cropping, logo geometry, disclaimers, selected SVG color and shipped piece count. Compare template text and measurement labels against the originals; only the piece-count substitution and user-requested text changes should differ. Compare the About and Size Guide side by side: verify consistent artwork height and scale relative to the mirror, top placement, and clearance above the sizing arrow and label. Record any design-specific reason for a different arrangement. Review a contact sheet for consistency and intended order. Check export dimensions, color profile, thumbnail crops, and first-image eligibility against the shared Etsy guidance; record approved template exceptions.
+Inspect every final image at full size and as a small thumbnail. Check exact lettering, old-design remnants, proportion, font substitution, placement, realistic material appearance, cropping, logo geometry, disclaimers, selected SVG color and shipped piece count. Compare template text and measurement labels against the originals using the shop's approved copy rules. For The Decal Company, compare About and Size Guide side by side against the mirror placement rules and record any permitted exception. Review a contact sheet for consistency and intended order. Check export dimensions, color profile, thumbnail crops, and first-image eligibility against the shared Etsy guidance; record approved template exceptions.
 
 Keep review previews and unfinished drafts outside `exports/`. Save the editable native files, then reopen the production copies to verify they render and retain their resources. Check original-input hashes again. Verify every shared-asset path resolves and its recorded hash matches. Check that current sources contain no redundant pristine template copies and that manifests reference the current files. Mark the listing complete only when the required product-specific outputs and shared graphics exist, the editable sources are usable, and visual review passes. Otherwise identify the missing deliverables and retain an accurate draft/blocked status.
 

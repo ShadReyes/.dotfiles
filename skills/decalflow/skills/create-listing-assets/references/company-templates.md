@@ -24,13 +24,30 @@ Paths below are relative to `Design Assets`.
 
 `SourceFiles/mirror.png` is a possible linked resource; inspect native resource metadata before deciding where it is used. Other `.af` files in that directory serve branding or other purposes and are not automatically listing templates.
 
-The About and Size Guide references use a black arched mirror. Both contain the old design: initials, “Smile. You're on Camera.”, names, and year. About also has three placement boxes and copy claiming three shipped decals. Replace the old artwork and its placement boxes; request the new shipped-piece count and change that count in the About copy.
+The About and Size Guide references use a black arched mirror. Both contain the old design: initials, “Smile. You're on Camera.”, names, and year. About also has three placement boxes and copy claiming three shipped decals. Replace the old artwork and its placement boxes.
 
 Installation guide policy confirmed on 2026-10-11: use the approved universal 3:4 portrait, eight-step guide with the dotted backing cut line in step 4. Its canonical paths are listed above. Reference this shared PNG as upload image 4 in every listing; do not adapt its artwork or copy its native source, export, or supporting assets into production listings. Earlier guides under `Design Assets/Archived/Installation Guides` are deprecated. Recheck the canonical asset and current brand instructions on each run.
 
-Production rule confirmed by the user on 2026-10-06: request only the SVG display color (white, black, or gold) and shipped-piece count. The remaining template text is fixed. Preserve all three size-guide bullets exactly, including the 2–3 inch guidance and 23-inch mirror/20-inch decal example. Retain the `23"` label above the mirror arrow. Preserve the About personalization and crafting copy, the installation instructions, and mirror-not-included disclaimers. This user-confirmed adaptation rule takes precedence over older guidance that treated template examples as unconfirmed listing facts. Consult `BRAND.md` for visual brand rules without editing that protected file.
+## Intake and approved copy
 
-Mirror placement rule clarified by the user on 2026-10-11: place the sign design toward the top of the mirror in both About and Size Guide graphics, with matching relative position and scale. Use another arrangement when confirmed separate pieces, the design construction, or explicit user instructions require it. Follow the placement and clearance checks in the main skill. Placement does not confirm the shipped-piece count.
+Production rule confirmed by the user on 2026-10-06: request only these missing details, preferably together:
+
+- SVG display color: white, black, or gold.
+- Number of separate pieces the design ships in.
+
+Update only the shipped-piece count in the template copy, with singular/plural agreement where needed. Treat all remaining template text as approved and fixed, including personalization instructions, sizing bullets, measurement examples and disclaimers. Preserve all three size-guide bullets exactly, including the 2–3 inch guidance and 23-inch mirror/20-inch decal example. Retain the `23"` label above the mirror arrow. Preserve the About personalization and crafting copy, installation instructions, and mirror-not-included disclaimers.
+
+Preserve branding and keep approved sizing examples separate from the artwork being replaced. Sizing examples are template content, not sale-option data to collect. Preserve them instead of substituting placeholders or adding questions about sale sizes, available color ranges, personalization policies or included items. Expand the intake and change approved text only when the user explicitly requests changes that need them. This user-confirmed rule takes precedence over older guidance that treated template examples as unconfirmed listing facts. Consult `BRAND.md` for visual brand rules without editing that protected file.
+
+## Mirror placement
+
+Placement rule clarified by the user on 2026-10-11: place the complete sign design toward the top of the mirror in both About and Size Guide graphics. Match its relative position within each mirror rather than using equal page coordinates when mirror sizes or positions differ. Preserve exact artwork proportions and use consistent scale relative to mirror width.
+
+Use another arrangement when confirmed separate pieces, the supplied design, or explicit user instructions require it; record the reason. Placement does not establish the shipped-piece count, which must be confirmed separately.
+
+In the Size Guide, keep the artwork above the sizing arrow and label. Move the arrow and label down together if clearance is needed, keeping the label above the arrow and preserving all measurement text and sizing bullets.
+
+## Upload order
 
 Suggested order: `01-hero`, `02-about-this-design`, `03-size-guide`, `04-installation-guide`. Images 1–3 are product-specific exports; image 4 is a reference to the shared installation PNG. Use explicit image extensions and preserve template dimensions. Use [shared Etsy guidance](../../../references/etsy-listing-guidance.md) for new hero dimensions and first-image eligibility. Keep generated scenes in supporting roles; reserve image 1 for a suitable first photo and retain the shared installation guide at image 4.
 
