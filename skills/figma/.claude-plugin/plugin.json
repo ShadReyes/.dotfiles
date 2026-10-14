@@ -1,0 +1,9 @@
+{
+  "name": "figma",
+  "description": "Official Figma skills for common MCP workflows",
+  "version": "2.2.155",
+  "skills": "./skills/",
+  "author": {
+    "name": "Figma"
+  }
+}

@@ -7,6 +7,12 @@ Imported upstream skills:
 - `brando` is a local plugin bundle vendored from `brs98/.dotfiles`.
 - `matt` is a local plugin bundle vendored from `mattpocock/skills`.
 - `herdr` is a local plugin bundle vendored from `ogulcancelik/herdr`.
+- `figma` contains the 14 official MCP skills from
+  [figma/mcp-server-guide](https://github.com/figma/mcp-server-guide), plugin
+  version `2.2.155`, commit `2b85b7d27bd6ee124667fcfe88856f6b1f81671a`.
+  Preserve the complete `skills/` tree and upstream `figma-*` names when refreshing;
+  keep the local manifest's `skills: "./skills/"` declaration. MCP is configured
+  separately in the client; the bundle contains skills only.
 
 ## Skill naming policy
 
@@ -33,3 +39,16 @@ git clone --depth 1 https://github.com/mattpocock/skills /tmp/mattpocock-skills
 # Copy the relevant skill directories into skills/brando/skills/ and skills/matt/skills/.
 # Keep root skills such as manage-skills under skills/<name>/.
 ```
+
+## Native OMP discovery
+
+OMP scans direct children of each skill root, not arbitrary nested bundles.
+Configure the following once in `~/.omp/agent/config.yml`, preserving other settings:
+
+```yaml
+skills:
+  customDirectories:
+    - ~/.dotfiles/skills/figma/skills
+```
+
+Restart OMP after changing discovery configuration.
