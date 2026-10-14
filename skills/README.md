@@ -22,6 +22,12 @@ Imported upstream skills:
 - `brando` is a local plugin bundle vendored from `brs98/.dotfiles`.
 - `matt` is a local plugin bundle vendored from `mattpocock/skills`.
 - `herdr` is a local plugin bundle vendored from `ogulcancelik/herdr`.
+- `figma` contains the 14 official MCP skills from
+  [figma/mcp-server-guide](https://github.com/figma/mcp-server-guide), plugin
+  version `2.2.155`, commit `2b85b7d27bd6ee124667fcfe88856f6b1f81671a`.
+  Preserve the complete `skills/` tree and upstream `figma-*` names when refreshing;
+  keep the local manifest's `skills: "./skills/"` declaration. MCP is configured
+  separately in the client; the bundle contains skills only.
 
 ## Skill naming policy
 
@@ -63,6 +69,7 @@ skills:
     - ~/.dotfiles/skills/matt/skills/engineering
     - ~/.dotfiles/skills/matt/skills/productivity
     - ~/.dotfiles/skills/vercel/skills
+    - ~/.dotfiles/skills/figma/skills
 ```
 
 Add skills beneath these parents without changing configuration or creating
