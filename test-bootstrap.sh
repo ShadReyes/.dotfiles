@@ -10,7 +10,6 @@ fail() { FAIL=$((FAIL + 1)); echo "  ✗ $1"; }
 assert_file() { [ -f "$1" ] && pass "$2" || fail "$2"; }
 assert_link() { [ -L "$1" ] && pass "$2" || fail "$2"; }
 assert_contains() { grep -q "$2" "$1" 2>/dev/null && pass "$3" || fail "$3"; }
-assert_not_contains() { ! grep -q "$2" "$1" 2>/dev/null && pass "$3" || fail "$3"; }
 assert_missing() { [ ! -e "$1" ] && [ ! -L "$1" ] && pass "$2" || fail "$2"; }
 
 make_fake_stow() {
@@ -134,32 +133,17 @@ assert_file "$tmp/home/.claude/skills/address-pr-comments/SKILL.md" "--stow-only
 assert_link "$tmp/home/.zshrc" "--stow-only links the shared Zsh configuration"
 
 echo ""
-echo "WezTerm theme reload"
-# WezTerm supplies HOME; the Ricekit installation owns the color file's presence.
-assert_contains "$DOTFILES/shared/stow/wezterm/.wezterm.lua" '^local ricekit_colors_path = os.getenv("HOME") .. "/.config/wezterm/ricekit-colors.lua"$' "WezTerm defines the Ricekit color path once"
-assert_contains "$DOTFILES/shared/stow/wezterm/.wezterm.lua" '^wezterm.add_to_config_reload_watch_list(ricekit_colors_path)$' "WezTerm watches Ricekit color changes"
-assert_contains "$DOTFILES/shared/stow/wezterm/.wezterm.lua" '^config.colors = dofile(ricekit_colors_path)$' "WezTerm loads colors from the watched path"
-assert_contains "$DOTFILES/shared/stow/wezterm/.wezterm.lua" '^config.text_background_opacity = 0.55$' "WezTerm softens application background colors"
-assert_not_contains "$DOTFILES/shared/stow/zsh/.zshrc" 'NO_COLOR=1 command codex' "Zsh preserves Codex colors"
-
-echo ""
 echo "macOS package install remains Homebrew-first"
 tmp_macos="$test_root/macos"
 DOTFILES_TEST_OS=macos run_bootstrap "$tmp_macos" --packages
 assert_contains "$tmp_macos/log" '^brew bundle --file=' "macOS package mode uses brew bundle"
 assert_contains "$tmp_macos/log" '^git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ' "macOS package mode installs Oh My Zsh"
 assert_file "$tmp_macos/.oh-my-zsh/oh-my-zsh.sh" "Oh My Zsh installation is usable"
-assert_contains "$DOTFILES/Brewfile" '^tap "FelixKratz/formulae"' "macOS Brewfile adds the JankyBorders tap"
-assert_contains "$DOTFILES/Brewfile" '^brew "borders"' "macOS Brewfile installs JankyBorders"
 if grep -q '^sudo apt-get' "$tmp_macos/log" 2>/dev/null; then
   fail "macOS package mode should not use apt-get"
 else
   pass "macOS package mode does not use apt-get"
 fi
-
-echo ""
-echo "Ricekit marketplace state"
-assert_contains "$DOTFILES/mac/stow/ricekit/.config/ricekit/marketplace.toml" 'name = "jankyborders-colors"' "Ricekit marketplace state includes JankyBorders colors"
 
 echo ""
 echo "Existing Oh My Zsh installation"

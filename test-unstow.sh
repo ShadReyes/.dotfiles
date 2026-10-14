@@ -66,9 +66,10 @@ printf 'manual indexed skill\n' > "$tmp/home/manual-index-skill/SKILL.md"
 ln -s "$tmp/home/manual-index-skill" "$tmp/home/.agents/skills-index/manual-skill"
 
 HOME="$tmp/home" PATH="$bin:/usr/bin:/bin" "$DOTFILES/sync-skills.sh" > /dev/null
+# Simulate a managed index link left by an older sync version.
+ln -s "$DOTFILES/skills/address-pr-comments" "$tmp/home/.agents/skills-index/address-pr-comments"
 assert_file "$tmp/home/.claude/skills/address-pr-comments/SKILL.md" "dotfiles skill linked before unstow"
 assert_file "$tmp/home/.claude/skills/manual-skill/SKILL.md" "manual Claude skill exists before unstow"
-assert_file "$tmp/home/.agents/skills-index/address-pr-comments/SKILL.md" "dotfiles skill indexed before unstow"
 
 if HOME="$tmp/home" PATH="$bin:/usr/bin:/bin" "$DOTFILES/unstow.sh" > "$tmp/unstow.out" 2> "$tmp/unstow.err"; then
   pass "unstow.sh exits successfully"
