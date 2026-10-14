@@ -1,4 +1,8 @@
 onboarding = false
+
+[theme]
+name = "terminal"
+
 [ui]
 agent_panel_sort = "spaces"
 

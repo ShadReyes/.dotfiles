@@ -166,6 +166,17 @@ Herdr configuration is managed from `shared/stow/herdr/`.
 
 - `~/.config/herdr/config.toml` — Herdr configuration
 
+Herdr uses the `terminal` theme so its sidebar, tabs, and borders follow the
+host terminal's ANSI palette. In WezTerm, that palette comes from RiceKit;
+no separate Herdr color file is needed. Apps inside panes can still draw
+their own explicit colors.
+
+After editing Herdr's theme configuration, press `Ctrl+B`, then `Shift+R`
+in the attached Herdr client to reload both client and server settings.
+`herdr server reload-config` alone reloads only the server configuration.
+If a RiceKit palette change leaves the client showing stale colors,
+detach with `Ctrl+B`, then `Q`, and run `herdr` to reattach; panes keep running.
+
 On macOS, Herdr is installed from the `Brewfile`. On Linux, bootstrap uses
 Herdr's official installer. When Claude or Codex configuration directories are
 present, bootstrap also installs and normalizes their Herdr integrations.
@@ -194,6 +205,33 @@ present, bootstrap also installs and normalizes their Herdr integrations.
 
 - Source: `shared/stow/codex/`
 
+### omp
+
+The local Ricekit composer fills the input with the active theme's tool-result
+surface color. Ricekit generates the full omp palette on every theme apply;
+running omp sessions reload the generated theme automatically.
+
+- Composer source: `shared/stow/omp/.omp/agent/extensions/ricekit/index.js`
+- Palette source: `mac/stow/ricekit/.config/ricekit/custom-configs/omp-colors/`
+- Generated output: `~/.omp/agent/themes/ricekit.json` (machine-local, not versioned)
+
+After bootstrap on macOS, with omp and Ricekit installed:
+
+```sh
+ricekit config enable omp-colors
+ricekit apply <theme>
+omp config set theme.dark ricekit
+omp config set theme.light ricekit
+omp config set composer.shape ricekit.input
+```
+
+Restart an existing omp session once to discover the composer extension. Future
+Ricekit theme changes update input and tool-result backgrounds without restarting.
+Edit the Ricekit template to change color mappings, not the generated JSON.
+The rest of `~/.omp/agent/config.yml` stays machine-local, preserving model and
+authentication choices. Named omp profiles require their own extension, theme,
+and appearance configuration; this setup targets the default profile.
+
 ### ricekit
 
 [Ricekit](https://ricekit.dev) theme manager configuration.
@@ -202,8 +240,9 @@ present, bootstrap also installs and normalizes their Herdr integrations.
 - `~/.config/ricekit/custom-themes/` — personal themes (morning-mountains, vo9lyx14s41a1)
 - `~/.config/ricekit/custom-integrations/` — custom integrations (govee-color)
 - `~/.config/ricekit/extensions/` — browser extensions (firefox)
+- `~/.config/ricekit/custom-configs/omp-colors/` — omp palette template
 
-After stowing, run `ricekit apply` to render the active theme across apps.
+After stowing, run `ricekit apply <theme>` to render the selected theme across apps.
 
 - Source: `mac/stow/ricekit/`
 
