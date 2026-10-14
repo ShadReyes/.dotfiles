@@ -37,6 +37,8 @@ Simpler reflections reduce ambiguity but do not prove correct optics or a higher
 
 Follow [exact artwork placement](mockups.md#place-and-inspect-the-exact-artwork). Place the supplied SVG as a separate editable object, centered toward the top of the physical glass. Preserve visible artwork proportions, confirmed color and source lettering. Record the visible artwork width, mirror-width assumption or measurement, and placement transform; assumed scene dimensions are illustrative, not verified product scale. Use one coherent planar transform rather than adjusting text lines separately.
 
+Apply the [photographic appearance rules](affinity-compositing.md#match-the-photographed-appearance) after placement. The user preferred subtle edge softness for the casual selfie; match it to the current photo rather than applying a fixed blur to every scene.
+
 The decal is on the front glass, in front of reflected people and objects. Opaque vinyl must cover reflections beneath its strokes. Do not regenerate the finished lettering to blend it into the photograph.
 
 Save the clean generated background and final prompt in `mockups/`, the editable composite as `sources/05-couple-selfie.af`, and the accepted export as `exports/05-couple-selfie.jpg`. Record scene provenance, source SVG, dimensions, placement assumptions and review outcome in `listing.json` and the review findings. Include the image in the contact sheet and upload inventory. Identify it as a generated lifestyle mockup, never as a customer submission or testimonial. It does not replace the required real first photo.

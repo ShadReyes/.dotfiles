@@ -28,7 +28,7 @@ For each wedding mirror-decal design, follow [the required 01A-style couple self
 
 Use the selected staging direction to specify the physical surface, opposite reflected scene, camera position, lighting and peripheral props. Keep the venue attractive but attainable and the image like an ordinary phone photograph. Natural variation in materials and incidental framing should provide realism; artificial blur, repeated greenery and uniform hyper-sharp texture should not substitute for a believable scene. For other decal types, choose a setting appropriate to their actual use.
 
-Generate a blank surface so the final lettering can come from the supplied SVG. Favor a nearly frontal mirror, a quiet reflection behind the lettering, realistic glass and frame details, and sufficient crop margin. Keep props out of the design area. Record the exact final prompt, tool mode, selected output, and intended artwork placement in `mockups/prompts.md`.
+Generate only the blank scene; describe the reserved artwork area by proportions rather than asking imagegen to render the product design. Complete scene edits before adding lettering. Favor a nearly frontal mirror, a quiet reflection behind the lettering, realistic glass and frame details, and sufficient crop margin. For angled glass, keep four reliable coplanar landmarks visible, preferably the four pane corners. Use a window rather than a mirror when the requested use calls for one; account for both transmitted scenery and reflections. Keep props out of the design area. Record the exact final prompt, tool mode, selected output, and intended artwork placement in `mockups/prompts.md`.
 
 Example starting prompt, adapted to the actual design:
 
@@ -48,7 +48,9 @@ Copy selected generated images into the listing's `mockups/` before referencing 
 
 ## Place and inspect the exact artwork
 
-For both template graphics and photographic composites, place the copied product SVG in Affinity as a distinct editable object/group. Fit by [visible artwork bounds](../../../references/artwork-sizing.md), preserving letter shapes, spacing, and aspect ratio. Keep a flat vector copy for comparison. For photographs, preserve the clean background and apply a perspective transform only when needed to match the surface plane. Use a confirmed product color, with realistic vinyl opacity and minimal effects; avoid a floating sticker or embossed appearance unless that matches the product.
+For template graphics, place the copied SVG as a distinct editable object/group, preserving the approved flat color and sharp vector appearance. Fit by [visible artwork bounds](../../../references/artwork-sizing.md).
+
+For photographic composites, follow the [Affinity MCP compositing workflow](affinity-compositing.md). It covers direct native placement, a single planar perspective mapping, scene-dependent color and edge treatment, and blank-layer/reopen verification. Keep an unchanged flat SVG for comparison. Preserve source proportions in the surface plane; perspective changes their photographed appearance. Apply photographic treatments only to the composite, never the production SVG or flat product diagrams.
 
 Only when the user explicitly requests a product-specific installation photograph, inspect the local edit target first. The Decal Company uses a shared illustrated installation guide, so its normal listing workflow does not include this step. Use imagegen to produce or edit the blank photographic region, then place the source artwork in Affinity with correct transfer-sheet positioning and hand/tool occlusion. Keep instructional text, logos, and layout outside the generated edit. Review whether the pictured installation action agrees with the accompanying instructions.
 
