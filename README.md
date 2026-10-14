@@ -246,7 +246,12 @@ In Codex, `/skills` opens a menu. Choose `List skills` to open the `$` mention p
 for a skill such as `address` or type `$address-pr-comments` directly.
 
 The `brando` and `matt` directories are local plugin bundles for vendored skill sets.
-Plugin skills are namespaced, such as `brando:react-doctor` and `matt:ask-matt`.
+Keep their nested layout and existing names. Claude plugins can expose names such
+as `brando:react-doctor`; OMP uses configured skill-parent directories and Pi
+supports recursive discovery or the local `skills/package.json` package. See
+[native skill discovery setup](skills/README.md#native-omp-discovery) for one-time
+registration. Adding a skill beneath a registered parent needs no config update.
+
 ### agents/
 
 Custom agent definitions in canonical TOML format. `sync-skills.sh` symlinks the TOML to Codex and generates Claude Code markdown.
@@ -292,10 +297,12 @@ stow -v --delete --no-folding --dir=shared/stow --target="$HOME" wezterm
 
 ## Adding a new skill
 
-1. `mkdir skills/<skill-name>`
-2. Create `skills/<skill-name>/SKILL.md` with YAML frontmatter (`name`, `description`) and markdown body
-3. Run `./sync-skills.sh`
-4. Commit and push
+1. Create a skill under `skills/<skill-name>/` or an existing bundle/category.
+2. Add `SKILL.md` with YAML frontmatter (`name`, `description`) and markdown body.
+   Retain existing names; keep them globally unique and matching the leaf directory.
+3. Run `./sync-skills.sh` for a new root skill or bundle. OMP already scans its
+   registered nested parents; Pi's local package scans recursively.
+4. Restart OMP or use Pi's `/reload` to refresh an existing session.
 
 Imported third-party skills should include their companion docs in the same skill directory, plus an
 `agents/openai.yaml` file for Codex UI metadata.

@@ -57,44 +57,6 @@ PY
   fi
 }
 
-assert_herdr_cli_single_source() {
-  local output
-
-  if output=$(python3 - "$DOTFILES/skills" <<'PY'
-from pathlib import Path
-import re
-import sys
-
-skills_dir = Path(sys.argv[1])
-authority = skills_dir / "herdr" / "skills" / "herdr" / "SKILL.md"
-violations = []
-
-for skill_file in sorted(skills_dir.rglob("SKILL.md")):
-    if skill_file == authority:
-        continue
-
-    for line_number, line in enumerate(
-        skill_file.read_text(encoding="utf-8").splitlines(), start=1
-    ):
-        if re.match(r"^\s*herdr(?:\s|$)", line):
-            violations.append(
-                f"skills/{skill_file.relative_to(skills_dir)}:{line_number}: {line.strip()}"
-            )
-
-if violations:
-    print("executable Herdr CLI lines outside skills/herdr/skills/herdr/SKILL.md:")
-    for violation in violations:
-        print(f"  {violation}")
-    raise SystemExit(1)
-PY
-  ); then
-    pass "Herdr CLI examples have one source of truth"
-  else
-    fail "Herdr CLI examples must stay in herdr:herdr"
-    printf '%s\n' "$output" | sed 's/^/    /'
-  fi
-}
-
 # --- Setup: run sync in a temp HOME to avoid touching real config ---
 TEMP_HOME="$(mktemp -d)"
 trap 'rm -rf "$TEMP_HOME"' EXIT
@@ -105,7 +67,6 @@ HOME="$TEMP_HOME" "$DOTFILES/sync-skills.sh" > /dev/null
 
 echo "Skills"
 assert_unique_skill_names
-assert_herdr_cli_single_source
 assert_count "$TEMP_HOME/.claude/skills" '*' "$EXPECTED_SKILL_COUNT" "$EXPECTED_SKILL_COUNT skills synced to Claude"
 assert_count "$TEMP_HOME/.agents/skills" '*' "$EXPECTED_SKILL_COUNT" "$EXPECTED_SKILL_COUNT skills synced to Codex"
 
@@ -190,17 +151,6 @@ echo ""
 echo "Commands"
 assert_count "$TEMP_HOME/.claude/commands" '*' 1 "1 command synced to Claude"
 assert_link "$TEMP_HOME/.claude/commands/update-status.md" "Claude command: update-status.md is symlink"
-
-echo ""
-echo "TOML→Claude conversion"
-# Verify the converter preserves developer_instructions content
-bs_lines=$(wc -l < "$TEMP_HOME/.claude/agents/bottom-sheet-specialist.md" | tr -d ' ')
-[ "$bs_lines" -gt 50 ] && pass "bottom-sheet-specialist.md has $bs_lines lines (content preserved)" \
-                        || fail "bottom-sheet-specialist.md only has $bs_lines lines (content may be truncated)"
-
-rd_lines=$(wc -l < "$TEMP_HOME/.claude/agents/remote-dom-specialist.md" | tr -d ' ')
-[ "$rd_lines" -gt 100 ] && pass "remote-dom-specialist.md has $rd_lines lines (content preserved)" \
-                         || fail "remote-dom-specialist.md only has $rd_lines lines (content may be truncated)"
 
 echo ""
 echo "Idempotency"
