@@ -2,6 +2,21 @@
 
 These directories are the source of truth for local AI skills. Run `../sync-skills.sh` from this directory's parent to symlink them into the supported AI CLI locations.
 
+## Machine-local confidential context
+
+Public skills are versioned; confidential company skills and docs are local-only.
+Store confidential skills under an ignored company-named directory or
+`skills/local-<name>/`, with companion docs inside that directory. Store other
+confidential docs under `local-runtime/`. The repository's `.gitignore` defines
+the exclusions; verify each new path with `git check-ignore -v <path>` before
+writing company data. Gitignore matches paths, not file contents.
+
+`sync-skills.sh` only creates local harness symlinks, so ignored skills remain
+available on this machine without being included in a Git clone. Preserve those
+exclusions when updating skills; never force-add confidential files or copy
+their contents into tracked documentation. Gitignore does not remove existing
+Git history or control backups, cloud file sync, or AI-provider retention.
+
 Imported upstream skills:
 
 - `brando` is a local plugin bundle vendored from `brs98/.dotfiles`.

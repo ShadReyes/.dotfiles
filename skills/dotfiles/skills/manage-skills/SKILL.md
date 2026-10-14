@@ -1,12 +1,12 @@
 ---
 name: manage-skills
-description: Add, author, update, or audit agent skills so they stay tracked in the ~/.dotfiles repo and in sync with the universal pool (~/.agents/skills). Use when the user wants to install/clone a skill from GitHub, create a new skill, update cloned skills, or check that skills aren't drifting out of the dotfiles repo.
+description: Add, author, update, or audit agent skills in ~/.dotfiles and the local universal pool (~/.agents/skills). Version public skills; preserve Git exclusions for confidential machine-local skills and docs. Use when installing, creating, updating, or auditing skills.
 ---
 
 # manage-skills
 
-Keeps every agent skill — authored or cloned — physically tracked in `~/.dotfiles/skills/`
-and symlinked into the universal pool (`~/.agents/skills`, shared by Claude Code and Codex).
+Keeps agent skills physically in `~/.dotfiles/skills/` and symlinked into the
+local universal pool (`~/.agents/skills`, shared by Claude Code and Codex).
 The deterministic engine for this repo is `~/.dotfiles/sync-skills.sh`; this skill drives that
 workflow.
 
@@ -14,6 +14,11 @@ workflow.
 
 - The dotfiles repo is the **one physical home** for local skills.
 - Root skills live at `~/.dotfiles/skills/<name>/SKILL.md`.
+- Version public skills only. Confidential skills and companion docs stay in
+  ignored company-named directories or `skills/local-<name>/`; other confidential
+  docs belong under `local-runtime/`. Verify exclusion with `git check-ignore -v`
+  before writing company data. Never force-add these paths or copy their content
+  into tracked files. See `~/.dotfiles/skills/README.md` for privacy boundaries.
 - Local plugin bundles live at `~/.dotfiles/skills/<plugin>/.claude-plugin/plugin.json` with
   nested `skills/<name>/SKILL.md` entries, like `brando`, `matt`, and `vercel`.
 - The pool holds top-level root-skill and bundle symlinks back into the repo;
