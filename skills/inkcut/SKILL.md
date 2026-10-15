@@ -7,8 +7,10 @@ description: Prepare local outlined SVG artwork as sized copies in Inkcut, inspe
 
 Discover `inkcutctl --help` and `inkcutctl prepare --help`, then inspect
 `inkcutctl status --json`. This skill requires the Inkcut Automation plugin;
-upstream `inkcut open` is not its acknowledged import API. If unavailable, report
-the missing CLI/plugin or stopped app instead of issuing guessed GUI commands.
+upstream `inkcut open` is not its acknowledged import API. If the app is stopped and the task implies launching it, use the available
+native-app tool to launch the installed Inkcut Automation app, then retry status.
+Respect any existing Inkcut instance and active job. If the CLI/plugin is missing
+or no launch tool is available, report the specific missing prerequisite.
 
 Use the supplied local SVG. A requested size such as “3-inch copies” means
 per-copy artwork width, with aspect ratio preserved. State that interpretation
