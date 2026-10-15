@@ -45,8 +45,8 @@ prompts that invoke `$orchestrator`, other skills, or their own sub-agents.
 
 5. Give each requested worker a useful unique agent name. Start it through the
    agent-start procedure in `herdr:herdr`, using the returned pane, an available
-   agent kind (discover via `herdr agent start --help` or use `omp` as the safe
-   default). Apply the worker-permissions rules below to every launch,
+   agent kind selected from `herdr agent start --help`, honoring the user's
+   requested harness. Apply the worker-permissions rules below to every launch,
    including retries and replacement workers. Record the live agent name,
    hosting pane ID, and permission arguments used.
 
@@ -67,23 +67,24 @@ prompts that invoke `$orchestrator`, other skills, or their own sub-agents.
 
 ## Worker permissions
 
-Default workers launched by this orchestrator to YOLO/bypass permissions mode
+Default workers launched by this orchestrator to permission-bypass mode
 unless the user explicitly requests a restricted mode. Set the mode through
 native agent launch arguments, passed after Herdr's `--` separator. A worker
 prompt is not a permission setting. Do not assume workers inherit the
 coordinator's permission mode or shell aliases.
 
-Check the chosen executable's installed help for supported options:
+For each selected harness, read its installed executable's help and identify
+the exact native flags that activate permission bypass. Use the canonical
+executable with those explicit flags, not a shell alias or flags copied from
+another harness. Distinguish flags that activate bypass from flags that only
+make it available. If approval prompts and sandbox restrictions have separate
+controls, select both explicitly; suppressing prompts alone does not establish
+unrestricted execution.
 
-- Codex: use `--dangerously-bypass-approvals-and-sandbox`. Setting approval
-  policy to `never` alone does not disable its sandbox.
-- Claude Code: use `--dangerously-skip-permissions`.
-  `--allow-dangerously-skip-permissions` alone only makes bypass available;
-  it does not activate it.
-- Other kinds, including `omp`: discover the native equivalent. If the agent
-  has no permission gate by design, no bypass flag is needed. If you cannot
-  establish how to select the requested mode, report that limitation before
-  dispatch instead of silently launching with unknown permissions.
+If the harness has no permission gate or sandbox by design, verify that
+behavior before omitting bypass flags. If you cannot establish how to select
+the requested mode, report that limitation before dispatch instead of silently
+launching with unknown permissions.
 
 Honor explicit user permission settings and enforced platform restrictions.
 Bypass mode does not expand the worker's task scope.
