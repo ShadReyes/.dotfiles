@@ -46,13 +46,16 @@ prompts that invoke `$orchestrator`, other skills, or their own sub-agents.
 5. Give each requested worker a useful unique agent name. Start it through the
    agent-start procedure in `herdr:herdr`, using the returned pane, an available
    agent kind (discover via `herdr agent start --help` or use `omp` as the safe
-   default), and any native arguments the chosen kind requires. Record both the
-   live agent name and its hosting pane ID.
+   default). Apply the worker-permissions rules below to every launch,
+   including retries and replacement workers. Record the live agent name,
+   hosting pane ID, and permission arguments used.
 
-6. Submit the worker prompt exactly as provided through the agent-prompt
-   procedure in `herdr:herdr`. Pass the full prompt as one text argument so
-   shell expansion does not consume `$skill` invocations or alter other prompt
-   text.
+6. Verify the launch arguments select the intended permission mode before
+   dispatch. If startup output reports a different mode, resolve the mismatch
+   before sending work. Submit the worker prompt exactly as provided through
+   the agent-prompt procedure in `herdr:herdr`. Pass the full prompt as one text
+   argument so shell expansion does not consume `$skill` invocations or alter
+   other prompt text.
 
 7. Monitor workers through their unique agent names or explicit hosting pane
    IDs, using the agent status, wait, and read procedures from `herdr:herdr`.
@@ -61,6 +64,29 @@ prompts that invoke `$orchestrator`, other skills, or their own sub-agents.
 
 8. Report the created topology, worker status, and results requested by the
    prompt. Preserve the calling pane and all unrelated Herdr resources.
+
+## Worker permissions
+
+Default workers launched by this orchestrator to YOLO/bypass permissions mode
+unless the user explicitly requests a restricted mode. Set the mode through
+native agent launch arguments, passed after Herdr's `--` separator. A worker
+prompt is not a permission setting. Do not assume workers inherit the
+coordinator's permission mode or shell aliases.
+
+Check the chosen executable's installed help for supported options:
+
+- Codex: use `--dangerously-bypass-approvals-and-sandbox`. Setting approval
+  policy to `never` alone does not disable its sandbox.
+- Claude Code: use `--dangerously-skip-permissions`.
+  `--allow-dangerously-skip-permissions` alone only makes bypass available;
+  it does not activate it.
+- Other kinds, including `omp`: discover the native equivalent. If the agent
+  has no permission gate by design, no bypass flag is needed. If you cannot
+  establish how to select the requested mode, report that limitation before
+  dispatch instead of silently launching with unknown permissions.
+
+Honor explicit user permission settings and enforced platform restrictions.
+Bypass mode does not expand the worker's task scope.
 
 ## Resource safety
 
