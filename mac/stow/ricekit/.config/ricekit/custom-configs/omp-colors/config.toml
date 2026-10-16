@@ -1,0 +1,20 @@
+[metadata]
+name = "omp-colors"
+author = "shadrac.reyes"
+version = "1.0.0"
+description = "omp palette and input/tool surfaces synchronized with Ricekit"
+setup_instructions = """Select ricekit for both theme.dark and theme.light in ~/.omp/agent/config.yml.
+The local ~/.omp/agent/extensions/ricekit/ composer uses toolPendingBg for its input surface.
+Ricekit regenerates the theme on every apply; running omp sessions watch the generated file.
+Edit templates/ricekit.json in this config to change palette mappings, not the generated theme.
+"""
+app = "omp"
+category = "terminal"
+type = "colors"
+
+[target.macos]
+path = "~/.omp/agent/themes/ricekit.json"
+strategy = "direct"
+
+[requires]
+colors = ["ansi", "semantic"]

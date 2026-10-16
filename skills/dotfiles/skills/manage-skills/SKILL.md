@@ -1,12 +1,12 @@
 ---
 name: manage-skills
-description: Add, author, update, or audit agent skills so they stay tracked in the ~/.dotfiles repo and in sync with the universal pool (~/.agents/skills). Use when the user wants to install/clone a skill from GitHub, create a new skill, update cloned skills, or check that skills aren't drifting out of the dotfiles repo.
+description: Add, author, update, or audit agent skills in ~/.dotfiles and the local universal pool (~/.agents/skills). Version public skills; preserve Git exclusions for confidential machine-local skills and docs. Use when installing, creating, updating, or auditing skills.
 ---
 
 # manage-skills
 
-Keeps every agent skill — authored or cloned — physically tracked in `~/.dotfiles/skills/`
-and symlinked into the universal pool (`~/.agents/skills`, shared by Claude Code and Codex).
+Keeps agent skills physically in `~/.dotfiles/skills/` and symlinked into the
+local universal pool (`~/.agents/skills`, shared by Claude Code and Codex).
 The deterministic engine for this repo is `~/.dotfiles/sync-skills.sh`; this skill drives that
 workflow.
 
@@ -14,16 +14,25 @@ workflow.
 
 - The dotfiles repo is the **one physical home** for local skills.
 - Root skills live at `~/.dotfiles/skills/<name>/SKILL.md`.
+- Version public skills only. Confidential skills and companion docs stay in
+  ignored company-named directories or `skills/local-<name>/`; other confidential
+  docs belong under `local-runtime/`. Verify exclusion with `git check-ignore -v`
+  before writing company data. Never force-add these paths or copy their content
+  into tracked files. See `~/.dotfiles/skills/README.md` for privacy boundaries.
 - Local plugin bundles live at `~/.dotfiles/skills/<plugin>/.claude-plugin/plugin.json` with
   nested `skills/<name>/SKILL.md` entries, like `brando`, `matt`, and `vercel`.
-- The pool (`~/.agents/skills/<name>`) holds symlinks back into the repo.
-- The flat index (`~/.agents/skills-index/<name>`) holds generated symlinks to every root or
-  nested skill for clients that inspect only direct children.
-- `~/.claude/skills` points at the same pool, so one sync updates both Claude Code and Codex.
+- The pool holds top-level root-skill and bundle symlinks back into the repo;
+  never flatten bundles or rename every bundled skill to add a prefix.
+- Claude and Codex use their supported discovery locations. OMP scans registered
+  skill-parent directories; Pi supports recursive discovery and the local package.
 - Every `SKILL.md` frontmatter `name` is globally unique across root skills and nested plugin
   skills. Keep the preferred implementation's short name and prefix alternatives with their
   bundle or author. Preserve compatibility renames documented in `~/.dotfiles/skills/README.md`
   when refreshing vendored skills.
+
+OMP and Pi setup is documented in `~/.dotfiles/skills/README.md`. Adding a skill
+beneath an existing OMP discovery root needs no configuration update; a new bundle
+or category needs its parent registered once. Pi's package manifest needs no change.
 
 ## Common tasks
 
@@ -66,23 +75,18 @@ with `"skills": "./skills/"`.
 ```bash
 ~/.dotfiles/test-sync.sh  # includes a global frontmatter-name collision check
 find ~/.agents/skills -maxdepth 1 -type l -print
-find ~/.agents/skills-index -maxdepth 1 -type l -print
 ```
 
-## Always commit afterwards
+## Verification and commits
 
-Adopted/authored skills are real folders in the repo. Commit the copied skill files, plugin
-manifests, and any docs/test updates together:
-
-```bash
-git -C ~/.dotfiles add skills && git -C ~/.dotfiles commit -m "skills: <what changed>"
-```
+Run `~/.dotfiles/test-sync.sh` after changes and exercise discovery in the active
+harness, for example `omp read skill://manage-skills`. Restart OMP or use Pi's
+`/reload` when refreshing an existing session. Commit only when explicitly requested.
 
 ## Engine reference
 
 `~/.dotfiles/sync-skills.sh`
 
 - Links every top-level directory in `~/.dotfiles/skills/` into `~/.agents/skills/`.
-- Recursively finds each `SKILL.md` and links its directory into `~/.agents/skills-index/`.
-- Links `~/.claude/skills` to the same pool.
+- Populates Claude's skill location and the shared pool with root-skill/bundle links.
 - Also syncs local agents and commands.

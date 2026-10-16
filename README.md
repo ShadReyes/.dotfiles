@@ -166,6 +166,17 @@ Herdr configuration is managed from `shared/stow/herdr/`.
 
 - `~/.config/herdr/config.toml` — Herdr configuration
 
+Herdr uses the `terminal` theme so its sidebar, tabs, and borders follow the
+host terminal's ANSI palette. In WezTerm, that palette comes from RiceKit;
+no separate Herdr color file is needed. Apps inside panes can still draw
+their own explicit colors.
+
+After editing Herdr's theme configuration, press `Ctrl+B`, then `Shift+R`
+in the attached Herdr client to reload both client and server settings.
+`herdr server reload-config` alone reloads only the server configuration.
+If a RiceKit palette change leaves the client showing stale colors,
+detach with `Ctrl+B`, then `Q`, and run `herdr` to reattach; panes keep running.
+
 On macOS, Herdr is installed from the `Brewfile`. On Linux, bootstrap uses
 Herdr's official installer. When Claude or Codex configuration directories are
 present, bootstrap also installs and normalizes their Herdr integrations.
@@ -194,6 +205,33 @@ present, bootstrap also installs and normalizes their Herdr integrations.
 
 - Source: `shared/stow/codex/`
 
+### omp
+
+The local Ricekit composer fills the input with the active theme's tool-result
+surface color. Ricekit generates the full omp palette on every theme apply;
+running omp sessions reload the generated theme automatically.
+
+- Composer source: `shared/stow/omp/.omp/agent/extensions/ricekit/index.js`
+- Palette source: `mac/stow/ricekit/.config/ricekit/custom-configs/omp-colors/`
+- Generated output: `~/.omp/agent/themes/ricekit.json` (machine-local, not versioned)
+
+After bootstrap on macOS, with omp and Ricekit installed:
+
+```sh
+ricekit config enable omp-colors
+ricekit apply <theme>
+omp config set theme.dark ricekit
+omp config set theme.light ricekit
+omp config set composer.shape ricekit.input
+```
+
+Restart an existing omp session once to discover the composer extension. Future
+Ricekit theme changes update input and tool-result backgrounds without restarting.
+Edit the Ricekit template to change color mappings, not the generated JSON.
+The rest of `~/.omp/agent/config.yml` stays machine-local, preserving model and
+authentication choices. Named omp profiles require their own extension, theme,
+and appearance configuration; this setup targets the default profile.
+
 ### ricekit
 
 [Ricekit](https://ricekit.dev) theme manager configuration.
@@ -202,8 +240,9 @@ present, bootstrap also installs and normalizes their Herdr integrations.
 - `~/.config/ricekit/custom-themes/` — personal themes (morning-mountains, vo9lyx14s41a1)
 - `~/.config/ricekit/custom-integrations/` — custom integrations (govee-color)
 - `~/.config/ricekit/extensions/` — browser extensions (firefox)
+- `~/.config/ricekit/custom-configs/omp-colors/` — omp palette template
 
-After stowing, run `ricekit apply` to render the active theme across apps.
+After stowing, run `ricekit apply <theme>` to render the selected theme across apps.
 
 - Source: `mac/stow/ricekit/`
 
@@ -242,15 +281,16 @@ Synced to `~/.claude/skills/` and `~/.agents/skills/`.
 Direct root skills also have `agents/openai.yaml` metadata so they appear cleanly in Codex skill
 UI lists.
 
-The sync also creates `~/.agents/skills-index/`. This flat discovery index contains one symlink
-for each root or nested skill. Use this index with clients that inspect only direct children of a
-skill root. The index is generated output. The skill files remain in this repository.
-
 In Codex, `/skills` opens a menu. Choose `List skills` to open the `$` mention picker, then search
 for a skill such as `address` or type `$address-pr-comments` directly.
 
 The `brando` and `matt` directories are local plugin bundles for vendored skill sets.
-Plugin skills are namespaced, such as `brando:react-doctor` and `matt:ask-matt`.
+Keep their nested layout and existing names. Claude plugins can expose names such
+as `brando:react-doctor`; OMP uses configured skill-parent directories and Pi
+supports recursive discovery or the local `skills/package.json` package. See
+[native skill discovery setup](skills/README.md#native-omp-discovery) for one-time
+registration. Adding a skill beneath a registered parent needs no config update.
+
 ### agents/
 
 Custom agent definitions in canonical TOML format. `sync-skills.sh` symlinks the TOML to Codex and generates Claude Code markdown.
@@ -296,10 +336,12 @@ stow -v --delete --no-folding --dir=shared/stow --target="$HOME" wezterm
 
 ## Adding a new skill
 
-1. `mkdir skills/<skill-name>`
-2. Create `skills/<skill-name>/SKILL.md` with YAML frontmatter (`name`, `description`) and markdown body
-3. Run `./sync-skills.sh`
-4. Commit and push
+1. Create a skill under `skills/<skill-name>/` or an existing bundle/category.
+2. Add `SKILL.md` with YAML frontmatter (`name`, `description`) and markdown body.
+   Retain existing names; keep them globally unique and matching the leaf directory.
+3. Run `./sync-skills.sh` for a new root skill or bundle. OMP already scans its
+   registered nested parents; Pi's local package scans recursively.
+4. Restart OMP or use Pi's `/reload` to refresh an existing session.
 
 Imported third-party skills should include their companion docs in the same skill directory, plus an
 `agents/openai.yaml` file for Codex UI metadata.

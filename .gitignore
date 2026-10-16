@@ -4,6 +4,12 @@
 # Local machine-only files moved out of stow packages
 local-runtime/
 
+# Company-specific context stays on this machine, including companion files.
+# Match company-named files/directories at any depth, case-insensitively.
+*[Aa][Cc][Ii][Mm][Aa]*
+# Other confidential skills use this generic local-only namespace.
+/skills/local-*/
+
 # Claude runtime state (never track)
 shared/stow/claude/.claude/history.jsonl
 shared/stow/claude/.claude/policy-limits.json

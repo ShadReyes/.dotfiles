@@ -30,9 +30,8 @@ toml2claude() {
 # --- Skills (shared SKILL.md format — both Claude and Codex read it) ---
 CLAUDE_SKILLS="$HOME/.claude/skills"
 AGENT_SKILLS="$HOME/.agents/skills"
-SKILL_INDEX="$HOME/.agents/skills-index"
 
-mkdir -p "$CLAUDE_SKILLS" "$AGENT_SKILLS" "$SKILL_INDEX"
+mkdir -p "$CLAUDE_SKILLS" "$AGENT_SKILLS"
 
 prune_dead_skill_links() {
   local dir="$1" link target
@@ -59,49 +58,6 @@ for skill_dir in "$DOTFILES/skills"/*/; do
 done
 
 echo "  $skill_count skills → Claude + Codex"
-
-# Some clients inspect only direct children of a skill root. Build a flat
-# index without changing the canonical skill and plugin layout.
-skill_dirs=()
-skill_names=()
-while IFS= read -r skill_file; do
-  skill_dir="$(dirname "$skill_file")"
-  name="$(basename "$skill_dir")"
-  index_link="$SKILL_INDEX/$name"
-
-  if [ -L "$index_link" ]; then
-    target="$(readlink "$index_link")"
-    case "$target" in
-      "$DOTFILES/skills"|"$DOTFILES/skills/"*) ;;
-      *)
-        echo "Cannot index skill $name: $index_link is not managed by this repo" >&2
-        exit 1
-        ;;
-    esac
-  elif [ -e "$index_link" ]; then
-    echo "Cannot index skill $name: $index_link exists and is not a symlink" >&2
-    exit 1
-  fi
-
-  skill_dirs+=("$skill_dir")
-  skill_names+=("$name")
-done < <(find "$DOTFILES/skills" -name SKILL.md -type f | sort)
-
-for link in "$SKILL_INDEX"/*; do
-  [ -L "$link" ] || continue
-  target="$(readlink "$link")"
-  case "$target" in
-    "$DOTFILES/skills"|"$DOTFILES/skills/"*) rm -f "$link" ;;
-  esac
-done
-
-indexed_skill_count=0
-for index in "${!skill_dirs[@]}"; do
-  ln -sfn "${skill_dirs[$index]}" "$SKILL_INDEX/${skill_names[$index]}"
-  indexed_skill_count=$((indexed_skill_count + 1))
-done
-
-echo "  $indexed_skill_count skills → flat discovery index"
 
 # --- Agents (canonical TOML → symlink to Codex, generate markdown for Claude) ---
 CLAUDE_AGENTS="$HOME/.claude/agents"
