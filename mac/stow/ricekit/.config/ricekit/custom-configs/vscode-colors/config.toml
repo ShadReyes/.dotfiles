@@ -1,0 +1,26 @@
+[metadata]
+name = "vscode-colors"
+author = "shadrac.reyes"
+version = "1.1.0"
+description = "VS Code UI and syntax colors synchronized with the active RiceKit palette"
+setup_instructions = """Stow the ricekit package to install the local Ricekit theme extension manifest.
+Select Preferences: Color Theme -> Ricekit (workbench.colorTheme = Ricekit).
+Reload existing VS Code windows once after installing or updating the manifest.
+RiceKit writes the palette on every apply; VS Code's native theme-file watcher
+reloads colors in existing windows. No reload command or new window is needed.
+Edit templates/ricekit.json here, not the generated extension theme file.
+"""
+app = "vscode"
+category = "editor"
+type = "colors"
+
+[target.macos]
+path = "~/.vscode/extensions/shadrac.ricekit-theme-1.0.0/ricekit.json"
+strategy = "direct"
+
+[target.linux]
+path = "~/.vscode/extensions/shadrac.ricekit-theme-1.0.0/ricekit.json"
+strategy = "direct"
+
+[requires]
+colors = ["ansi", "semantic"]

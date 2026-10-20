@@ -232,6 +232,28 @@ The rest of `~/.omp/agent/config.yml` stays machine-local, preserving model and
 authentication choices. Named omp profiles require their own extension, theme,
 and appearance configuration; this setup targets the default profile.
 
+### VS Code
+
+The macOS `ricekit` Stow package installs a local `Ricekit` color-theme
+extension and its RiceKit palette template. Theme applies update existing
+windows without opening VS Code or launching another window.
+
+```sh
+stow -v --no-folding --ignore='\.DS_Store$' --dir=mac/stow --target="$HOME" ricekit
+ricekit config enable vscode-colors
+ricekit apply <theme>
+```
+
+Select **Preferences: Color Theme → Ricekit** (`"workbench.colorTheme": "Ricekit"`).
+Run **Developer: Reload Window** once in windows open during installation or
+manifest updates. Subsequent palette changes reload automatically through VS
+Code's native theme-file watcher (`_watch` in the extension's theme contribution).
+
+- Palette source: `mac/stow/ricekit/.config/ricekit/custom-configs/vscode-colors/`
+- Extension manifest: `mac/stow/ricekit/.vscode/extensions/shadrac.ricekit-theme-1.0.0/package.json`
+- Generated palette: `~/.vscode/extensions/shadrac.ricekit-theme-1.0.0/ricekit.json`
+  (machine-local; do not edit or version)
+
 ### ricekit
 
 [Ricekit](https://ricekit.dev) theme manager configuration.
@@ -241,6 +263,7 @@ and appearance configuration; this setup targets the default profile.
 - `~/.config/ricekit/custom-integrations/` — custom integrations (govee-color)
 - `~/.config/ricekit/extensions/` — browser extensions (firefox)
 - `~/.config/ricekit/custom-configs/omp-colors/` — omp palette template
+- `~/.config/ricekit/custom-configs/vscode-colors/` — VS Code palette template
 
 After stowing, run `ricekit apply <theme>` to render the selected theme across apps.
 
