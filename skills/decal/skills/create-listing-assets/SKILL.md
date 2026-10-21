@@ -17,7 +17,7 @@ For The Decal Company, read [references/company-templates.md](references/company
 
 ## Establish the listing
 
-Read [shared Etsy guidance](../../references/etsy-listing-guidance.md) before choosing image dimensions, composition, or upload order. Use its export defaults for new images and its first-photo rule for Etsy-ready sets; preserve approved template dimensions.
+Read [shared Etsy guidance](../../references/etsy-listing-guidance.md) before choosing image dimensions, composition, or upload order. Use its export defaults for new images and its photo and mockup guidance for draft sets and publication checks; preserve approved template dimensions.
 
 Apply [finished artwork sizing](../../references/artwork-sizing.md) when inspecting SVG dimensions, placing artwork, or verifying size graphics. Record measured artwork bounds separately from artboard dimensions in `listing.json`; a decal-width claim refers to visible artwork. This does not expand the template intake below or change the supplied production master.
 
@@ -54,7 +54,7 @@ If Affinity tools are unavailable or return an application restriction, report t
 
 Read [references/mockups.md](references/mockups.md) for imagegen scene generation, exact artwork compositing in Affinity, and thumbnail review. For every wedding mirror-decal design, generate the required [01A-style couple selfie](references/couple-selfie.md) as a product-specific supporting image. Generate and inspect a blank photographic scene, then use the [Affinity MCP compositing workflow](references/affinity-compositing.md) to place the supplied SVG, match the surface perspective, and match the photographed appearance. Keep the product artwork separate from image generation. Include this output in the manifest and contact sheet; retain draft/blocked status if its scene or composite fails review. For a product that does not suit a wedding mirror selfie, record the reason it is inapplicable rather than forcing that setting onto it.
 
-A complete Etsy-ready set includes a suitable first photo, each applicable template graphic, and the required selfie. Generated lifestyle mockups follow the supporting roles in the shared Etsy guidance. If the first photo is missing, continue the requested asset work and record that gap in `listing.json`. For additional staging, [choose the scene contextually from the design](references/mockups.md#choose-staging-for-the-design). Other staging variations remain optional unless requested.
+A complete draft image set includes a suitable first image, each applicable template graphic, and the required selfie. Follow shared Etsy guidance for photo and mockup provenance. Use an approved exact-artwork composite for the first draft image and record its provenance in `listing.json`. For additional staging, [choose the scene contextually from the design](references/mockups.md#choose-staging-for-the-design). Other staging variations remain optional unless requested.
 
 ## Verify and deliver
 

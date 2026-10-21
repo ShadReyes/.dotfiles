@@ -30,7 +30,7 @@ Apply that guidance to decals:
 
 [Etsy's listing-image policy](https://www.etsy.com/legal/policy/listing-image-requirements/253962679005) generally requires original photos of the actual product. For personalized items, the first image must show a real finished customized example; a blank product or placeholder-text mockup is not suitable. Computer-generated mockups may show customization options in additional images. Production-partner exceptions are specific; do not assume they cover a personalized decal.
 
-For this workflow, keep generated lifestyle composites in supporting roles. If a suitable real first photo is absent, finish the requested design/mockup work and report that missing upload asset. A mockup-only delivery can be complete as a mockup task, but not as an Etsy-ready full listing set. Competitor photos remain review references, not customer upload assets.
+Use approved exact-artwork composites for draft listings and record their generated-image provenance. Publication is a separate workflow. Competitor photos remain review references, not customer upload assets.
 
 ## Competitor evidence
 

@@ -19,29 +19,17 @@ For competitor research or customer-facing listing previews, read [shared Etsy g
 
 ## Assign design ownership
 
-For multiple independent references, use one specialist agent per design when delegation is available. This skill explicitly calls for that delegation. Limit concurrency to available slots and queue additional designs. For one reference, work directly and perform the same review steps; use a separate reviewer when it would resolve a difficult match.
+Use [decal:font-match](../font-match/SKILL.md) for every reference reconstruction. It owns the researcher/designer/independent-reviewer flow, WhatTheFont evidence, visual acceptance, and approval-required Affinity fallback. Complete its checkpoint before production packaging. Preserve explicit user topology and use Herdr workers when Herdr orchestration is requested.
 
-Each specialist owns a unique filename prefix, its font assets, and its production exports. State that other agents share the workspace and that their files must be preserved. Keep integration, comparison, and packaging with the lead agent. If delegation is unavailable, perform these roles sequentially.
-
-Give each specialist:
-
-- The exact listing URL and selected image path, with instructions to view the image.
-- Confirmed font evidence and unresolved identities, without presenting guesses as facts.
-- The fidelity priority, required wording, requested size, and folder/XML conventions.
-- Ownership boundaries and available vector/export tools.
-- A requirement to render and inspect its output, disclose remaining differences, and return editable SVG, outlined SVG, vector PDF, preview, and brief notes.
+For multiple independent references, assign one design owner per reference and queue font research and review within available capacity. Each owner has a unique output prefix. The lead owns integration and packaging; workers must preserve each other's files. Supply the selected image, exact wording, fidelity priority, requested size, folder conventions, and any confirmed font evidence.
 
 ## Resolve lettering before polishing
 
-Use the confirmed font when accessible with suitable usage rights. Check the seller's font statement and primary font sources; a visually similar family is still an approximation. Include redistributable fonts and their licenses in the editable package. Keep purchased fonts out of redistributed packages unless their terms permit inclusion.
+Follow the font-match workflow before selecting substitutes or drawing custom lettering. An unavailable font can leave independent layout work available, but cannot pass the typography checkpoint. Keep purchased fonts out of redistributed packages unless their terms permit inclusion; include permitted fonts and licenses.
 
-Compare candidates using the actual target word or phrase. Judge slant, x-height, stroke contrast, loops, descenders, terminals, and joins—not the broad label “script” or “serif.” Review a small useful set and reject visibly poor matches.
+Match the reference's weight. If easier cutting requires thicker strokes, supply a separately labeled variant for review and preserve the reference-match version. Retain the font-match evidence outside the production package and link it in the design review.
 
-When a font substitute materially changes the appearance, construct custom Bézier lettering that follows the reference. This was the decisive improvement over generic script substitutions. Keep names, dates, and other suitable wording as live text. Explain that custom script is node-editable artwork, not a font that supports arbitrary retyping. If the user requires all wording to remain keyboard-editable, resolve that conflict before replacing text with curves.
-
-An unavailable exact font is not a reason to stop all work. Continue the layout and other designs, and ask for a licensed local font path when it would improve the result. Disclose the fallback. Do not describe custom lettering as the original font or silently claim an exact match.
-
-Match the reference's weight first. If the user also wants easier cutting, identify the tradeoff and, when useful, supply a separately labeled thicker variant. Preserve the approved reference-match version. Large bold generic lettering is not a substitute for fine handwritten lettering in a close-match task.
+Include the font-match [access and licensing summary](../font-match/references/font-access.md) beside the visual comparison before requesting design approval. Identify purchased versus missing fonts and preview-only lettering; retain visual approval separately from production readiness.
 
 ## Build and review
 
@@ -67,7 +55,7 @@ The lead reviews actual renders against each reference. Correct the largest visi
 
 Create a side-by-side comparison containing the source photo, listing link, and rebuilt vector artwork. Make the lettering large enough to assess; include a detail view if the full product photo makes the letters too small. White-on-dark and black-on-light previews help assess mirror decals. Keep source photographs clearly labeled as review references, separate from customer listing assets.
 
-Completion requires all requested designs, visually inspected final renders, resolved conspicuous mismatches or explicit limitations, and production preflight after the last edit. State what remains approximate rather than assigning an invented similarity score.
+Completion requires all requested designs, visually inspected final renders, a passed font-match checkpoint, resolved conspicuous mismatches or an explicitly user-approved change in fidelity scope, and production preflight after the last edit. State what remains approximate rather than assigning an invented similarity score.
 
 ## Deliver
 

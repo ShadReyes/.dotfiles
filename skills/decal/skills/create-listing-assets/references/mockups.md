@@ -2,7 +2,7 @@
 
 Use `imagegen` for generated photographic scenes and raster edits, and Affinity for the user-requested exact vector placement and template assembly. Load both skills. Use the built-in image generation tool by default; CLI fallback requires the authorization described by `imagegen`.
 
-Read [shared Etsy guidance](../../../references/etsy-listing-guidance.md) before choosing the scene canvas or upload role. Apply its export defaults, crop checks, and personalized-item first-photo rule.
+Read [shared Etsy guidance](../../../references/etsy-listing-guidance.md) before choosing the scene canvas or upload role. Apply its export defaults, crop checks, and photo and mockup guidance for drafts and publication.
 
 ## Reference direction
 
