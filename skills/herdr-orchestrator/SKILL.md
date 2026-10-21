@@ -60,10 +60,13 @@ prompts that invoke `$orchestrator`, other skills, or their own sub-agents.
 7. Monitor workers through their unique agent names or explicit hosting pane
    IDs, using the agent status, wait, and read procedures from `herdr:herdr`.
    On timeout or `blocked`, inspect the agent and apply only the follow-up
-   behavior requested by the prompt.
+   behavior requested by the prompt. After collecting a worker's result and
+   completing its requested follow-up, close its created hosting pane. Keep it
+   open only if the user requested that or the worker still has assigned work.
 
 8. Report the created topology, worker status, and results requested by the
-   prompt. Preserve the calling pane and all unrelated Herdr resources.
+   prompt. Do not reuse a worker agent or pane for an unrelated task. Preserve
+   the calling pane and all unrelated Herdr resources.
 
 ## Worker permissions
 
@@ -95,8 +98,6 @@ Bypass mode does not expand the worker's task scope.
   `herdr:herdr`.
 - Never close the coordinator pane or a resource this orchestration did not
   create.
-- Close created worker panes only when the prompt's requested lifecycle calls
-  for it.
 - Do not remove a worktree checkout merely because its worker completed.
 - Use `herdr worktree remove` only when the user explicitly requests cleanup
   and the checkout is safe to delete.
