@@ -47,6 +47,10 @@ Do not create auxiliary documentation unless the user asks for it. The HTML brie
    - Open the HTML file when possible and inspect it for layout problems.
    - Check that the document prints well: no dark full-page backgrounds, no clipped tables, and sensible page breaks.
 
+6. Present the finished brief.
+   - Open the final HTML in the user's visible default browser before handing it off or requesting a decision. On macOS, use `open` with the quoted absolute file path. Do this automatically for each new or revised review brief unless the user asks otherwise; a headless validation browser does not satisfy this step.
+   - Include a clickable file link in the handoff. If opening fails or no graphical browser is available, report that limitation and retain the link.
+
 ## Recommended Sections
 
 Use only the sections that fit the plan.
