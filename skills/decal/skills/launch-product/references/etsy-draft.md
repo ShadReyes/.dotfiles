@@ -10,7 +10,7 @@ Build a destination specification before writing:
 
 - Product-specific title, description, tags, materials, Piece count, supported surfaces/use, and personalization instructions. Remove old product wording and sample data.
 - Applicable taxonomy/properties, shipping, return policy, processing/readiness, shop section, and production-partner settings. Validate required values and whether inherited settings apply to the new product.
-- Retained size/price combinations inside the approved sale range supported by minimum physical qualification and maximum digital fit verification, mapped to actual artwork widths with explicit units. Preserve applicable color/other combinations, currency, quantities, and inventory dependency fields. Use the source's actual sale options, not size examples in images.
+- Retained size/price combinations inside the approved sale range supported by minimum physical qualification and maximum digital fit verification, mapped to explicit units under the [production contract](../../../references/decalflow-production-contract.md#width-and-geometry). Apply its retention rules when revising historical claims. Preserve applicable color/other combinations, currency, quantities, and inventory dependency fields. Use the source's actual sale options, not size examples in images.
 - New, non-colliding SKUs when the shop uses them, with a retained mapping to the new Product. Never reuse identifiers that would route this design's orders to the template product.
 - Exact approved image paths, hashes, order, and descriptive alt text identifying styled mockups as such.
 - Personalization questions for personalized designs, even when the template has none. Follow [personalization](personalization.md).

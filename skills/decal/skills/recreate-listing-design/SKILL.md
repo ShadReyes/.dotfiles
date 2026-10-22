@@ -33,7 +33,7 @@ Include the font-match [access and licensing summary](../font-match/references/f
 
 ## Build and review
 
-Read [finished artwork sizing](../../references/artwork-sizing.md) before choosing physical dimensions: requested decal size refers to visible artwork. Read [references/vector-production.md](references/vector-production.md) when constructing or exporting the SVGs for shaping, script outlines and preflight.
+Read [finished artwork sizing](../../references/artwork-sizing.md) before choosing physical dimensions: resolve the requested measurement basis. For DecalFlow sizing or package delivery, apply the [production contract](../../references/decalflow-production-contract.md). Read [references/vector-production.md](references/vector-production.md) when constructing or exporting the SVGs for shaping, script outlines and preflight.
 
 Maintain the user's requested folder convention. Otherwise use:
 

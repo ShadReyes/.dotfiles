@@ -8,7 +8,16 @@ Before design approval, inspect authoring previews for representative short, lon
 
 For qualification, identify inputs that stress fine details at the minimum and Piece dimensions/application at the maximum. Include additional endpoint specimens when one input cannot represent both risks. The user approves physical results for the recorded scope.
 
-Overflow requires review. Do not automatically shrink text, substitute fonts, drop characters, or change spacing to force a fit. A change to the approved template follows the design/version approval loop.
+## Author the fitting policy
+
+Before choosing binding policy or preparing examples, read the shared
+[production contract](../../../references/decalflow-production-contract.md).
+Choose design-specific rectangles, tracking, linked groups and review limits
+using the installed schema. Include these choices and actual preparation
+measurements in the design review and retain application acceptance receipts.
+Verify tracking, date figures and other supported font features against the
+approved sample; report unsupported typography. Apply the contract's change
+scope when replacing a fixed sample with an editable design.
 
 ## Etsy and order intake
 

@@ -7,7 +7,8 @@ Record:
 - Run ID, product slug, source reference/artwork, source hash, exact design version/package hash, and mode (`fixed` or `personalized`).
 - Design options with stable IDs, versions, editable source and preview paths/hashes, change notes, available source ownership/license information, and unresolved rights questions. Record the comparison brief and the user's selected option/version separately from final design/Piece approval.
 - Font-match record path/hash, per-element review status, WhatTheFont evidence, substitute acceptance, and scoped Affinity fallback authorization when reconstructing reference lettering. Fallback authorization permits the attempt; it does not approve the resulting artwork.
-- Piece definitions, field contract and sample/extreme inputs, template shop/listing IDs, Product/mapping IDs and revisions.
+- Piece definitions, field contract and sample/extreme inputs, exact fitting policy, template shop/listing IDs, Product/mapping IDs and revisions.
+- Preparation IDs and output hashes, sizing policy, per-Piece and assembled widths, local/final factors, measured warnings, and application warning-acceptance references. Link application receipts rather than inventing a parallel acceptance record.
 - Each stage's status (`pending`, `working`, `awaiting-approval`, `blocked`, `complete`, or `stale`), evidence paths, and next action.
 - Calculated size-limit receipts, production arrangement, candidate and approved endpoint widths, units, and offered size/price combinations. Record minimum physical results separately from maximum digital fit and optional maximum physical results. A skipped maximum physical test is not a pass. Retain the evidence basis for the approved sale range.
 - Approvals with stage, exact artifact hashes or snapshot identity, relevant dimensions/fields/material, user's decision, timestamp, and conversation reference or retained approval text. A proposed default, agent review, or silence is not an approval.
@@ -31,9 +32,10 @@ Etsy writes have no assumed idempotency key. Persist intent before creating a dr
 | Reference image, font, font features, or lettering | Affected font-match evidence and visual review; reconsider scoped substitution/fallback decisions and downstream artwork approvals |
 | Artwork geometry, font, field layout, or Cut Group/Piece definition | Design/Piece review; new immutable design version; affected size calculations, endpoint tests, assets, and mapping |
 | Material or production arrangement/settings that affect results | Fit and affected physical qualification |
+| Fitting rectangles, shared scales, tracking, review thresholds, or new sizing policy | Apply the [production contract change scope](../../../references/decalflow-production-contract.md#retention-and-change-scope) and mark affected evidence stale |
 | Allowed personalization inputs | Field validation, representative extremes, size calculations and affected qualification/assets |
 | Test endpoint or offered width | Fit and qualification coverage; size graphics and inventory |
 | Image content, crop, or upload order | Image review of the changed set |
 | Listing copy, prices, or inventory | Draft readback and mapping verification; reopen other gates only if production facts changed |
 
-Preserve old evidence as history; mark affected downstream state stale and state why. Approval remains valid only for its recorded scope. Reuse unrelated valid approvals. A repeated customer name does not require new artwork approval if it is within the approved template contract, but each generated preparation still needs fit/overflow validation.
+Preserve old evidence as history; mark affected downstream state stale and state why. Approval remains valid only for its recorded scope. Reuse unrelated valid approvals. On resume, apply the [production contract](../../../references/decalflow-production-contract.md) to changed policy, generated preparations and retained artifacts.

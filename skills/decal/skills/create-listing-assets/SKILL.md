@@ -19,7 +19,7 @@ For The Decal Company, read [references/company-templates.md](references/company
 
 Read [shared Etsy guidance](../../references/etsy-listing-guidance.md) before choosing image dimensions, composition, or upload order. Use its export defaults for new images and its photo and mockup guidance for draft sets and publication checks; preserve approved template dimensions.
 
-Apply [finished artwork sizing](../../references/artwork-sizing.md) when inspecting SVG dimensions, placing artwork, or verifying size graphics. Record measured artwork bounds separately from artboard dimensions in `listing.json`; a decal-width claim refers to visible artwork. This does not expand the template intake below or change the supplied production master.
+Apply [finished artwork sizing](../../references/artwork-sizing.md) when inspecting SVG dimensions, placing artwork, or verifying size graphics. Record the width basis, per-Piece and assembled bounds separately from artboard dimensions in `listing.json`. For DecalFlow product labels and measurement arrows, apply the [production contract](../../references/decalflow-production-contract.md#width-and-geometry). This does not expand the template intake below or change the supplied production master.
 
 Inspect the supplied design and every template/export pair. Record the product name and artwork path. For The Decal Company, follow the [intake and approved copy rules](references/company-templates.md#intake-and-approved-copy). For another shop, use its supplied template rules. Reuse answers already supplied and continue independent scene and layout work while awaiting missing details.
 
