@@ -5,7 +5,7 @@ description: Take a fixed or personalized decal from a reference URL or existing
 
 # Launch a decal product
 
-Coordinate the existing design, DecalFlow, Inkcut, and listing-assets skills. Finish with a verified Etsy **draft** and its DecalFlow Product/listing mapping. Publication and cutter motion require separate actions; this workflow does neither.
+Coordinate the existing design, DecalFlow, Inkcut, listing-assets, and product-tags skills. Finish with a verified Etsy **draft** and its DecalFlow Product/listing mapping. Publication and cutter motion require separate actions; this workflow does neither.
 
 ## Start or resume
 
@@ -13,7 +13,7 @@ Create or load `launch.json` in the product's production folder. Follow [run sta
 
 Accept a reference URL or existing artwork, product name, and optional template listing. Default to the owner's “Your Seat Awaits” listing; resolve it in the connected shop and retain its exact ID. If ambiguous, ask which listing to use. Read-only discovery can proceed while a human gate is pending; dependent production stages must wait.
 
-The agreed defaults are fixed **and** personalized designs, a 12-inch initial minimum test width, and template size/price options filtered to the approved range. Read the [production contract](../../references/decalflow-production-contract.md) before choosing sizes, authoring personalization, capturing exports, or resuming a changed design. Use [finished artwork sizing](../../references/artwork-sizing.md) for measurement technique. Automatic physical-cuttability detection remains unavailable.
+The agreed defaults are fixed **and** personalized designs, a 12-inch initial minimum test width, and the [shop price ladder](references/pricing.md) filtered to the approved range. Read the [production contract](../../references/decalflow-production-contract.md) before choosing sizes, authoring personalization, capturing exports, or resuming a changed design. Use [finished artwork sizing](../../references/artwork-sizing.md) for measurement technique. Automatic physical-cuttability detection remains unavailable.
 
 ## Wedding sample names and dates
 
@@ -59,7 +59,7 @@ Ask the user to select an option, request revisions, or specify a combination. S
 
 Complete visual and vector preflight on the selected version. DecalFlow service failures do not replace or suspend unresolved lettering work. Use `decal:decalflow` to inspect the package contract and define Pieces through Cut Groups: a Piece is a shipped application unit, not every disconnected letter or SVG path. Account for every path, authored alignment, color, and shipped piece count.
 
-For personalized designs, read [personalized designs](references/personalization.md). Build a supported template package with declared fields and fonts, not just outlined sample wording. Before approval, use authoring previews and a non-persisting package-import dry run. After approved registration, verify actual renderer output before physical qualification; any required artwork or field-contract change reopens design approval.
+For personalized designs, read [personalized designs and intake decisions](references/personalization.md) before defining template fields or Etsy questions. Build a supported template package with declared fields and fonts, not just outlined sample wording. Before approval, use authoring previews and a non-persisting package-import dry run. After approved registration, verify actual renderer output before physical qualification; any required artwork or field-contract change reopens design approval.
 
 Present one design review brief: rendered artwork, side-by-side reference comparison when applicable, numbered Pieces, assembled installation layout, widest-Piece and assembled bounds, and personalization fields/examples with their fit rectangles, linked groups, tracking, and review limits. Identify the exact design package/version and summarize visual/vector preflight and package-import dry-run results. Record **user approval** of this exact artwork and Piece definition before registration and test preparation. Agent preflight alone does not satisfy this gate.
 
@@ -68,6 +68,8 @@ Present one design review brief: rendered artwork, side-by-side reference compar
 Use `decal:decalflow` to dry-run and import the approved versioned package and create or reuse its Product. Verify returned identity, measured bounds, Cut Groups, and field definitions. Keep pending physical qualification explicit; importing does not qualify a design.
 
 Discover the installed CLI and read its `Calculated max design width` documentation. Prepare the exact design/fields at a valid reference width, wait for completion, then call `job size-limits PREPARATION_ID --json`. Retain the full result and limiting group IDs. Use the numeric result without rounding upward. An unavailable limit is a blocker, not zero or permission to estimate silently.
+
+Every fixed or personalized product has an absolute offered-width cap of **48 inches (1219.2 mm)**, measured on the production contract's width basis. Set its candidate maximum to `min(48 inches, DecalFlow calculated maximum for the actual material)`. For personalized products, use the most restrictive calculated limit across the supported input examples. Retain the raw DecalFlow limit, material assumptions, 48-inch cap, candidate maximum, and final fit-verified maximum separately in `launch.json`. Confirm that the calculation's material width, usable width, margins, and permitted rotations match production; resolve a mismatch through a supported calculation before selecting sizes. Full arrangement checks, borders, gaps, machine constraints, or qualification can lower the maximum further. The 48-inch cap limits offered product width; it does not impose a feed-length cap or establish material fit.
 
 The existing calculation uses a 24-inch roll minus a **2-inch total** margin, independent 90-degree Cut Group rotation, and unlimited feed length. It excludes Weed Borders and production gaps and assumes alignment assemblies can be placed separately. Review the actual production arrangement with explicit material width, margins, borders, spacing, and rotation before choosing a maximum. Default to continuous roll feed: pack independent Pieces across the usable width and along the feed direction on one sheet, minimizing feed length while preserving clearances. Apply a feed-length limit only when the user specifies one or the installed device has a verified limit. If an export requires a finite sheet length, derive it from the arranged Pieces, gaps, and end margins; do not invent a cap or split the job merely to fit a default page length. Do not treat the geometric ceiling as an approved sale size or duplicate the calculation in this skill.
 
@@ -87,7 +89,7 @@ On failure, retain the result and propose a size or design correction. Recheck a
 
 ## 4. Build and approve listing assets
 
-Select the template's size/price options within the qualified range; retain their prices and currency. Check every offered option, including personalized inputs, against its production constraints. Ask for resolution if no options remain or a price/option cannot be mapped; do not invent prices or enlarge the approved range.
+Build offered size/price options from the [shop price ladder](references/pricing.md), using the qualified minimum and the maximum determined in stage 2. Apply its whole-inch maximum and interpolated-price rules. The shop ladder supersedes inherited template widths and prices. Reuse applicable template colors, inventory dependencies, and other settings; map the selected widths and prices explicitly in the destination specification. Check every offered option, including personalized inputs, against production constraints. Pricing can be prepared for discussion while qualification is pending; label such options provisional. An empty range or an unsupported currency requires resolution.
 
 Use `decal:create-listing-assets`, with the approved artwork, piece count, color, and sale sizes. That skill owns template graphics, the required applicable couple selfie, and contextual staging. Generate blank photographic scenes and composite exact artwork through Affinity MCP. Verify product-specific size claims against the production contract. Preserve approved generic measurement examples as examples, not sale options. This launch workflow supplies the expanded intake for sizes and personalization; change product-specific copy that would otherwise misstate the approved product, retain unrelated template copy, and include those edits in image approval.
 
@@ -95,6 +97,8 @@ Present a listing-image review brief with the ordered contact sheet, a large pre
 
 ## 5. Create and verify the Etsy draft
 
+Use [decal:product-tags](../product-tags/SKILL.md) to research and validate the destination's 13 tags against the approved product, category, attributes, and actual personalization support. Start with the conditional base and reserve product-specific slots; replace irrelevant template tags. Save `tag-plan.json` and link its hash from `launch.json`. Missing keyword metrics are recorded as unmeasured demand, not invented evidence. The tag plan is part of the destination specification; this stage does not authorize editing the source template.
+
 Read [Etsy draft handoff](references/etsy-draft.md). Use the Etsy MCP to adapt the template, create the draft, upload the approved assets, set inventory and personalization, and read back the saved resources. Never copy the template's active state. Link the exact new listing ID, options, and fields to the DecalFlow Product and verify the mapping.
 
-Completion requires the design/Piece approval, minimum physical approval, maximum digital fit verification (and resolution of any elected maximum test failures), image approval, verified remote draft content and inventory, and verified DecalFlow mapping. Return the draft ID/link when available, product folder, approval evidence, and any remaining limitations. Leave the listing in draft; a blocked or partial draft is not a completed launch.
+Completion requires the design/Piece approval, minimum physical approval, maximum digital fit verification (and resolution of any elected maximum test failures), image approval, a validated tag plan with matching saved tags, verified remote draft content and inventory, and verified DecalFlow mapping. Return the draft ID/link when available, product folder, approval evidence, tag-plan path, and any remaining limitations. Leave the listing in draft; a blocked or partial draft is not a completed launch.
