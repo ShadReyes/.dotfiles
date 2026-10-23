@@ -26,6 +26,8 @@ Paths below are relative to `Design Assets`.
 
 The About and Size Guide references use a black arched mirror. Both contain the old design: initials, “Smile. You're on Camera.”, names, and year. About also has three placement boxes and copy claiming three shipped decals. Replace the old artwork and its placement boxes.
 
+When the About graphic states a shipped Piece count, show a fine dotted outline around each actual application Piece on its mirror diagram. Derive the outlines from the approved Cut Groups; keep them as visual explanations outside the production artwork. Check that the number of outlines equals the stated count and that multi-element Pieces remain grouped together.
+
 Installation guide policy confirmed on 2026-10-11: use the approved universal 3:4 portrait, eight-step guide with the dotted backing cut line in step 4. Its canonical paths are listed above. Reference this shared PNG as upload image 4 in every listing; do not adapt its artwork or copy its native source, export, or supporting assets into production listings. Earlier guides under `Design Assets/Archived/Installation Guides` are deprecated. Recheck the canonical asset and current brand instructions on each run.
 
 ## Intake and approved copy
@@ -41,7 +43,11 @@ Preserve branding and keep approved sizing examples separate from the artwork be
 
 ## Mirror placement
 
+Always display the product artwork in black in the Size Guide template so it remains visible against the mirror background. This display color is independent of the tested vinyl color or selected sample color. Generated photographic mockups may use black or white artwork, chosen for contrast. Record each output's display color in the listing manifest and verify it in the contact sheet.
+
 Placement rule clarified by the user on 2026-10-11: place the complete sign design toward the top of the mirror in both About and Size Guide graphics. Match its relative position within each mirror rather than using equal page coordinates when mirror sizes or positions differ. Preserve exact artwork proportions and use consistent scale relative to mirror width.
+
+Target roughly 2 inches of clear glass on each side of the widest visible artwork in both template diagrams and photographic mockups. Center the complete design and retain visible padding below the arch. Apply the [size-before-projection calculation](affinity-compositing.md#size-and-center-before-projection); record mirror-width assumptions for generated scenes. Keep the approved Size Guide's 23-inch mirror/20-inch decal example as the stated illustrative exception (1.5 inches per side), without altering its existing labels or copy.
 
 Use another arrangement when confirmed separate pieces, the supplied design, or explicit user instructions require it; record the reason. Placement does not establish the shipped-piece count, which must be confirmed separately.
 

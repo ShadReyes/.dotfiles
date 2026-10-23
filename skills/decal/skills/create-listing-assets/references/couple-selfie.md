@@ -2,9 +2,13 @@
 
 Create one generated couple-selfie supporting image for each wedding mirror-decal design. The user selected the 01A composition: a couple below an upper-centered decal, a visible phone, and a modestly beautiful indoor venue. Generate a fresh blank scene for each design unless the user requests reuse. The earlier 01A tests establish visual direction, not certified camera geometry or physical dimensions.
 
+Before generating, inspect recent listing mockups from this shop. Choose a materially different couple, clothing, venue styling, camera viewpoint, and framing. Record these choices beside the prior images compared in `mockups/prompts.md`. The recurring 01A elements are the visible phone, couple beneath the design, and enough clear mirror space; they do not require repeating the same people, pose, clothing, mirror, or crop. Reject a new scene that reads like another crop of an earlier listing, even when its file and faces are newly generated.
+
 ## Prepare the scene
 
 Inspect the supplied SVG before generation. Reserve space for its complete visible bounds and aspect ratio above the reflected faces. Keep the artwork centered on the mirror; arrange people and framing around that position. A taller design can require a taller mirror or a lower reflected couple. Do not shrink, stretch, reflow, or move the design to one side to accommodate faces.
+
+For The Decal Company, plan the scene around the [mirror margin rule](company-templates.md#mirror-placement): roughly 2 inches of glass on each side of the widest artwork. Calculate the resulting artwork height before reserving space above the couple. Use a sufficiently tall mirror and lower people placement to accommodate that scale.
 
 Use a portrait 4:5 composition for this supporting image; export at 2400 × 3000 px with the shared color and quality checks. Record this intentional portrait choice in `listing.json`. A small generated preview is not a final-resolution asset merely because it was upscaled.
 

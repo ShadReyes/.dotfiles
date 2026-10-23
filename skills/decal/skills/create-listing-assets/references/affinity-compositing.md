@@ -12,9 +12,21 @@ For an angled surface, identify four coplanar landmarks in consistent corner ord
 
 Work on copies and verify the native document path before mutation. Keep the supplied production SVG unchanged. Open/import that SVG through Affinity MCP, preserve its complete design as an editable vector group, and place the blank photo as a separate embedded layer beneath it. Perform artwork placement and appearance changes through MCP; an externally assembled SVG opened in Affinity afterward is not the tested native-placement workflow.
 
-- For a frontal plane, uniformly scale by visible artwork bounds and translate the complete group into position.
+- For a frontal or nearly frontal plane, use uniform scale, measured in-plane rotation and translation. Measure the inner-glass bottom-edge angle with `theta = atan2(yRight - yLeft, xRight - xLeft)` and check it against the side edges. Use `pImage = s * R(theta) * pSource + t`. Treat this as a near-frontal approximation when convergence is visible; do not add an invented perspective tilt.
 - For an angled plane, map the complete design with one projective homography. Define its placement and unchanged aspect ratio in the physical surface plane before projection. Keep all lines, flourishes and punctuation under the same mapping. Rotation, shear or independent line adjustments cannot substitute for perspective.
 - Record the landmarks, plane aspect ratio, placement rectangle and transform. Use measured surface dimensions when supplied; otherwise label the ratio and physical size assumptions as illustrative. Four image corners alone do not establish the physical aspect ratio or decal size.
+
+### Size and center before projection
+
+Use the source curves' actual visible bounds, not the SVG canvas. Let `M` be usable inner-glass width in inches, `m` the intended margin on each side, and `A` the source artwork width. Set `W = M - 2*m`, uniform plane scale `s = W/A`, and centered left position `x = m`. Scale the artwork height by the same `s`. For a frontal glass width of `P` pixels, artwork width is `P * (M - 2*m)/M`. Use the shop's placement rule for `m`; record the chosen mirror and decal dimensions. For generated scenes, dimensions are explicit illustration assumptions, not measurements recovered from a photograph. If illustrating a specific offered decal width `W`, choose a compatible mirror width `M = W + 2*m`.
+
+Define this placement in the mirror plane first, then apply one homography to the complete artwork. Never independently squeeze its width and height into a hand-picked image quadrilateral. Adjust clearance with one uniform scale or translation. On arched glass, verify the entire artwork against the curved glass boundary and leave visible top padding; the maximum artwork width does not make every shorter text line have the same side margin. Change the scene or placement if the intended scale collides with faces or the arch.
+
+### Verify alignment against the scene
+
+Retain an annotated view with traced inner-glass edges, the artwork centerline, and heading/name/date baseline guides. Record the measured angles and side clearances at the artwork, then inspect both the annotated and clean exports. For perspective views, compare directions against the same plane model; projected parallel lines can converge and need not share one image angle. Establish plane landmarks independently of the artwork. An arch's bounding-box top corners are not measured rectangle corners. Label any unobservable geometry and assumptions.
+
+Check source proportions in the unprojected placement and, when independent calibration exists, in the rectified export. A transform's inverse round trip proves internal consistency only. File hashes, source path tokens and native reopen checks do not establish scene alignment. A visible mismatch keeps the composite in draft even when those checks pass.
 
 ### Perspective fallback through editable contours
 
