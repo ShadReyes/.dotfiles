@@ -13,6 +13,8 @@ Use [implement-change](../../../implement-change/SKILL.md) for repository discov
 
 Load the product's `launch.json`, listing manifest, destination Etsy listing ID, approved image identities, sale range, and personalization decisions. Read the current listing and relevant inventory/images through the Etsy connector before asserting availability or product options. Match the connected shop and listing ID to this product; the reference and template listings are not the destination. Read-only discovery does not authorize Etsy mutations.
 
+For a full-shop catalog refresh, retrieve every page of active listings from shop `64936295` and reconcile their IDs against the catalog. Retain the readback date, returned count, and exact active-ID set. Resolve missing active products and entries that are no longer available before reporting complete coverage; keep draft/local preparation separate from the public catalog. The site uses maintained repository data, not a browser-side Etsy API fetch.
+
 A verified Etsy draft is sufficient to prepare the catalog change locally. Before deploying a public purchase link, confirm the listing is active and available to buyers. Keep a draft's website change local or in a non-production preview until then. An active listing does not authorize deployment by itself; follow the current request's deployment scope. When resuming after owner publication, retain that active state and record it separately from the earlier draft evidence.
 
 ## Use the owner's Share & Save URLs
@@ -30,15 +32,17 @@ Reuse the site's `ETSY_SHOP_URL` constant for shop links and construct listing l
 
 ## Update the catalog
 
-The current catalog source is `src/data/products.ts` (`CATALOG_PRODUCTS`); `src/components/CatalogCard.astro` renders it on `src/pages/index.astro`. Rediscover these paths if the site changes. Update an existing entry by listing ID on resume instead of adding a duplicate. Keep unrelated catalog entries and the general example/guide content.
+The current catalog source is `src/data/products.ts` (`CATALOG_PRODUCTS`); `src/components/CatalogCard.astro` renders it on the full `/catalog` page (`src/pages/catalog.astro`) and the home page. Rediscover these paths if the site changes. Update an existing entry by listing ID on resume instead of adding a duplicate. Maintain the desktop/mobile navigation, footer, and home-page links to `/catalog`. Keep unrelated catalog entries and the general example/guide content.
 
 Use the approved listing title or a concise equivalent, factual product copy, the destination listing ID and slug, and a product-specific image. Copy the approved export into `public/images/products/` using a stable descriptive filename. Retain the source path/hash and copied file hash; preserve artwork and image proportions. Use actual image dimensions and descriptive alt text, identifying styled mockups and sample personalization where relevant. Website preparation reuses approved assets; artwork or image revisions return to their owning design/listing-assets workflow.
 
 Describe only the verified product: personalization, included Pieces, colors, surfaces, and offered sizes. State that mirrors and props are excluded when applicable. Use customer language; keep production implementation details in the run record. Prefer referring buyers to Etsy for current prices/options instead of duplicating a changing price ladder. Any displayed price must come from current enabled offerings with its currency and relevant variation qualification.
 
+Use “Choose a lettering width” in catalog copy and direct buyers to Etsy for the current options. Keep exact qualification limits in production records. Make card labels and calls to action match each listing: a fixed design uses a shop/view action, while a verified personalized design can offer personalization. Retain product-specific exclusions, including seating cards when they are props.
+
 ## Verify and record
 
-Run the repository's build and relevant checks. Inspect the built home page on desktop and mobile: the new entry appears once, the correct image loads without clipping the design, copy remains readable, and its image/button links target the exact listing. Check internal links and local image paths. Inspect all generated pages, including structured metadata, for links to Etsy; links to this shop must use the storefront origin above. A source-only URL search misses rendered links and metadata.
+Run the repository's build and relevant checks. Inspect the built catalog and home pages on desktop and mobile: each intended entry appears once per page, the correct images load without clipping the designs, copy remains readable, and image/button links target the exact listings. Verify the catalog navigation and active-page state. Check internal links and local image paths. Inspect all generated pages, including structured metadata, for links to Etsy; links to this shop must use the storefront origin above. A source-only URL search misses rendered links and metadata.
 
 Record a website checkpoint in the product's `launch.json`, with a linked receipt when useful:
 
