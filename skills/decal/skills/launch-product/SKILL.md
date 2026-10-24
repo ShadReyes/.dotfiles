@@ -1,11 +1,11 @@
 ---
 name: launch-product
-description: Take a fixed or personalized decal from a reference URL or existing SVG through design alternatives and selection, design approval, DecalFlow registration, physical cut qualification, approved listing assets, and a verified Etsy draft. Use to start or resume the complete product-launch workflow.
+description: Take a fixed or personalized decal from a reference URL or existing SVG through design approval, DecalFlow registration, cut qualification, approved listing assets, a verified Etsy draft, and a prepared website catalog entry. Use to start or resume the complete product-launch workflow.
 ---
 
 # Launch a decal product
 
-Coordinate the existing design, DecalFlow, Inkcut, listing-assets, and product-tags skills. Finish with a verified Etsy **draft** and its DecalFlow Product/listing mapping. Publication and cutter motion require separate actions; this workflow does neither.
+Coordinate the design, DecalFlow, Inkcut, listing-assets, product-tags, and website-catalog skills. Finish with a verified Etsy **draft**, its DecalFlow Product/listing mapping, and a verified local website catalog update. Etsy publication, website deployment, and cutter motion are separate actions; this workflow prepares the handoffs and does not perform those actions without authorization.
 
 ## Start or resume
 
@@ -101,4 +101,12 @@ Use [decal:product-tags](../product-tags/SKILL.md) to research and validate the 
 
 Read [Etsy draft handoff](references/etsy-draft.md). Use the Etsy MCP to adapt the template, create the draft, upload the approved assets, set inventory and personalization, and read back the saved resources. Never copy the template's active state. Link the exact new listing ID, options, and fields to the DecalFlow Product and verify the mapping.
 
-Completion requires the design/Piece approval, minimum physical approval, maximum digital fit verification (and resolution of any elected maximum test failures), image approval, a validated tag plan with matching saved tags, verified remote draft content and inventory, and verified DecalFlow mapping. Return the draft ID/link when available, product folder, approval evidence, tag-plan path, and any remaining limitations. Leave the listing in draft; a blocked or partial draft is not a completed launch.
+This stage requires the design/Piece approval, minimum physical approval, maximum digital fit verification (and resolution of any elected maximum test failures), image approval, a validated tag plan with matching saved tags, verified remote draft content and inventory, and verified DecalFlow mapping. Leave a newly created listing in draft; a blocked or partial draft cannot advance. On resume after owner publication, read and retain the current active state rather than recreating the listing or reverting its state.
+
+## 6. Update the website catalog
+
+Use [decal:update-website-catalog](../update-website-catalog/SKILL.md) to add or update the destination listing in `/Users/shad/src/the-decal-company-site`. Pass the launch record, exact destination listing ID, approved images, sale range, and personalization facts. Use the owner's Share & Save storefront for every Etsy shop/listing link under that skill's URL policy.
+
+Prepare and verify the catalog change even while the Etsy listing remains a draft. Record website preparation and deployment separately; a public purchase link requires an active listing, and deployment follows the current request's authorization. A verified local change completes this final stage when deployment was not requested. Reuse an existing catalog entry by listing ID on resume.
+
+Launch completion requires stage 5's verified handoff and the website update verified at the requested scope. Return the destination listing ID and Share & Save URL, product folder, approval evidence, tag-plan path, website branch/changed files and checks, actual deployment state, and any remaining limitations. Do not report the Etsy listing or website as published from draft or local-build evidence.

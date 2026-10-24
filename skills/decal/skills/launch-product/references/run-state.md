@@ -9,6 +9,7 @@ Record:
 - Font-match record path/hash, per-element review status, WhatTheFont evidence, substitute acceptance, and scoped Affinity fallback authorization when reconstructing reference lettering. Fallback authorization permits the attempt; it does not approve the resulting artwork.
 - Piece definitions, field contract and sample/extreme inputs, exact fitting policy, template shop/listing IDs, Product/mapping IDs and revisions.
 - Tag-plan path/hash, product facts and category/attribute snapshot, research date and evidence availability, selected base/dynamic tags, exact final 13-tag array, validation, and remote tag readback receipt. Keep the full selection rationale in `tag-plan.json`.
+- Website checkpoint under [update-website-catalog](../../update-website-catalog/SKILL.md): repository/branch, destination listing identity and Share & Save URL, current Etsy state, catalog and image identities, checks, and separate preparation, commit/push, and deployment results. Retain any deferred publication/deployment action; local preparation does not establish a live release.
 - Preparation IDs and output hashes, sizing policy, per-Piece and assembled widths, local/final factors, measured warnings, and application warning-acceptance references. Link application receipts rather than inventing a parallel acceptance record.
 - Each stage's status (`pending`, `working`, `awaiting-approval`, `blocked`, `complete`, or `stale`), evidence paths, and next action.
 - Calculated size-limit receipts, production arrangement, candidate and approved endpoint widths, units, and offered size/price combinations. Record minimum physical results separately from maximum digital fit and optional maximum physical results. A skipped maximum physical test is not a pass. Retain the evidence basis for the approved sale range.
@@ -39,6 +40,8 @@ Etsy writes have no assumed idempotency key. Persist intent before creating a dr
 | Test endpoint or offered width | Fit and qualification coverage; size graphics and inventory |
 | Image content, crop, or upload order | Image review of the changed set |
 | Listing copy, prices, or inventory | Draft readback and mapping verification; reopen other gates only if production facts changed |
+| Website catalog copy, listing URL, or image | Recheck the affected catalog entry, image provenance, Share & Save URL, build, and preview; preserve unrelated production approvals |
+| Etsy publication or availability | Recheck current listing state before website deployment; retain earlier draft evidence as history |
 | Tags, category, attributes, or supported product use/personalization | Re-evaluate the tag plan and saved tags against current product facts; preserve unrelated production/image approvals unless their facts changed |
 
 Preserve old evidence as history; mark affected downstream state stale and state why. Approval remains valid only for its recorded scope. Reuse unrelated valid approvals. On resume, apply the [production contract](../../../references/decalflow-production-contract.md) to changed policy, generated preparations and retained artifacts.

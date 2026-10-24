@@ -2,6 +2,8 @@
 
 Use the installed Etsy MCP and inspect its current tool schemas before constructing requests. The current local server source is `/Users/shad/src/etsy-mcp`; its README and generated endpoint catalog document transport and supported fields. Never read credentials into output. This workflow authorizes creating a new draft after its approval gates; it does not authorize changing the source listing or activating the destination.
 
+For the destination link in the launch handoff and website, use the owner's Share & Save storefront format in [update-website-catalog](../../update-website-catalog/SKILL.md#use-the-owners-share--save-urls). Retain the API's original URL in readback evidence. After verifying this stage, continue to the launch workflow's final website catalog step.
+
 ## Adapt the source
 
 Resolve the connected shop, then read the selected template listing, inventory, personalization, properties, images, and applicable variation-image mappings. Use live data, not synthetic DecalFlow fixtures or old receipts, for inherited settings. Use the approved [shop price plan](pricing.md) for destination widths and prices.
