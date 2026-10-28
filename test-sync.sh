@@ -117,7 +117,7 @@ for skill in react-doctor typescript-doctor turborepo prd-to-plan improve-codeba
   assert_file "$TEMP_HOME/.agents/skills/brando/skills/$skill/SKILL.md" "brando:$skill readable"
 done
 
-for skill in ask-matt code-review codebase-design diagnosing-bugs domain-modeling grill-with-docs implement matt-improve-codebase-architecture matt-tdd prototype research resolving-merge-conflicts setup-matt-pocock-skills to-spec to-tickets triage wayfinder wizard; do
+for skill in ask-matt code-review codebase-design diagnosing-bugs domain-modeling grill-with-docs implement implement-spec matt-improve-codebase-architecture matt-tdd pr prototype research retro setup-matt-pocock-skills to-spec to-tickets triage wayfinder wizard; do
   assert_file "$TEMP_HOME/.agents/skills/matt/skills/engineering/$skill/SKILL.md" "matt:$skill readable"
 done
 
