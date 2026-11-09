@@ -1,20 +1,6 @@
 schema_version = 3
 
 [[installed]]
-name = "wezterm-colors"
-kind = "config"
-installed_version = "2.20260813.17"
-installed_at = "2026-08-25T23:42:50.185932+00:00"
-source_release = "2.20260813.17"
-
-[[installed]]
-name = "slack-desktop"
-kind = "config"
-installed_version = "2.20260813.17"
-installed_at = "2026-08-25T23:42:53.363552+00:00"
-source_release = "2.20260813.17"
-
-[[installed]]
 name = "linear-desktop"
 kind = "config"
 installed_version = "2.20260813.17"
@@ -29,8 +15,36 @@ installed_at = "2026-08-25T23:43:23.889104+00:00"
 source_release = "2.20260813.17"
 
 [[installed]]
+name = "wezterm-config"
+kind = "config"
+installed_version = "1.0.10"
+installed_at = "2026-09-28T17:53:39.416250+00:00"
+source_release = "1.0.10"
+
+[[installed]]
+name = "wezterm-colors"
+kind = "config"
+installed_version = "1.0.10"
+installed_at = "2026-09-28T17:54:48.516173+00:00"
+source_release = "1.0.10"
+
+[[installed]]
 name = "jankyborders-colors"
 kind = "config"
-installed_version = "2.20260813.17"
-installed_at = "2026-08-26T20:16:43.474084+00:00"
-source_release = "2.20260813.17"
+installed_version = "1.0.10"
+installed_at = "2026-09-28T19:17:41.502927+00:00"
+source_release = "1.0.10"
+
+[[installed]]
+name = "neovim-colors"
+kind = "config"
+installed_version = "1.0.10"
+installed_at = "2026-10-01T15:13:07.006877+00:00"
+source_release = "1.0.10"
+
+[[installed]]
+name = "slack-desktop"
+kind = "config"
+installed_version = "1.0.10"
+installed_at = "2026-10-01T17:14:55.253927+00:00"
+source_release = "1.0.10"
