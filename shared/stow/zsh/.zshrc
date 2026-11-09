@@ -2,6 +2,7 @@ export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 
 alias yolo='codex --dangerously-bypass-approvals-and-sandbox'
+alias omp='omp --allow-home'
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH

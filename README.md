@@ -111,6 +111,27 @@ theme, and alias settings.
 - `--stow-only` links the configuration without installing Oh My Zsh. The
   configuration loads Oh My Zsh only when its loader is present.
 
+The file remains tracked so its current version and deliberate updates stay in the
+remote repository. `.gitignore` does not suppress edits to a tracked file. To hide
+machine-local edits in this checkout, set Git's local `skip-worktree` bit:
+
+```sh
+git update-index --skip-worktree shared/stow/zsh/.zshrc
+```
+
+To publish a deliberate change, clear the bit, stage only the intended hunks, then
+set the bit again after committing:
+
+```sh
+git update-index --no-skip-worktree shared/stow/zsh/.zshrc
+git add -p shared/stow/zsh/.zshrc
+git commit
+git update-index --skip-worktree shared/stow/zsh/.zshrc
+```
+
+This preference is local to each checkout; it does not ignore or remove the remote
+file.
+
 ### wezterm
 
 WezTerm terminal configuration.
