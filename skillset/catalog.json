@@ -1,0 +1,519 @@
+{
+  "schema_version": 1,
+  "skills": {
+    "address-pr-comments": {
+      "path": ".",
+      "source": "address-pr-comments"
+    },
+    "affinity": {
+      "path": ".",
+      "source": "affinity"
+    },
+    "agent-config": {
+      "path": ".",
+      "source": "agent-config"
+    },
+    "ai-sdk": {
+      "path": "skills/ai-sdk",
+      "source": "vercel"
+    },
+    "ask-matt": {
+      "path": "skills/engineering/ask-matt",
+      "source": "matt"
+    },
+    "assess-me": {
+      "path": "skills/assess-me",
+      "source": "blowmage"
+    },
+    "bug-to-plan": {
+      "path": ".",
+      "source": "bug-to-plan"
+    },
+    "cmux-browser": {
+      "path": ".",
+      "source": "cmux-browser"
+    },
+    "code-review": {
+      "path": "skills/engineering/code-review",
+      "source": "matt"
+    },
+    "codebase-design": {
+      "path": "skills/engineering/codebase-design",
+      "source": "matt"
+    },
+    "create-listing-assets": {
+      "path": "skills/create-listing-assets",
+      "source": "decal"
+    },
+    "cua-driver": {
+      "path": ".",
+      "source": "cua-driver"
+    },
+    "decalflow": {
+      "path": "skills/decalflow",
+      "source": "decal"
+    },
+    "diagnosing-bugs": {
+      "path": "skills/engineering/diagnosing-bugs",
+      "source": "matt"
+    },
+    "domain-modeling": {
+      "path": "skills/engineering/domain-modeling",
+      "source": "matt"
+    },
+    "figma-code-connect": {
+      "path": "skills/figma-code-connect",
+      "source": "figma"
+    },
+    "figma-create-new-file": {
+      "path": "skills/figma-create-new-file",
+      "source": "figma"
+    },
+    "figma-design-to-code": {
+      "path": "skills/figma-design-to-code",
+      "source": "figma"
+    },
+    "figma-generate-design": {
+      "path": "skills/figma-generate-design",
+      "source": "figma"
+    },
+    "figma-generate-diagram": {
+      "path": "skills/figma-generate-diagram",
+      "source": "figma"
+    },
+    "figma-generate-library": {
+      "path": "skills/figma-generate-library",
+      "source": "figma"
+    },
+    "figma-generative-plugins": {
+      "path": "skills/figma-generative-plugins",
+      "source": "figma"
+    },
+    "figma-implement-motion": {
+      "path": "skills/figma-implement-motion",
+      "source": "figma"
+    },
+    "figma-shaders": {
+      "path": "skills/figma-shaders",
+      "source": "figma"
+    },
+    "figma-swiftui": {
+      "path": "skills/figma-swiftui",
+      "source": "figma"
+    },
+    "figma-use": {
+      "path": "skills/figma-use",
+      "source": "figma"
+    },
+    "figma-use-figjam": {
+      "path": "skills/figma-use-figjam",
+      "source": "figma"
+    },
+    "figma-use-motion": {
+      "path": "skills/figma-use-motion",
+      "source": "figma"
+    },
+    "figma-use-slides": {
+      "path": "skills/figma-use-slides",
+      "source": "figma"
+    },
+    "find-skills": {
+      "path": "skills/find-skills",
+      "source": "brando"
+    },
+    "font-match": {
+      "path": "skills/font-match",
+      "source": "decal"
+    },
+    "fontforge": {
+      "path": "skills/fontforge",
+      "source": "decal"
+    },
+    "grill-me": {
+      "path": "skills/productivity/grill-me",
+      "source": "matt"
+    },
+    "grill-with-docs": {
+      "path": "skills/engineering/grill-with-docs",
+      "source": "matt"
+    },
+    "grilling": {
+      "path": "skills/productivity/grilling",
+      "source": "matt"
+    },
+    "handoff": {
+      "path": "skills/productivity/handoff",
+      "source": "matt"
+    },
+    "herdr": {
+      "path": "skills/herdr",
+      "source": "herdr"
+    },
+    "herdr-orchestrator": {
+      "path": ".",
+      "source": "herdr-orchestrator"
+    },
+    "implement": {
+      "path": "skills/engineering/implement",
+      "source": "matt"
+    },
+    "implement-change": {
+      "path": ".",
+      "source": "implement-change"
+    },
+    "implement-spec": {
+      "path": "skills/engineering/implement-spec",
+      "source": "matt"
+    },
+    "improve-codebase-architecture": {
+      "path": "skills/improve-codebase-architecture",
+      "source": "brando"
+    },
+    "inkcut": {
+      "path": ".",
+      "source": "inkcut"
+    },
+    "launch-product": {
+      "path": "skills/launch-product",
+      "source": "decal"
+    },
+    "lazyvim-config": {
+      "path": ".",
+      "source": "lazyvim-config"
+    },
+    "manage-skills": {
+      "path": "skills/manage-skills",
+      "source": "dotfiles"
+    },
+    "matt-improve-codebase-architecture": {
+      "path": "skills/engineering/matt-improve-codebase-architecture",
+      "source": "matt"
+    },
+    "matt-tdd": {
+      "path": "skills/engineering/matt-tdd",
+      "source": "matt"
+    },
+    "orchestrator": {
+      "path": ".",
+      "source": "orchestrator"
+    },
+    "patchtree": {
+      "path": ".",
+      "source": "patchtree"
+    },
+    "plan-feature": {
+      "path": "skills/plan-feature",
+      "source": "blowmage"
+    },
+    "plan-feature-with-ste100": {
+      "path": ".",
+      "source": "plan-feature-with-ste100"
+    },
+    "pr": {
+      "path": "skills/engineering/pr",
+      "source": "matt"
+    },
+    "prd-to-plan": {
+      "path": "skills/prd-to-plan",
+      "source": "brando"
+    },
+    "present-issue": {
+      "path": ".",
+      "source": "present-issue"
+    },
+    "present-plan": {
+      "path": ".",
+      "source": "present-plan"
+    },
+    "product-tags": {
+      "path": "skills/product-tags",
+      "source": "decal"
+    },
+    "prototype": {
+      "path": "skills/engineering/prototype",
+      "source": "matt"
+    },
+    "python-design-patterns": {
+      "path": ".",
+      "source": "python-design-patterns"
+    },
+    "python-testing-patterns": {
+      "path": ".",
+      "source": "python-testing-patterns"
+    },
+    "react-doctor": {
+      "path": "skills/react-doctor",
+      "source": "brando"
+    },
+    "recreate-listing-design": {
+      "path": "skills/recreate-listing-design",
+      "source": "decal"
+    },
+    "remote-dom": {
+      "path": ".",
+      "source": "remote-dom"
+    },
+    "research": {
+      "path": "skills/engineering/research",
+      "source": "matt"
+    },
+    "retro": {
+      "path": "skills/engineering/retro",
+      "source": "matt"
+    },
+    "rust-best-practices": {
+      "path": ".",
+      "source": "rust-best-practices"
+    },
+    "rust-testing": {
+      "path": ".",
+      "source": "rust-testing"
+    },
+    "sentry-cli": {
+      "path": ".",
+      "source": "sentry-cli"
+    },
+    "setup-matt-pocock-skills": {
+      "path": "skills/engineering/setup-matt-pocock-skills",
+      "source": "matt"
+    },
+    "solving-linear-issues": {
+      "path": ".",
+      "source": "solving-linear-issues"
+    },
+    "tdd": {
+      "path": "skills/tdd",
+      "source": "blowmage"
+    },
+    "teach": {
+      "path": "skills/productivity/teach",
+      "source": "matt"
+    },
+    "to-questionnaire": {
+      "path": "skills/productivity/to-questionnaire",
+      "source": "matt"
+    },
+    "to-spec": {
+      "path": "skills/engineering/to-spec",
+      "source": "matt"
+    },
+    "to-tickets": {
+      "path": "skills/engineering/to-tickets",
+      "source": "matt"
+    },
+    "triage": {
+      "path": "skills/engineering/triage",
+      "source": "matt"
+    },
+    "turborepo": {
+      "path": "skills/turborepo",
+      "source": "brando"
+    },
+    "typescript-doctor": {
+      "path": "skills/typescript-doctor",
+      "source": "brando"
+    },
+    "update-website-catalog": {
+      "path": "skills/update-website-catalog",
+      "source": "decal"
+    },
+    "validate-startup-idea": {
+      "path": "skills/validate-startup-idea",
+      "source": "brando"
+    },
+    "vercel-cli": {
+      "path": "skills/vercel-cli",
+      "source": "vercel"
+    },
+    "wait-what": {
+      "path": "skills/productivity/wait-what",
+      "source": "matt"
+    },
+    "wayfinder": {
+      "path": "skills/engineering/wayfinder",
+      "source": "matt"
+    },
+    "wizard": {
+      "path": "skills/engineering/wizard",
+      "source": "matt"
+    },
+    "write-ste100": {
+      "path": ".",
+      "source": "write-ste100"
+    },
+    "writing-for-agents": {
+      "path": "skills/productivity/writing-for-agents",
+      "source": "matt"
+    },
+    "writing-git-commits": {
+      "path": ".",
+      "source": "writing-git-commits"
+    }
+  },
+  "sources": {
+    "address-pr-comments": {
+      "path": "skills/address-pr-comments",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "affinity": {
+      "path": "skills/affinity",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "agent-config": {
+      "path": "skills/agent-config",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "blowmage": {
+      "path": "skills/blowmage",
+      "provenance": "third-party",
+      "type": "directory"
+    },
+    "brando": {
+      "path": "skills/brando",
+      "provenance": "third-party",
+      "type": "directory",
+      "upstream": "https://github.com/brs98/.dotfiles"
+    },
+    "bug-to-plan": {
+      "path": "skills/bug-to-plan",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "cmux-browser": {
+      "path": "skills/cmux-browser",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "cua-driver": {
+      "path": "skills/cua-driver",
+      "provenance": "third-party",
+      "type": "directory"
+    },
+    "decal": {
+      "path": "skills/decal",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "dotfiles": {
+      "path": "skills/dotfiles",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "figma": {
+      "path": "skills/figma",
+      "provenance": "third-party",
+      "type": "directory",
+      "upstream": "https://github.com/figma/mcp-server-guide"
+    },
+    "herdr": {
+      "path": "skills/herdr",
+      "provenance": "third-party",
+      "type": "directory",
+      "upstream": "https://github.com/ogulcancelik/herdr"
+    },
+    "herdr-orchestrator": {
+      "path": "skills/herdr-orchestrator",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "implement-change": {
+      "path": "skills/implement-change",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "inkcut": {
+      "path": "skills/inkcut",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "lazyvim-config": {
+      "path": "skills/lazyvim-config",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "matt": {
+      "path": "skills/matt",
+      "provenance": "third-party",
+      "type": "directory",
+      "upstream": "https://github.com/mattpocock/skills"
+    },
+    "orchestrator": {
+      "path": "skills/orchestrator",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "patchtree": {
+      "path": "skills/patchtree",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "plan-feature-with-ste100": {
+      "path": "skills/plan-feature-with-ste100",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "present-issue": {
+      "path": "skills/present-issue",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "present-plan": {
+      "path": "skills/present-plan",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "python-design-patterns": {
+      "path": "skills/python-design-patterns",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "python-testing-patterns": {
+      "path": "skills/python-testing-patterns",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "remote-dom": {
+      "path": "skills/remote-dom",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "rust-best-practices": {
+      "path": "skills/rust-best-practices",
+      "provenance": "third-party",
+      "type": "directory"
+    },
+    "rust-testing": {
+      "path": "skills/rust-testing",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "sentry-cli": {
+      "path": "skills/sentry-cli",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "solving-linear-issues": {
+      "path": "skills/solving-linear-issues",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "vercel": {
+      "path": "skills/vercel",
+      "provenance": "third-party",
+      "type": "directory"
+    },
+    "write-ste100": {
+      "path": "skills/write-ste100",
+      "provenance": "authored",
+      "type": "directory"
+    },
+    "writing-git-commits": {
+      "path": "skills/writing-git-commits",
+      "provenance": "authored",
+      "type": "directory"
+    }
+  }
+}

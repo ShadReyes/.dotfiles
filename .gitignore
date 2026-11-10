@@ -1,6 +1,9 @@
 # OS
 .DS_Store
 
+# Local planning stays outside published changes.
+/.scratch/
+
 # Local machine-only files moved out of stow packages
 local-runtime/
 
@@ -60,3 +63,8 @@ mac/stow/ricekit/.config/ricekit/trial.toml
 *.env
 *.pem
 *.key
+
+# Skillset mutation lock and Python bytecode are machine-local.
+/skillset/.mutation.lock
+__pycache__/
+*.pyc

@@ -49,8 +49,8 @@ If you do want Linux packages installed and have passwordless sudo, run:
 ```
 
 On Linux, package mode currently installs a small apt-based dependency set (`stow`,
-`neovim`, `ripgrep`, `git`, `curl`), installs Oh My Zsh, and then links shared +
-Linux-specific packages.
+`neovim`, `ripgrep`, `git`, `curl`, `jq`, `python3`), checks that Python is 3.11+,
+installs Oh My Zsh, and then links shared + Linux-specific packages.
 If passwordless sudo is unavailable, package installation is skipped with instructions
 and the script continues only if `stow` is already on `PATH`.
 
@@ -87,12 +87,27 @@ skills/               # shared SKILL.md resources
 agents/               # canonical TOML agent definitions
 commands/             # Claude slash commands
 scripts/doctor        # validate symlinks, AI resource counts, and Stow dry-runs
+scripts/skillset       # harness-independent skill installation and profile CLI
+skillset/             # shared catalog, profiles, locks, and usage documentation
 scripts/              # helper scripts
 ```
 
 This keeps the repo close to a shared/platform split while retaining the existing
 winning pieces: `Brewfile` for macOS packages, readable bootstrap docs, and the
 canonical TOML agent source used by `sync-skills.sh`.
+
+## Skillset
+
+[Skillset usage and safety](skillset/README.md) documents the standalone CLI for
+skill installation, shared/private profiles, and independent machine selections.
+Bootstrap exposes `skillset` on PATH and checks Python 3.11+ / Git, but does not
+import sources, select skills, download manager sources, or migrate private files.
+The catalog and shared profiles are versioned; machine selection and installations remain local.
+
+Skillset installation is separate from exposure: `sync-skills.sh` retains its
+existing discovery-link, agent, and command responsibilities. Manager sync does
+not filter what a harness discovers. Private relocation is a deliberate reviewed
+operation with verified local recovery copies, not a bootstrap side effect.
 
 ## Stow packages
 

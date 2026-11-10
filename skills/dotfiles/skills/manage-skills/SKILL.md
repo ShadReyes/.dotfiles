@@ -5,20 +5,22 @@ description: Add, author, update, or audit agent skills in ~/.dotfiles and the l
 
 # manage-skills
 
-Keeps agent skills physically in `~/.dotfiles/skills/` and symlinked into the
-local universal pool (`~/.agents/skills`, shared by Claude Code and Codex).
-The deterministic engine for this repo is `~/.dotfiles/sync-skills.sh`; this skill drives that
-workflow.
+Use [Skillset](../../../../skillset/README.md) for standalone registration,
+profiles, machine selection, installations, and reviewed private relocation.
+It does not control harness discovery. Existing discovery links, agents, and
+commands remain owned by `~/.dotfiles/sync-skills.sh`; the legacy workflow follows.
 
 ## The invariant (never break it)
 
-- The dotfiles repo is the **one physical home** for local skills.
-- Root skills live at `~/.dotfiles/skills/<name>/SKILL.md`.
-- Version public skills only. Confidential skills and companion docs stay in
-  ignored company-named directories or `skills/local-<name>/`; other confidential
-  docs belong under `local-runtime/`. Verify exclusion with `git check-ignore -v`
-  before writing company data. Never force-add these paths or copy their content
-  into tracked files. See `~/.dotfiles/skills/README.md` for privacy boundaries.
+- Portable authored sources stay in dotfiles; generated Skillset installations
+  and private sources stay outside it. Preserve relocated private aliases and
+  their machine-local Git exclusions; keep originals outside dotfiles.
+- Root portable skills live at `~/.dotfiles/skills/<name>/SKILL.md`.
+- Version public skills only. Existing confidential skills may remain in ignored
+  directories pending reviewed migration; new Skillset private sources live
+  outside dotfiles. Preserve legacy exclusions, verify them with
+  `git check-ignore -v`, and keep confidential names/content out of tracked docs.
+  See `~/.dotfiles/skills/README.md` for the privacy boundary.
 - Local plugin bundles live at `~/.dotfiles/skills/<plugin>/.claude-plugin/plugin.json` with
   nested `skills/<name>/SKILL.md` entries, like `brando`, `matt`, and `vercel`.
 - The pool holds top-level root-skill and bundle symlinks back into the repo;

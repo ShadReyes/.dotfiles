@@ -49,7 +49,7 @@ SH
 
 make_fake_common_tools() {
   local bin="$1"
-  for name in brew curl apt-get sudo git npm; do
+  for name in brew curl apt-get sudo git npm python3; do
     cat > "$bin/$name" <<'SH'
 #!/usr/bin/env bash
 echo "$(basename "$0") $*" >> "${DOTFILES_TEST_LOG:?}"
@@ -60,6 +60,11 @@ case "$(basename "$0")" in
     exit 1
     ;;
   apt-get)
+    exit 0
+    ;;
+  python3)
+    # This fake replaces the host interpreter-version boundary only.
+    printf '3.11.0\n'
     exit 0
     ;;
   brew)
@@ -131,12 +136,17 @@ fi
 assert_file "$tmp/home/.codex/AGENTS.md" "--stow-only still stows shared codex config"
 assert_file "$tmp/home/.claude/skills/address-pr-comments/SKILL.md" "--stow-only still syncs skills"
 assert_link "$tmp/home/.zshrc" "--stow-only links the shared Zsh configuration"
+assert_link "$tmp/home/.local/bin/skillset" "--stow-only exposes the skillset CLI"
+assert_contains "$tmp/home/out" 'skillset runtime ready: Python 3.11.0 and Git' "bootstrap checks the skillset runtime"
+assert_missing "$tmp/home/.config/skillset" "bootstrap does not select manager profiles"
+assert_missing "$tmp/home/.local/share/skillset" "bootstrap does not acquire manager skill sources"
 
 echo ""
 echo "macOS package install remains Homebrew-first"
 tmp_macos="$test_root/macos"
 DOTFILES_TEST_OS=macos run_bootstrap "$tmp_macos" --packages
 assert_contains "$tmp_macos/log" '^brew bundle --file=' "macOS package mode uses brew bundle"
+assert_contains "$DOTFILES/Brewfile" '^brew "python"' "macOS provisions the Python runtime"
 assert_contains "$tmp_macos/log" '^git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ' "macOS package mode installs Oh My Zsh"
 assert_file "$tmp_macos/.oh-my-zsh/oh-my-zsh.sh" "Oh My Zsh installation is usable"
 if grep -q '^sudo apt-get' "$tmp_macos/log" 2>/dev/null; then
@@ -204,6 +214,8 @@ tmp_linux="$test_root/linux"
 DOTFILES_TEST_OS=linux DOTFILES_TEST_SUDO_OK=1 run_bootstrap "$tmp_linux" --packages
 assert_contains "$tmp_linux/log" '^sudo apt-get update' "Linux package mode uses sudo apt-get update"
 assert_contains "$tmp_linux/log" '^sudo apt-get install' "Linux package mode uses sudo apt-get install"
+assert_contains "$tmp_linux/log" '^sudo apt-get install .*python3' "Linux package mode provisions Python"
+assert_contains "$tmp_linux/log" '^sudo apt-get install .*git' "Linux package mode provisions Git"
 assert_contains "$tmp_linux/log" '^git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ' "Linux package mode installs Oh My Zsh"
 if grep -q '^brew ' "$tmp_linux/log" 2>/dev/null; then
   fail "Linux package mode should not use brew"

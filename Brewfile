@@ -4,6 +4,7 @@ brew "neovim"
 brew "go"  # required by Mason to build sqls
 brew "tree-sitter-cli"
 brew "git"
+brew "python"  # Python 3.11+ standard-library runtime for skillset
 brew "gh"
 brew "ripgrep"
 brew "fd"

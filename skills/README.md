@@ -2,14 +2,19 @@
 
 These directories are the source of truth for local AI skills. Run `../sync-skills.sh` from this directory's parent to symlink them into the supported AI CLI locations.
 
+[Skillset](../skillset/README.md) separately manages registration, profiles, and
+installations. Its selection does not change this legacy discovery pool. Private
+sources registered with Skillset live outside dotfiles; reviewed relocation keeps
+Git-excluded local path aliases so existing discovery continues to work.
+
 ## Machine-local confidential context
 
 Public skills are versioned; confidential company skills and docs are local-only.
-Store confidential skills under an ignored company-named directory or
-`skills/local-<name>/`, with companion docs inside that directory. Store other
-confidential docs under `local-runtime/`. The repository's `.gitignore` defines
-the exclusions; verify each new path with `git check-ignore -v <path>` before
-writing company data. Gitignore matches paths, not file contents.
+Existing confidential sources may remain under ignored directories pending a
+reviewed Skillset migration. Keep new Skillset private originals outside dotfiles;
+do not copy relocated sources back into this library. Preserve existing ignore
+rules and verify each relevant exclusion with `git check-ignore -v <path>`.
+Gitignore matches paths, not file contents.
 
 `sync-skills.sh` only creates local harness symlinks, so ignored skills remain
 available on this machine without being included in a Git clone. Preserve those

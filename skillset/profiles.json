@@ -1,0 +1,75 @@
+{
+  "profiles": {
+    "coding": {
+      "skills": [
+        "implement-change",
+        "plan-feature",
+        "bug-to-plan",
+        "diagnosing-bugs",
+        "code-review",
+        "tdd",
+        "research",
+        "pr",
+        "writing-git-commits",
+        "address-pr-comments",
+        "codebase-design",
+        "improve-codebase-architecture",
+        "domain-modeling"
+      ]
+    },
+    "decal": {
+      "skills": [
+        "create-listing-assets",
+        "decalflow",
+        "font-match",
+        "fontforge",
+        "launch-product",
+        "product-tags",
+        "recreate-listing-design",
+        "update-website-catalog"
+      ]
+    },
+    "figma": {
+      "skills": [
+        "figma-code-connect",
+        "figma-create-new-file",
+        "figma-design-to-code",
+        "figma-generate-design",
+        "figma-generate-diagram",
+        "figma-generate-library",
+        "figma-generative-plugins",
+        "figma-implement-motion",
+        "figma-shaders",
+        "figma-swiftui",
+        "figma-use",
+        "figma-use-figjam",
+        "figma-use-motion",
+        "figma-use-slides"
+      ]
+    },
+    "python": {
+      "skills": [
+        "python-design-patterns",
+        "python-testing-patterns"
+      ]
+    },
+    "rust": {
+      "skills": [
+        "rust-best-practices",
+        "rust-testing"
+      ]
+    },
+    "tools": {
+      "skills": [
+        "turborepo"
+      ]
+    },
+    "vercel": {
+      "skills": [
+        "vercel-cli",
+        "ai-sdk"
+      ]
+    }
+  },
+  "schema_version": 1
+}

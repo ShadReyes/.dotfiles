@@ -3,6 +3,7 @@ set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 INSTALL_PACKAGES=1
+export PATH="$HOME/.local/bin:$PATH"
 
 usage() {
   cat <<'EOF'
@@ -10,7 +11,7 @@ Usage: ./bootstrap.sh [--packages|--no-packages|--stow-only]
 
 Options:
   --packages     Install platform dependencies before linking configs (default)
-  --no-packages  Skip package installation and only link/sync configs
+  --no-packages  Skip installs; link/sync configs and report missing runtimes
   --stow-only    Alias for --no-packages; useful on servers/headless hosts
   -h, --help     Show this help
 EOF
@@ -48,7 +49,7 @@ install_macos_packages() {
 }
 
 install_linux_packages() {
-  local packages=(stow neovim ripgrep git curl jq)
+  local packages=(stow neovim ripgrep git curl jq python3)
 
   if command -v apt-get >/dev/null 2>&1; then
     if have_sudo; then
@@ -96,19 +97,72 @@ install_linux_herdr() {
   export PATH="$HOME/.local/bin:$PATH"
 }
 
+check_skillset_runtime() {
+  local candidate version="" missing=""
+
+  for candidate in python3 python3.14 python3.13 python3.12 python3.11; do
+    command -v "$candidate" >/dev/null 2>&1 || continue
+    if version="$("$candidate" -c 'import sys; sys.exit(1) if sys.version_info < (3, 11) else print(".".join(map(str, sys.version_info[:3])))' 2>/dev/null)"; then
+      break
+    fi
+    version=""
+  done
+
+  [ -n "$version" ] || missing="Python 3.11+"
+  if ! command -v git >/dev/null 2>&1; then
+    missing="${missing:+$missing and }Git"
+  fi
+
+  if [ -z "$missing" ]; then
+    echo "skillset runtime ready: Python $version and Git."
+    return 0
+  fi
+
+  echo "skillset is unavailable: missing $missing on PATH." >&2
+  echo "Install Python 3.11+ and Git, then re-run bootstrap:" >&2
+  echo "  macOS: brew install python git" >&2
+  echo "  Debian/Ubuntu: sudo apt-get install python3 git (Python must be 3.11+)" >&2
+  echo "On older distributions, install a supported Python as python3.11 or newer on PATH." >&2
+  if [ "$INSTALL_PACKAGES" -eq 0 ]; then
+    echo "Package installation is disabled; continuing legacy setup without downloading prerequisites." >&2
+    return 0
+  fi
+  return 1
+}
+
 install_packages() {
   if is_macos; then
     install_macos_packages
   elif is_linux; then
     install_linux_packages
-    install_linux_herdr
   else
     echo "Unsupported OS for automatic package install: $(uname -s)"
     echo "Continuing without package installation."
-    return 0
   fi
 
-  install_oh_my_zsh
+  check_skillset_runtime
+  if is_linux; then
+    install_linux_herdr
+  fi
+  if is_macos || is_linux; then
+    install_oh_my_zsh
+  fi
+}
+
+expose_skillset() {
+  local source="$DOTFILES/scripts/skillset"
+  local target="$HOME/.local/bin/skillset"
+
+  mkdir -p "$HOME/.local/bin"
+  if [ -L "$target" ] && [ "$(readlink "$target")" = "$source" ]; then
+    echo "skillset CLI already linked."
+  elif [ -e "$target" ] || [ -L "$target" ]; then
+    echo "Not replacing existing $target; skillset CLI link was not installed." >&2
+    echo "Move that path aside manually to expose $source instead." >&2
+  else
+    ln -s "$source" "$target"
+    echo "Linked skillset CLI: $target"
+  fi
 }
 
 install_herdr_integrations() {
@@ -235,9 +289,11 @@ if [ "$INSTALL_PACKAGES" -eq 1 ]; then
   install_packages
 else
   echo "Skipping package installation (--stow-only/--no-packages)."
+  check_skillset_runtime
 fi
 
 require_stow
+expose_skillset
 
 # --- Stow packages ---
 echo "Stowing dotfiles..."
