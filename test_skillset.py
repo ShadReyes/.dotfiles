@@ -86,6 +86,16 @@ class SelectionContract(unittest.TestCase):
             self.assertEqual(repaired['selected'], ['alpha'])
             self.assertEqual(repaired['overrides'], {'alpha': 'enabled'})
 
+    def test_invalid_initial_selection_does_not_claim_retained_recovery_state(self):
+        with world() as paths:
+            atomic_write(paths.config / 'machine.json', document(profiles=[], overrides={'removed': 'enabled'}))
+            result = run_cli(paths, 'resolve', '--json', code=2)
+            self.assertFalse(result['selection_valid'])
+            self.assertIsNone(result['last_good'])
+            self.assertFalse(result['stale'])
+            self.assertIsNone(result['desired'])
+            self.assertEqual(result['selected'], [])
+
     def test_display_name_changes_preserve_profile_identity(self):
         with world() as paths:
             run_cli(paths, 'profile', 'select', 'coding')
@@ -146,6 +156,29 @@ class PrivacyAndValidation(unittest.TestCase):
             for base in (paths.repo / 'local', paths.home / '.agents/skills'):
                 with patch.dict(os.environ, {'XDG_DATA_HOME': str(base)}), self.assertRaises(Error):
                     Paths(paths.repo)
+
+    def test_application_root_symlinks_cannot_publish_private_state_in_protected_locations(self):
+        for root_name in ('config', 'data'):
+            for destination_kind in ('repository', 'discovery', 'same-root', 'nested-root'):
+                with self.subTest(root=root_name, destination=destination_kind), world() as paths:
+                    other_root = paths.data if root_name == 'config' else paths.config
+                    destinations = {'repository': paths.repo / 'local-state',
+                                    'discovery': paths.home / '.agents/skills/local-state',
+                                    'same-root': other_root, 'nested-root': other_root / 'nested'}
+                    destination = destinations[destination_kind]
+                    destination.mkdir(parents=True)
+                    application_root = getattr(paths, root_name)
+                    application_root.parent.mkdir(parents=True, exist_ok=True)
+                    application_root.symlink_to(destination, target_is_directory=True)
+                    if root_name == 'config':
+                        source = paths.home / 'authored'
+                        source.mkdir()
+                        (source / 'SKILL.md').write_text('Private fixture')
+                        run_cli(paths, 'source', 'add', 'local-source', '--directory', str(source),
+                                '--private', '--provenance', 'authored', code=2)
+                    else:
+                        run_cli(paths, 'import', '--plan', code=2)
+                    self.assertEqual(list(destination.iterdir()), [], 'No private state may be published')
 
     def test_duplicate_json_keys_and_unsupported_schema_are_invalid_configuration(self):
         with world() as paths:

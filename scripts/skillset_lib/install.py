@@ -10,7 +10,7 @@ import subprocess
 import tempfile
 import uuid
 
-from .core import Error, atomic_write, contained, copy_tree, fingerprint, read_json, write_many
+from .core import Error, atomic_write, contained, copy_tree, fingerprint, publish_locks, read_json, write_many
 
 
 _COMMIT = re.compile(r'[0-9a-f]{40}\Z')
@@ -138,7 +138,7 @@ def update(model, source_ids, all_sources=False):
                         'old_revision': old, 'new_revision': revision})
     roots = {'shared': model.paths.shared, 'private': model.paths.config}
     try:
-        write_many({roots[scope] / 'lock.json': doc for scope, doc in documents.items()})
+        publish_locks(model.paths, {roots[scope] / 'lock.json': doc for scope, doc in documents.items()})
     except OSError as exc:
         raise Error(f'Cannot publish revision locks: {exc}', 3) from exc
     for scope, document in documents.items():
@@ -417,9 +417,9 @@ def sync(model, offline=False):
     try:
         model.validate()
         selection = model.selection()
-        last_good = _last_good(model)
+        _last_good(model)  # Validate recovery state before replacing it.
         active = _active(model)
-        desired_diff = _membership_diff(selection, last_good)
+        desired_diff = _membership_diff(selection, active['selection'])
         before_ids = {entry['id'] for entry in active['active']}
         atomic_write(model.paths.config / 'last-selection.json', {'schema_version': 1, 'selection': selection})
         previous = {(entry['visibility'], entry['source']): entry for entry in active['snapshots']}
@@ -579,9 +579,10 @@ def inspect(model):
             record['desired'] = None
     desired_ids = set(desired['selected']) if desired is not None else set()
     active_ids = set(old_records)
-    return {'schema_version': 1, 'selection_valid': selection_valid, 'stale': not selection_valid,
+    return {'schema_version': 1, 'selection_valid': selection_valid,
+            'stale': not selection_valid and last_good is not None,
             'desired': desired, 'last_good': last_good, 'selected': selected, 'active': active_records,
-            'desired_diff': _membership_diff(desired, last_good) if desired is not None else {'added': [], 'removed': []},
+            'desired_diff': _membership_diff(desired, active['selection']) if desired is not None else {'added': [], 'removed': []},
             'installed_diff': {'added': sorted(desired_ids - active_ids) if desired is not None else [],
                                'removed': sorted(active_ids - desired_ids) if desired is not None else [],
                                'changed': sorted(changed) if desired is not None else []},

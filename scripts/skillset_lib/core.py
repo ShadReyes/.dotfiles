@@ -2,6 +2,7 @@
 
 from contextlib import contextmanager
 from copy import deepcopy
+import base64
 import fcntl
 import hashlib
 import json
@@ -11,6 +12,7 @@ import re
 import shutil
 import stat
 import tempfile
+import uuid
 
 
 class Error(Exception):
@@ -29,8 +31,8 @@ class Paths:
         self.repo = Path(repo).resolve()
         self.home = Path(home or Path.home()).resolve()
         self.shared = self.repo / 'skillset'
-        self.config = self._xdg('XDG_CONFIG_HOME', self.home / '.config') / 'skillset'
-        self.data = self._xdg('XDG_DATA_HOME', self.home / '.local/share') / 'skillset'
+        self.config = (self._xdg('XDG_CONFIG_HOME', self.home / '.config') / 'skillset').resolve()
+        self.data = (self._xdg('XDG_DATA_HOME', self.home / '.local/share') / 'skillset').resolve()
         discovery = [self.home / p for p in (
             '.claude/skills', '.agents/skills', '.codex/skills', '.pi/agent/skills',
             '.omp/skills', '.config/omp/skills', '.config/opencode/skills', '.hermes/skills',
@@ -131,23 +133,304 @@ def write_many(documents):
             temporary.unlink(missing_ok=True)
 
 
+def _fsync_directory(directory):
+    fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def _check_directory(directory):
+    if directory.is_symlink() or directory.resolve() != directory or not directory.is_dir():
+        raise Error('Unsafe lock transaction directory', 4)
+
+
+def _check_state_file(fd, private=False):
+    info = os.fstat(fd)
+    mode = stat.S_IMODE(info.st_mode)
+    if (not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid != os.geteuid() or
+            mode & (0o7077 if private else 0o7022)):
+        raise Error('Unsafe lock transaction state file', 4)
+    return mode
+
+
+def _read_state_file(path, private=False):
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    except FileNotFoundError:
+        return None
+    except OSError as exc:
+        raise Error('Cannot safely read lock transaction state', 4) from exc
+    try:
+        mode = _check_state_file(fd, private)
+        with os.fdopen(fd, 'rb', closefd=False) as stream:
+            return {'bytes': stream.read(), 'mode': mode}
+    finally:
+        os.close(fd)
+
+
+def _pending_token(fd):
+    _check_state_file(fd, private=True)
+    value = os.pread(fd, 37, 0)
+    if not value:
+        return None
+    try:
+        token = value.decode('ascii')
+        if str(uuid.UUID(token)) != token:
+            raise ValueError('Noncanonical token')
+    except (ValueError, UnicodeError) as exc:
+        raise Error('Invalid pending lock transaction token; mutation refused', 4) from exc
+    return token
+
+
+def _set_pending_token(fd, token):
+    value = token.encode('ascii')
+    if value and os.pwrite(fd, value, 0) != len(value):
+        raise OSError('Incomplete lock transaction token write')
+    os.ftruncate(fd, len(value))
+    os.fsync(fd)
+
+
+@contextmanager
+def _readable_locks(paths):
+    """Never recover on reads, and hold a shared lock while loading both documents."""
+    active = getattr(paths, '_mutation_fd', None)
+    fd = active
+    if fd is None:
+        try:
+            fd = os.open(paths.shared / '.mutation.lock', os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        except FileNotFoundError:
+            pass
+        except OSError as exc:
+            raise Error('Cannot safely inspect pending lock transactions', 4) from exc
+    try:
+        if fd is not None:
+            if active is None:
+                try:
+                    fcntl.flock(fd, fcntl.LOCK_SH | fcntl.LOCK_NB)
+                except BlockingIOError as exc:
+                    raise Error('Another Skillset mutation is in progress', 4) from exc
+            if _pending_token(fd) is not None:
+                raise Error('Pending lock transaction requires recovery by its originating machine', 4)
+        yield
+        if fd is None and (paths.shared / '.mutation.lock').exists():
+            raise Error('Skillset mutation started during inspection; retry the read', 4)
+    finally:
+        if fd is not None and active is None:
+            os.close(fd)
+
+
+def _transaction_path(paths, create=False):
+    directory = paths.config / '.lock-transactions'
+    if create:
+        _check_directory(paths.config)
+        if directory.is_symlink():
+            raise Error('Unsafe lock transaction directory', 4)
+        directory.mkdir(mode=0o700, exist_ok=True)
+        _check_directory(directory)
+        directory.chmod(0o700)
+        _fsync_directory(paths.config)
+    else:
+        _check_directory(directory)
+        info = directory.stat()
+        if info.st_uid != os.geteuid() or stat.S_IMODE(info.st_mode) != 0o700:
+            raise Error('Unsafe private lock transaction directory', 4)
+    key = hashlib.sha256(os.fsencode(paths.repo)).hexdigest()
+    return directory / (key + '.json')
+
+
+def _lock_state(paths, scope):
+    directory = paths.shared if scope == 'shared' else paths.config
+    _check_directory(directory)
+    return _read_state_file(directory / 'lock.json')
+
+
+def _encoded_state(state):
+    return None if state is None else {'bytes': base64.b64encode(state['bytes']).decode('ascii'),
+                                       'mode': state['mode']}
+
+
+def _decoded_state(value, after=False):
+    if value is None and not after:
+        return None
+    try:
+        if (not isinstance(value, dict) or set(value) != {'bytes', 'mode'} or
+                not isinstance(value['bytes'], str) or type(value['mode']) is not int or
+                not 0 <= value['mode'] <= 0o777 or value['mode'] & 0o022 or
+                (after and value['mode'] != 0o600)):
+            raise ValueError('Invalid state')
+        raw = base64.b64decode(value['bytes'], validate=True)
+        if base64.b64encode(raw).decode('ascii') != value['bytes']:
+            raise ValueError('Noncanonical bytes')
+        document = json.loads(raw, object_pairs_hook=_unique_keys)
+        if (not isinstance(document, dict) or type(document.get('schema_version')) is not int or
+                document['schema_version'] != 1 or not isinstance(document.get('sources'), dict)):
+            raise ValueError('Invalid lock document')
+        for source_id, revision in document['sources'].items():
+            valid_id(source_id)
+            if not isinstance(revision, str) or not re.fullmatch('[0-9a-f]{40}', revision):
+                raise ValueError('Invalid revision')
+        return {'bytes': raw, 'mode': value['mode']}
+    except (ValueError, TypeError, UnicodeError, Error) as exc:
+        raise Error('Invalid private lock transaction journal; mutation refused', 4) from exc
+
+
+def _write_lock_state(path, state):
+    if state is None:
+        path.unlink(missing_ok=True)
+        _fsync_directory(path.parent)
+        return
+    fd, filename = tempfile.mkstemp(prefix='.skillset-', dir=path.parent)
+    temporary = Path(filename)
+    try:
+        with os.fdopen(fd, 'wb') as stream:
+            os.fchmod(stream.fileno(), state['mode'])
+            stream.write(state['bytes'])
+            stream.flush()
+            os.fsync(stream.fileno())
+        _publish(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def _rollback_locks(paths, documents):
+    # Validate the whole pair before restoring anything; never overwrite unrelated edits.
+    current = {scope: _lock_state(paths, scope) for scope in documents}
+    for scope, states in documents.items():
+        if current[scope] not in (states['before'], states['after']):
+            raise Error('Interrupted revision locks were modified; recovery refused', 4)
+    for scope, states in reversed(list(documents.items())):
+        if current[scope] != states['before']:
+            root = paths.shared if scope == 'shared' else paths.config
+            _write_lock_state(root / 'lock.json', states['before'])
+
+
+def _remove_journal(journal):
+    try:
+        journal.unlink(missing_ok=True)
+        _fsync_directory(journal.parent)
+    except OSError:
+        # A journal without a durable pending token is debris, never a rollback request.
+        pass
+
+
+def _recover_locks(paths, fd):
+    token = _pending_token(fd)
+    if token is None:
+        return
+    try:
+        journal = _transaction_path(paths)
+        state = _read_state_file(journal, private=True)
+        if state is None:
+            raise ValueError('Missing journal')
+        value = json.loads(state['bytes'], object_pairs_hook=_unique_keys)
+        if (not isinstance(value, dict) or
+                set(value) != {'schema_version', 'token', 'repo', 'config', 'documents'} or
+                type(value['schema_version']) is not int or value['schema_version'] != 1 or
+                value['token'] != token or value['repo'] != str(paths.repo) or
+                value['config'] != str(paths.config) or not isinstance(value['documents'], dict) or
+                not value['documents'] or not set(value['documents']) <= {'shared', 'private'}):
+            raise ValueError('Journal does not match pending transaction')
+        documents = {}
+        for scope in ('shared', 'private'):
+            if scope not in value['documents']:
+                continue
+            states = value['documents'][scope]
+            if not isinstance(states, dict) or set(states) != {'before', 'after'}:
+                raise ValueError('Invalid document states')
+            documents[scope] = {'before': _decoded_state(states['before']),
+                                'after': _decoded_state(states['after'], after=True)}
+        _rollback_locks(paths, documents)
+        _set_pending_token(fd, '')
+        _remove_journal(journal)
+    except (OSError, ValueError, TypeError, UnicodeError, Error) as exc:
+        raise Error('Pending lock transaction cannot be recovered on this machine; mutation refused', 4) from exc
+
+
+def publish_locks(paths, documents):
+    """Publish revision locks durably inside locked(paths); recover interruptions as rollback.
+
+    documents maps only the shared/private lock.json Paths to JSON lock documents.
+    The repo lock stores only an opaque UUID; all before/after bytes stay machine-private.
+    """
+    fd = getattr(paths, '_mutation_fd', None)
+    if fd is None or _pending_token(fd) is not None:
+        raise Error('Revision lock publication requires a recovered mutation lock', 4)
+    targets = {paths.shared / 'lock.json': 'shared', paths.config / 'lock.json': 'private'}
+    if not set(documents) <= set(targets):
+        raise Error('Invalid revision lock publication target', 4)
+    if not documents:
+        return
+    states = {}
+    for path, scope in targets.items():
+        if path in documents:
+            after = {'bytes': (json.dumps(documents[path], indent=2, sort_keys=True,
+                                         ensure_ascii=False) + '\n').encode('utf-8'), 'mode': 0o600}
+            _decoded_state(_encoded_state(after), after=True)
+            before = _lock_state(paths, scope)
+            _decoded_state(_encoded_state(before))
+            states[scope] = {'before': before, 'after': after}
+    journal = _transaction_path(paths, create=True)
+    _read_state_file(journal, private=True)
+    token = str(uuid.uuid4())
+    atomic_write(journal, {'schema_version': 1, 'token': token, 'repo': str(paths.repo),
+                          'config': str(paths.config), 'documents': {
+                              scope: {name: _encoded_state(state) for name, state in pair.items()}
+                              for scope, pair in states.items()}})
+    try:
+        _set_pending_token(fd, token)
+        _fsync_directory(paths.shared)
+        for scope, pair in states.items():
+            root = paths.shared if scope == 'shared' else paths.config
+            _write_lock_state(root / 'lock.json', pair['after'])
+        _set_pending_token(fd, '')
+    except BaseException:
+        try:
+            # Re-arm before rollback if clearing the token itself failed durability.
+            _set_pending_token(fd, token)
+            _rollback_locks(paths, states)
+            _set_pending_token(fd, '')
+            _remove_journal(journal)
+        except BaseException:
+            # Keep the durable journal/token for another recovery attempt; preserve the cause.
+            pass
+        raise
+    _remove_journal(journal)
+
+
 @contextmanager
 def locked(paths):
     """A repo lock also serializes distinct homes sharing the same checkout."""
     descriptors = []
     try:
         for directory in (paths.shared, paths.config):
+            if directory.is_symlink() or directory.resolve() != directory:
+                raise Error('Unsafe mutation lock directory', 4)
+            missing = []
+            ancestor = directory
+            while not ancestor.exists():
+                missing.append(ancestor)
+                ancestor = ancestor.parent
             private_directory(directory)
-            lock = directory / '.mutation.lock'
-            if lock.is_symlink():
-                raise Error('Refusing symlinked mutation lock', 4)
-            fd = os.open(lock, os.O_CREAT | os.O_RDWR, 0o600)
+            for created in reversed(missing):
+                _fsync_directory(created.parent)
+            try:
+                fd = os.open(directory / '.mutation.lock', os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
+            except OSError as exc:
+                raise Error('Cannot safely open mutation lock', 4) from exc
             descriptors.append(fd)
+            _check_state_file(fd, private=True)
             try:
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError as exc:
                 raise Error('Another Skillset mutation is in progress', 4) from exc
-        yield
+        _recover_locks(paths, descriptors[0])
+        paths._mutation_fd = descriptors[0]
+        try:
+            yield
+        finally:
+            del paths._mutation_fd
     finally:
         for fd in reversed(descriptors):
             os.close(fd)
@@ -233,16 +516,17 @@ class Model:
     def __init__(self, paths, shared_only=False):
         self.paths = paths
         self.shared_only = shared_only
-        self.catalogs, self.profile_docs, self.locks = {}, {}, {}
-        for scope, root in [('shared', paths.shared)] + ([] if shared_only else [('private', paths.config)]):
-            self.catalogs[scope] = read_json(root / 'catalog.json', {'schema_version': 1, 'sources': {}, 'skills': {}})
-            self.profile_docs[scope] = read_json(root / 'profiles.json', {'schema_version': 1, 'profiles': {}})
-            self.locks[scope] = read_json(root / 'lock.json', {'schema_version': 1, 'sources': {}})
-        self.machine = ({'schema_version': 1, 'profiles': [], 'overrides': {}} if shared_only else
-                        read_json(paths.config / 'machine.json', {'schema_version': 1, 'profiles': [], 'overrides': {}}))
-        self.sources = self._merge(self.catalogs, 'sources')
-        self.skills = self._merge(self.catalogs, 'skills')
-        self.profiles = self._merge(self.profile_docs, 'profiles')
+        with _readable_locks(paths):
+            self.catalogs, self.profile_docs, self.locks = {}, {}, {}
+            for scope, root in [('shared', paths.shared)] + ([] if shared_only else [('private', paths.config)]):
+                self.catalogs[scope] = read_json(root / 'catalog.json', {'schema_version': 1, 'sources': {}, 'skills': {}})
+                self.profile_docs[scope] = read_json(root / 'profiles.json', {'schema_version': 1, 'profiles': {}})
+                self.locks[scope] = read_json(root / 'lock.json', {'schema_version': 1, 'sources': {}})
+            self.machine = ({'schema_version': 1, 'profiles': [], 'overrides': {}} if shared_only else
+                            read_json(paths.config / 'machine.json', {'schema_version': 1, 'profiles': [], 'overrides': {}}))
+            self.sources = self._merge(self.catalogs, 'sources')
+            self.skills = self._merge(self.catalogs, 'skills')
+            self.profiles = self._merge(self.profile_docs, 'profiles')
 
     @staticmethod
     def _merge(documents, name):

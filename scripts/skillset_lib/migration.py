@@ -243,7 +243,7 @@ def _proposal(model, document):
     if len(entries) != len(inventory) or {entry.get('path') for entry in entries} != set(inventory):
         raise Error('Reviewed entries must exactly match discovered source directories')
     candidate = deepcopy(model)
-    source_ids, skill_ids = set(model.sources), set(model.skills)
+    source_ids, skill_ids = set(), set()
     relocations = []
     touched = set()
     for entry in entries:
@@ -252,7 +252,7 @@ def _proposal(model, document):
             raise Error('Every discovered source requires explicit shared or private classification')
         source_id = valid_id(entry.get('source_id'))
         if source_id in source_ids:
-            raise Error(f'Import cannot overwrite source identity: {source_id}')
+            raise Error(f'Duplicate reviewed source identity: {source_id}')
         source_ids.add(source_id)
         if entry.get('provenance') not in ('authored', 'third-party'):
             raise Error('Every imported source requires explicit authored or third-party provenance')
@@ -262,7 +262,14 @@ def _proposal(model, document):
             if not original.resolve().is_relative_to(model.paths.repo) or original.resolve() == model.paths.repo:
                 raise Error('Shared import requires a dedicated, repository-contained source directory')
             source_path = entry['path']
-        else:
+        existing_source = model.sources.get(source_id)
+        if existing_source is not None:
+            if (existing_source['visibility'] != scope or existing_source.get('type') != 'directory' or
+                    existing_source.get('provenance') != entry['provenance'] or
+                    model.source_path(existing_source) != original.resolve() or
+                    ('upstream' in entry and entry['upstream'] != existing_source.get('upstream'))):
+                raise Error(f'Import cannot overwrite source identity: {source_id}')
+        elif scope == 'private':
             if entry.get('private_approved') is not True:
                 raise Error('Private relocation requires explicit private_approved: true')
             if item['tracked'] is not False:
@@ -278,10 +285,12 @@ def _proposal(model, document):
                                 'recovery': str(recovery),
                                 'retired': str(original.parent / ('.skillset-retired-' + document['id'] + '-' + source_id)),
                                 'fingerprint': item['fingerprint']})
-        source = {'type': 'directory', 'path': source_path, 'provenance': entry['provenance']}
-        if 'upstream' in entry:
-            source['upstream'] = entry['upstream']
-        candidate.catalogs[scope]['sources'][source_id] = source
+        if existing_source is None:
+            source = {'type': 'directory', 'path': source_path, 'provenance': entry['provenance']}
+            if 'upstream' in entry:
+                source['upstream'] = entry['upstream']
+            candidate.catalogs[scope]['sources'][source_id] = source
+            touched.add(scope)
         skills = entry.get('skills')
         if not isinstance(skills, list) or any(not isinstance(skill, dict) or
                 not isinstance(skill.get('path'), str) for skill in skills):
@@ -291,13 +300,20 @@ def _proposal(model, document):
         for skill in skills:
             skill_id = valid_id(skill.get('id'))
             if skill_id in skill_ids:
-                raise Error(f'Import cannot overwrite skill identity: {skill_id}')
+                raise Error(f'Duplicate reviewed skill identity: {skill_id}')
             skill_ids.add(skill_id)
-            record = {'source': source_id, 'path': skill['path']}
-            if 'upstream_name' in skill:
-                record['upstream_name'] = skill['upstream_name']
-            candidate.catalogs[scope]['skills'][skill_id] = record
-        touched.add(scope)
+            existing_skill = model.skills.get(skill_id)
+            if existing_skill is not None:
+                if (existing_skill['visibility'] != scope or existing_skill.get('source') != source_id or
+                        existing_skill.get('path') != skill['path'] or
+                        ('upstream_name' in skill and skill['upstream_name'] != existing_skill.get('upstream_name'))):
+                    raise Error(f'Import cannot overwrite skill identity: {skill_id}')
+            else:
+                record = {'source': source_id, 'path': skill['path']}
+                if 'upstream_name' in skill:
+                    record['upstream_name'] = skill['upstream_name']
+                candidate.catalogs[scope]['skills'][skill_id] = record
+                touched.add(scope)
     candidate.validate(selection=False)
     documents = {(model.paths.shared if scope == 'shared' else model.paths.config) / 'catalog.json':
                  candidate.catalogs[scope] for scope in touched}

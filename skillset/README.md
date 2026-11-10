@@ -67,9 +67,13 @@ skillset sync --offline
 
 Git synchronization of dotfiles remains external. `update SOURCE...` resolves configured branches/tags and changes only exact source locks; `update --all` is an explicit all-remote-sources choice. Review and share lock changes with your existing Git workflow. A failed multi-source update retains old locks.
 
+Revision-lock updates use a durable machine-private journal under the local configuration root. The checkout mutation lock holds only an opaque pending token, never private source metadata. If an update is interrupted, read-only commands and other machine configurations fail closed; the next mutation using the originating configuration restores the previous lockfiles before proceeding. Recovery performs no acquisition. Missing, unsafe, or conflicting recovery state blocks mutation rather than overwriting unrelated edits.
+
 Sync fetches only missing exact locked content needed by selected skills. It preserves repository-relative assets without selecting sibling skills. Offline sync fails rather than substitutes another revision. Shared remote URLs must be portable; local Git repositories can be registered privately.
 
 All selected installations are prepared before the active set switches. A failure retains the previous installed set while valid desired membership remains visible. Empty selection is valid. Caches and previous snapshots are retained; there is no pruning command.
+
+Desired membership diffs compare against the last successfully activated selection, not the most recently resolved intent. Failed syncs and retries keep those membership changes visible until activation succeeds, independently of installation-content mismatches.
 
 Edit authored/vendored originals, not generated installations or managed fetched content. Unexpected edits to generated/fetched content are conflicts, not permission to overwrite it.
 
@@ -107,7 +111,7 @@ The plan inventories existing top-level skill sources, nested `SKILL.md` directo
 - Every `skills[].id`: stable skill ID; optional `upstream_name` records the upstream display name. Do not remove discovered skill paths.
 - For private sources, explicitly set `private_approved: true` after reviewing relocation and references.
 
-Apply rejects unclassified entries, changed inventory/configuration/references, and duplicate IDs before publication. Import registers skills without selecting them. The plan, receipts, and journals are local-only artifacts, not safe to commit or upload.
+Apply rejects unclassified entries, changed inventory/configuration/references, and duplicate reviewed IDs before publication. Exact existing source and skill registrations are retained unchanged; conflicting identities are rejected, and omitted optional attribution is preserved. An already-relocated private alias matching its registration requires no new move, approval, or recovery copy. Import registers new skills without selecting them. The plan, receipts, and journals are local-only artifacts, not safe to commit or upload.
 
 Private relocation makes and verifies recovery and source copies under the private data root. It preserves the original discovery path as a Git-excluded local symlink to the relocated source, so existing links/configuration and repeated legacy sync continue to work. Any new exclusion goes into Git-local `info/exclude`, not tracked scripts. Existing JSON/TOML discovery references are verified; affected unsupported configuration formats block relocation rather than risk breaking discovery.
 
@@ -127,6 +131,8 @@ All documents currently use `schema_version: 1`; unsupported schemas and duplica
 
 Local configuration defaults to `$XDG_CONFIG_HOME/skillset` (`~/.config/skillset`): private `catalog.json`, `profiles.json`, `lock.json`, plus `machine.json` and `last-selection.json`. Machine state contains selected `profiles` and `overrides` values `enabled`/`disabled`; absence means inherited. Local data defaults to `$XDG_DATA_HOME/skillset` (`~/.local/share/skillset`), with separate shared/private source stores and an atomic `active.json` manifest. Local roots inside dotfiles or known harness discovery roots are rejected. `--repo PATH` selects another checkout for isolated use.
 
+Application-directory symlinks are resolved before isolation checks. Configuration and data roots must remain outside dotfiles and harness discovery roots and must not overlap each other, even through symlinks.
+
 ```sh
 skillset list
 skillset validate
@@ -134,7 +140,7 @@ skillset status --json
 skillset resolve --json
 ```
 
-Read-only inspection does not fetch, install, or rewrite configuration. Versioned resolve JSON reports desired selection, reasons, visibility, required content, installation availability and directories, active membership, and diffs. Missing known content is an installation mismatch, not an unknown identity. Invalid references mark retained last-good selection stale and exit unsuccessfully. Repair stale machine references with `reset` / `profile deselect`, or correct hand-edited JSON.
+Read-only inspection does not fetch, install, or rewrite configuration. Versioned resolve JSON reports desired selection, reasons, visibility, required content, installation availability and directories, active membership, and diffs. Missing known content is an installation mismatch, not an unknown identity. Invalid references mark retained last-good selection stale and exit unsuccessfully. If no last-good selection exists, the result is invalid but not stale; no recovery selection is claimed. Repair stale machine references with `reset` / `profile deselect`, or correct hand-edited JSON.
 
 Diagnostics go to stderr; JSON stays on stdout. Exit codes: `0` success, `2` invalid input/configuration or stale selection, `3` unavailable/acquisition failure, `4` modification/concurrent-mutation conflict, `1` unexpected failure. Status can successfully describe unavailable/outdated installations without claiming a completed sync.
 
@@ -143,7 +149,7 @@ Diagnostics go to stderr; JSON stays on stdout. Exit codes: `0` success, `2` inv
 From the repository, using Python 3.11+ on PATH:
 
 ```sh
-python3 -B -m unittest -v test_skillset test_skillset_install test_skillset_migration
+python3 -B -m unittest -v test_skillset test_skillset_install test_skillset_migration test_skillset_transactions
 bash test_skillset_bootstrap.sh
 bash test-bootstrap.sh
 ```

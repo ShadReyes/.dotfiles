@@ -108,6 +108,209 @@ class MigrationTests(unittest.TestCase):
         self.assertEqual(model.selection()['selected'], [])
         self.assertFalse((self.fixture.paths.config / 'machine.json').exists())
 
+    def test_existing_shared_identities_are_unchanged_while_new_private_source_migrates(self):
+        shared = self.fixture.source('portable')
+        path, document = self.fixture.reviewed(source_id='portable')
+        document['entries'][0]['upstream'] = 'https://example.test/portable'
+        document['entries'][0]['skills'][0]['upstream_name'] = 'original-name'
+        path.write_text(json.dumps(document))
+        apply(Model(self.fixture.paths), path)
+        catalog = self.fixture.paths.shared / 'catalog.json'
+        before = catalog.read_bytes()
+        before_stat = catalog.stat()
+        private = self.fixture.source('local-library')
+        path = Path(plan(Model(self.fixture.paths))['plan'])
+        document = json.loads(path.read_text())
+        for entry in document['entries']:
+            local = entry['path'] == 'skills/local-library'
+            entry.update(classification='private' if local else 'shared',
+                         source_id='local-library' if local else 'portable',
+                         provenance='third-party', private_approved=local)
+            entry['skills'][0]['id'] = 'local-skill' if local else 'portable-skill-0'
+        path.write_text(json.dumps(document))
+
+        result = apply(Model(self.fixture.paths), path)
+
+        self.assertEqual(catalog.read_bytes(), before)
+        self.assertEqual((catalog.stat().st_ino, catalog.stat().st_mtime_ns),
+                         (before_stat.st_ino, before_stat.st_mtime_ns))
+        self.assertFalse(shared.is_symlink())
+        self.assertTrue(private.is_symlink())
+        self.assertEqual(len(result['recovery']), 1)
+        model = Model(self.fixture.paths)
+        self.assertEqual(model.sources['portable']['upstream'], 'https://example.test/portable')
+        self.assertEqual(model.skills['portable-skill-0']['upstream_name'], 'original-name')
+        self.assertEqual(model.skills['local-skill']['visibility'], 'private')
+
+    def test_existing_identity_conflicts_fail_before_private_relocation_or_catalog_writes(self):
+        conflicts = ('source-type', 'source-target', 'source-visibility', 'provenance',
+                     'upstream', 'skill-source', 'skill-path', 'upstream-name', 'skill-scope')
+        for conflict in conflicts:
+            with self.subTest(conflict=conflict), tempfile.TemporaryDirectory() as directory:
+                fixture = MigrationFixture(directory)
+                shared = fixture.source('portable')
+                path, _ = fixture.reviewed(source_id='portable')
+                apply(Model(fixture.paths), path)
+                catalog = fixture.paths.shared / 'catalog.json'
+                registered = json.loads(catalog.read_text())
+                source = registered['sources']['portable']
+                skill = registered['skills']['portable-skill-0']
+                if conflict == 'source-type':
+                    source.update(type='git', url='https://example.test/portable', ref='main')
+                elif conflict == 'source-target':
+                    source['path'] = 'skills/elsewhere'
+                elif conflict == 'skill-source':
+                    registered['sources']['another-source'] = dict(source)
+                    skill['source'] = 'another-source'
+                elif conflict == 'skill-path':
+                    skill['path'] = 'elsewhere'
+                catalog.write_text(json.dumps(registered))
+                before = catalog.read_bytes()
+                private = fixture.source('local-library')
+                path = Path(plan(Model(fixture.paths))['plan'])
+                document = json.loads(path.read_text())
+                for entry in document['entries']:
+                    local = entry['path'] == 'skills/local-library'
+                    entry.update(classification='private' if local else 'shared',
+                                 source_id='local-library' if local else 'portable',
+                                 provenance='third-party', private_approved=local)
+                    entry['skills'][0]['id'] = 'local-skill' if local else 'portable-skill-0'
+                    if not local:
+                        if conflict == 'source-visibility':
+                            entry.update(classification='private', private_approved=True)
+                        elif conflict == 'provenance':
+                            entry['provenance'] = 'authored'
+                        elif conflict == 'upstream':
+                            entry['upstream'] = 'https://example.test/different'
+                        elif conflict == 'upstream-name':
+                            entry['skills'][0]['upstream_name'] = 'different-name'
+                    elif conflict == 'skill-scope':
+                        entry['skills'][0]['id'] = 'portable-skill-0'
+                path.write_text(json.dumps(document))
+
+                with self.assertRaisesRegex(Error, 'identity'):
+                    apply(Model(fixture.paths), path)
+
+                self.assertEqual(catalog.read_bytes(), before)
+                self.assertFalse((fixture.paths.config / 'catalog.json').exists())
+                self.assertFalse((fixture.paths.data / 'private').exists())
+                self.assertFalse(shared.is_symlink())
+                self.assertFalse(private.is_symlink())
+                self.assertEqual((private / 'companion.txt').read_text(), 'Preserved supporting asset.\n')
+
+    def test_fresh_plan_carries_exact_private_alias_without_relocation_or_approval(self):
+        root = self.fixture.source()
+        path, document = self.fixture.reviewed('private', private_approved=True)
+        document['entries'][0]['upstream'] = 'https://example.test/bundle'
+        document['entries'][0]['skills'][0]['upstream_name'] = 'original-name'
+        path.write_text(json.dumps(document))
+        apply(Model(self.fixture.paths), path)
+        catalog = self.fixture.paths.config / 'catalog.json'
+        exclude = self.fixture.repo / '.git/info/exclude'
+        before = {file: (file.read_bytes(), file.stat().st_ino, file.stat().st_mtime_ns)
+                  for file in (catalog, exclude)}
+        recovery = sorted((self.fixture.paths.data / 'private/recovery').rglob('*'))
+        target = os.readlink(root)
+        self.fixture.discovery(root)
+        (self.fixture.home / '.claude/custom.conf').write_text('skills = ' + str(root))
+        path, _ = self.fixture.reviewed('private')
+
+        result = apply(Model(self.fixture.paths), path)
+
+        self.assertEqual(result['recovery'], [])
+        self.assertEqual(apply(Model(self.fixture.paths), path), result)
+        self.assertTrue(root.is_symlink())
+        self.assertEqual(os.readlink(root), target)
+        self.assertEqual(sorted((self.fixture.paths.data / 'private/recovery').rglob('*')), recovery)
+        for file, state in before.items():
+            self.assertEqual((file.read_bytes(), file.stat().st_ino, file.stat().st_mtime_ns), state)
+
+    def test_existing_noop_registration_still_checks_inventory_configuration_and_references(self):
+        for change in ('source', 'inventory', 'configuration', 'reference'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
+                fixture = MigrationFixture(directory)
+                root = fixture.source()
+                path, _ = fixture.reviewed()
+                apply(Model(fixture.paths), path)
+                links = fixture.discovery(root)
+                path, _ = fixture.reviewed()
+                catalog = fixture.paths.shared / 'catalog.json'
+                before = catalog.read_bytes()
+                if change == 'source':
+                    (root / 'companion.txt').write_text('Changed after review.\n')
+                elif change == 'inventory':
+                    fixture.source('additional')
+                elif change == 'configuration':
+                    fixture.paths.config.mkdir(parents=True)
+                    (fixture.paths.config / 'machine.json').write_text(
+                        '{"schema_version":1,"profiles":[],"overrides":{}}')
+                else:
+                    links[0].unlink()
+
+                with self.assertRaises(Error) as error:
+                    apply(Model(fixture.paths), path)
+
+                self.assertEqual(error.exception.code, 4)
+                self.assertEqual(catalog.read_bytes(), before)
+                self.assertFalse(root.is_symlink())
+
+    def test_new_skill_can_join_existing_source_without_replacing_source_attribution(self):
+        root = self.fixture.source()
+        path, document = self.fixture.reviewed()
+        document['entries'][0]['upstream'] = 'https://example.test/bundle'
+        document['entries'][0]['skills'][0]['upstream_name'] = 'original-name'
+        path.write_text(json.dumps(document))
+        apply(Model(self.fixture.paths), path)
+        original = Model(self.fixture.paths)
+        (root / 'extra').mkdir()
+        (root / 'extra/SKILL.md').write_text('Additional instructions.\n')
+        path, document = self.fixture.reviewed()
+        document['entries'][0]['upstream'] = 'https://example.test/bundle'
+        document['entries'][0]['skills'][0]['upstream_name'] = 'original-name'
+        path.write_text(json.dumps(document))
+
+        result = apply(Model(self.fixture.paths), path)
+
+        model = Model(self.fixture.paths)
+        self.assertEqual(model.sources, original.sources)
+        self.assertEqual(model.skills['bundle-skill-0'], original.skills['bundle-skill-0'])
+        self.assertEqual(model.skills['bundle-skill-1']['path'], 'extra')
+        self.assertEqual(model.skills['bundle-skill-1']['source'], 'bundle')
+        self.assertEqual(result['recovery'], [])
+        self.assertFalse(root.is_symlink())
+
+    def test_duplicate_reviewed_source_id_is_rejected_even_for_matching_existing_targets(self):
+        root = self.fixture.source()
+        path, _ = self.fixture.reviewed()
+        apply(Model(self.fixture.paths), path)
+        catalog = self.fixture.paths.shared / 'catalog.json'
+        before = catalog.read_bytes()
+        (root.parent / 'alias').symlink_to(root, target_is_directory=True)
+        path, _ = self.fixture.reviewed()
+
+        with self.assertRaisesRegex(Error, 'Duplicate reviewed source identity'):
+            apply(Model(self.fixture.paths), path)
+
+        self.assertEqual(catalog.read_bytes(), before)
+
+    def test_duplicate_reviewed_skill_id_is_rejected_after_matching_existing_record(self):
+        root = self.fixture.source()
+        path, _ = self.fixture.reviewed()
+        apply(Model(self.fixture.paths), path)
+        catalog = self.fixture.paths.shared / 'catalog.json'
+        before = catalog.read_bytes()
+        (root / 'extra').mkdir()
+        (root / 'extra/SKILL.md').write_text('Additional instructions.\n')
+        path, document = self.fixture.reviewed()
+        for skill in document['entries'][0]['skills']:
+            skill['id'] = 'bundle-skill-0'
+        path.write_text(json.dumps(document))
+
+        with self.assertRaisesRegex(Error, 'Duplicate reviewed skill identity'):
+            apply(Model(self.fixture.paths), path)
+
+        self.assertEqual(catalog.read_bytes(), before)
+
     def test_unclassified_and_missing_private_approval_fail_without_writes(self):
         original = self.fixture.source()
         unreviewed = Path(plan(Model(self.fixture.paths))['plan'])

@@ -211,6 +211,34 @@ class InstallationTests(unittest.TestCase):
         self.assertEqual(['missing-skill'], result['installed_diff']['added'])
         self.assertEqual('unavailable', result['selected'][1]['availability'])
 
+    def test_profile_membership_diff_survives_failed_syncs_until_successful_activation(self):
+        root, source = self.directory()
+        self.catalog({'library': source}, {
+            'alpha': {'source': 'library', 'path': 'skills/alpha'},
+            'beta': {'source': 'library', 'path': 'skills/beta'}})
+        self.document('shared', 'profiles.json', profiles={'coding': {'skills': ['alpha']}})
+        self.document('private', 'machine.json', profiles=['coding'], overrides={})
+        self.activate()
+        previous = (self.paths.data / 'active.json').read_bytes()
+        marker = root / 'skills/beta/SKILL.md'
+        content = marker.read_text()
+        marker.unlink()
+        self.document('shared', 'profiles.json', profiles={'coding': {'skills': ['alpha', 'beta']}})
+
+        for attempt in range(2):
+            with self.subTest(attempt=attempt):
+                self.assert_error(3, self.activate)
+                result = inspect(Model(self.paths))
+                self.assertEqual({'added': ['beta'], 'removed': []}, result['desired_diff'])
+                self.assertEqual(['alpha', 'beta'], result['last_good']['selected'])
+                self.assertEqual(previous, (self.paths.data / 'active.json').read_bytes())
+
+        marker.write_text(content)
+        result = self.activate()
+        self.assertEqual({'added': ['beta'], 'removed': []}, result['desired_diff'])
+        self.assertEqual(['alpha', 'beta'], [entry['id'] for entry in result['active']])
+        self.assertEqual({'added': [], 'removed': []}, inspect(Model(self.paths))['desired_diff'])
+
     def test_first_failed_sync_publishes_no_active_set(self):
         self.catalog({'missing': {'type': 'directory', 'path': 'missing', 'provenance': 'authored'}},
                      {'alpha': {'source': 'missing', 'path': '.'}})
