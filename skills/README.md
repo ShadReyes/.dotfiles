@@ -27,12 +27,33 @@ Imported upstream skills:
 - `brando` is a local plugin bundle vendored from `brs98/.dotfiles`.
 - `matt` is a local plugin bundle vendored from `mattpocock/skills`.
 - `herdr` is a local plugin bundle vendored from `ogulcancelik/herdr`.
-- `figma` contains the 14 official MCP skills from
-  [figma/mcp-server-guide](https://github.com/figma/mcp-server-guide), plugin
-  version `2.2.155`, commit `2b85b7d27bd6ee124667fcfe88856f6b1f81671a`.
-  Preserve the complete `skills/` tree and upstream `figma-*` names when refreshing;
-  keep the local manifest's `skills: "./skills/"` declaration. MCP is configured
-  separately in the client; the bundle contains skills only.
+- Figma is supplied by independently installed native harness plugins, not this
+  library or Skillset. See [native Figma setup](#native-figma-plugin).
+
+## Native Figma plugin
+
+For first-time OMP setup, add the official catalog before installing. An
+unregistered marketplace identifier can fall through to ordinary package
+installation; the preview must not warn that user scope is being ignored.
+
+```sh
+omp plugin marketplace add anthropics/claude-plugins-official
+omp plugin install --dry-run --scope user figma@claude-plugins-official
+omp plugin install --scope user figma@claude-plugins-official
+omp plugin list
+```
+
+If the catalog is already registered, verify its official source and reuse it.
+Run `/reload-plugins` manually in OMP, then verify skill loading and required tool
+access separately. This does not register skills with Skillset or authenticate MCP.
+Other harnesses use their own [Figma setup instructions](https://developers.figma.com/docs/figma-mcp-server/remote-server-installation/);
+Codex app plugin setup is not Codex CLI setup. No automatic fallback is installed.
+
+The retired copy came from [figma/mcp-server-guide](https://github.com/figma/mcp-server-guide),
+version `2.2.155`, commit `2b85b7d27bd6ee124667fcfe88856f6b1f81671a`.
+Its wrapper had a local description and explicit `skills: "./skills/"` declaration.
+Recovery copies stay machine-local outside the repository. For stale machine
+selections after pulling this change, use the [Figma reference repair](../skillset/README.md#retired-figma-profile).
 
 ## Skill naming policy
 
@@ -74,7 +95,6 @@ skills:
     - ~/.dotfiles/skills/matt/skills/engineering
     - ~/.dotfiles/skills/matt/skills/productivity
     - ~/.dotfiles/skills/vercel/skills
-    - ~/.dotfiles/skills/figma/skills
 ```
 
 Add skills beneath these parents without changing configuration or creating
@@ -83,8 +103,8 @@ Root skills continue loading through the shared pool populated by `sync-skills.s
 
 Invoke unique names directly, such as `/skill:manage-skills` or
 `skill://manage-skills`. OMP assigns namespaces to differing name collisions;
-it does not automatically expose every skill as `plugin:skill`. Claude plugin
-namespaces remain Claude-specific and require the plugin to be enabled there.
+native plugin invocation names remain harness-specific. A local compatibility
+manifest is not proof of a native plugin installation.
 Restart OMP after changing discovery configuration.
 
 ## Native Pi discovery

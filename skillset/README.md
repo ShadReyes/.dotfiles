@@ -36,6 +36,11 @@ skillset disable example
 skillset reset example
 ```
 
+When a shared change retires both profile and skill identities, use
+`reset SKILL... --deselect-profile PROFILE` to remove those explicit local
+references atomically. Repeat the flag for multiple profiles. Remaining invalid
+references or malformed IDs reject the repair without changing machine state.
+
 Profile membership is a flat list, without nesting, wildcards, or exclusions. Rename changes the display name only. Removing referenced skills, sources, or profiles is rejected with reference details; no original files are deleted. Other machines' local references may need explicit repair after shared definitions are removed.
 
 ## Shared profiles
@@ -47,12 +52,45 @@ This checkout defines these reusable profiles:
 | `coding` | Core implementation, planning, debugging, review, architecture, research, PR, and commit workflows. |
 | `python` | Python design and testing patterns. |
 | `rust` | Rust best practices and testing. |
-| `figma` | The registered Figma namespace. |
 | `decal` | The registered Decal production namespace. |
 | `vercel` | `vercel-cli` and `ai-sdk`. |
 | `tools` | `turborepo`. |
 
 Membership is explicit, not a dynamic namespace rule: add future skills with `profile add`. Definitions are shared; profile selection and installation remain machine-local. All other skills remain independently enableable. Sentry currently has only `sentry-cli`, so it has no separate grouped profile.
+
+## Retired Figma profile
+
+Figma is supplied by independently installed harness plugins, not Skillset. This
+checkout no longer defines its old source, fourteen skill records, or profile.
+Other machines may still have the retired profile or overrides selected after
+pulling this change. Repair those references without resetting unrelated choices:
+
+```sh
+skillset reset --deselect-profile figma \
+  figma-code-connect \
+  figma-create-new-file \
+  figma-design-to-code \
+  figma-generate-design \
+  figma-generate-diagram \
+  figma-generate-library \
+  figma-generative-plugins \
+  figma-implement-motion \
+  figma-shaders \
+  figma-swiftui \
+  figma-use \
+  figma-use-figjam \
+  figma-use-motion \
+  figma-use-slides
+skillset validate
+skillset sync --offline
+```
+
+Offline sync requires retained content for the remaining selection; failure keeps
+the previous active set. This repair does not install plugins or remove legacy
+harness links/settings. Remove only reviewed links to the old `skills/figma` path
+and that exact old custom-directory entry, preserving other discovery and MCP
+configuration. Existing caches/snapshots are retained, not garbage-collected.
+See [native Figma setup](../skills/README.md#native-figma-plugin).
 
 ## Remote sources
 

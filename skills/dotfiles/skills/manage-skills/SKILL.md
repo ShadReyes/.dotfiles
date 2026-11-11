@@ -10,6 +10,12 @@ profiles, machine selection, installations, and reviewed private relocation.
 It does not control harness discovery. Existing discovery links, agents, and
 commands remain owned by `~/.dotfiles/sync-skills.sh`; the legacy workflow follows.
 
+Establish standalone distribution before copying third-party skills. Install native
+plugins, including Figma, independently through each harness; their bundled skills
+stay outside this copy/sync workflow and Skillset. The local bundle layout below
+is for authored/standalone collections with compatibility manifests. Existing
+third-party bundles need source-specific review before changing their disposition.
+
 ## The invariant (never break it)
 
 - Portable authored sources stay in dotfiles; generated Skillset installations

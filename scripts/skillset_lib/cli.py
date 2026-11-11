@@ -47,7 +47,11 @@ def parser():
     for action in ('select', 'deselect'):
         profile.add_parser(action).add_argument('ids', nargs='+')
     for action in ('enable', 'disable', 'reset'):
-        commands.add_parser(action).add_argument('ids', nargs='+')
+        command = commands.add_parser(action)
+        command.add_argument('ids', nargs='+')
+        if action == 'reset':
+            command.add_argument('--deselect-profile', action='append', default=[], metavar='PROFILE',
+                                 help='Deselect an explicit profile in the same reset transaction')
     for action in ('list', 'status', 'validate', 'resolve'):
         command = commands.add_parser(action)
         command.add_argument('--json', action='store_true', required=action == 'resolve')
@@ -109,6 +113,11 @@ def configure(model, args):
                 else:
                     _existing(model.skills, identity, 'skill')
                     machine['overrides'][identity] = 'enabled' if command == 'enable' else 'disabled'
+            if command == 'reset':
+                for identity in args.deselect_profile:
+                    valid_id(identity)
+                    if identity in machine['profiles']:
+                        machine['profiles'].remove(identity)
         old = read_json(model.paths.config / 'last-selection.json', {'schema_version': 1, 'selection': None})['selection']
         selection = model.save_machine(machine)
         previous = set(old['selected']) if old else set()

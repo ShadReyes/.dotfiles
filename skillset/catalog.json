@@ -61,62 +61,6 @@
       "path": "skills/engineering/domain-modeling",
       "source": "matt"
     },
-    "figma-code-connect": {
-      "path": "skills/figma-code-connect",
-      "source": "figma"
-    },
-    "figma-create-new-file": {
-      "path": "skills/figma-create-new-file",
-      "source": "figma"
-    },
-    "figma-design-to-code": {
-      "path": "skills/figma-design-to-code",
-      "source": "figma"
-    },
-    "figma-generate-design": {
-      "path": "skills/figma-generate-design",
-      "source": "figma"
-    },
-    "figma-generate-diagram": {
-      "path": "skills/figma-generate-diagram",
-      "source": "figma"
-    },
-    "figma-generate-library": {
-      "path": "skills/figma-generate-library",
-      "source": "figma"
-    },
-    "figma-generative-plugins": {
-      "path": "skills/figma-generative-plugins",
-      "source": "figma"
-    },
-    "figma-implement-motion": {
-      "path": "skills/figma-implement-motion",
-      "source": "figma"
-    },
-    "figma-shaders": {
-      "path": "skills/figma-shaders",
-      "source": "figma"
-    },
-    "figma-swiftui": {
-      "path": "skills/figma-swiftui",
-      "source": "figma"
-    },
-    "figma-use": {
-      "path": "skills/figma-use",
-      "source": "figma"
-    },
-    "figma-use-figjam": {
-      "path": "skills/figma-use-figjam",
-      "source": "figma"
-    },
-    "figma-use-motion": {
-      "path": "skills/figma-use-motion",
-      "source": "figma"
-    },
-    "figma-use-slides": {
-      "path": "skills/figma-use-slides",
-      "source": "figma"
-    },
     "find-skills": {
       "path": "skills/find-skills",
       "source": "brando"
@@ -401,12 +345,6 @@
       "path": "skills/dotfiles",
       "provenance": "authored",
       "type": "directory"
-    },
-    "figma": {
-      "path": "skills/figma",
-      "provenance": "third-party",
-      "type": "directory",
-      "upstream": "https://github.com/figma/mcp-server-guide"
     },
     "herdr": {
       "path": "skills/herdr",

@@ -86,6 +86,44 @@ class SelectionContract(unittest.TestCase):
             self.assertEqual(repaired['selected'], ['alpha'])
             self.assertEqual(repaired['overrides'], {'alpha': 'enabled'})
 
+    def test_retired_profiles_and_overrides_are_repaired_in_one_reset(self):
+        with world() as paths:
+            run_cli(paths, 'enable', 'alpha')
+            atomic_write(paths.config / 'machine.json', document(
+                profiles=['coding', 'retired-one', 'retired-two'],
+                overrides={'alpha': 'enabled', 'beta': 'disabled',
+                           'old-one': 'enabled', 'old-two': 'disabled'}))
+
+            repaired = run_cli(paths, 'reset', 'old-one', 'old-two',
+                               '--deselect-profile', 'retired-one',
+                               '--deselect-profile', 'retired-two')['selection']
+
+            self.assertEqual(repaired['selected'], ['alpha'])
+            self.assertEqual(repaired['profiles'], ['coding'])
+            self.assertEqual(repaired['overrides'], {'alpha': 'enabled', 'beta': 'disabled'})
+            self.assertEqual(json.loads((paths.config / 'machine.json').read_text()), document(
+                profiles=['coding'], overrides={'alpha': 'enabled', 'beta': 'disabled'}))
+
+    def test_incomplete_or_malformed_reference_repair_preserves_machine_state(self):
+        cases = {
+            'remaining profile': (['coding', 'retired', 'other-retired'],
+                                  {'alpha': 'enabled', 'old': 'disabled'}, 'retired'),
+            'remaining override': (['coding', 'retired'],
+                                   {'alpha': 'enabled', 'old': 'disabled', 'other-old': 'enabled'}, 'retired'),
+            'malformed profile': (['coding', 'retired'],
+                                  {'alpha': 'enabled', 'old': 'disabled'}, 'bad/profile'),
+        }
+        for label, (profiles, overrides, target) in cases.items():
+            with self.subTest(label=label), world() as paths:
+                run_cli(paths, 'enable', 'alpha')
+                atomic_write(paths.config / 'machine.json', document(profiles=profiles, overrides=overrides))
+                before = {name: (paths.config / name).read_bytes()
+                          for name in ('machine.json', 'last-selection.json')}
+
+                run_cli(paths, 'reset', 'old', '--deselect-profile', target, code=2)
+
+                self.assertEqual({name: (paths.config / name).read_bytes() for name in before}, before)
+
     def test_invalid_initial_selection_does_not_claim_retained_recovery_state(self):
         with world() as paths:
             atomic_write(paths.config / 'machine.json', document(profiles=[], overrides={'removed': 'enabled'}))
