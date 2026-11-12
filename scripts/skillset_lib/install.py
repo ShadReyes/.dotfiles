@@ -279,6 +279,10 @@ def _active(model):
     document = read_json(manifest_path, {
         'schema_version': 1, 'generation': None, 'selection': None, 'active': [], 'snapshots': [],
     })
+    return _validate_active(model, document)
+
+
+def _validate_active(model, document):
     active, snapshots = document.get('active'), document.get('snapshots')
     if not isinstance(active, list) or not isinstance(snapshots, list):
         raise Error('Active manifest requires active and snapshots lists')
@@ -378,6 +382,35 @@ def _check_snapshot(model, snapshot):
         raise Error(f'Generated installation has invalid local modifications: {snapshot["source"]}: {exc}', 4) from exc
     if actual != snapshot['fingerprint']:
         raise Error(f'Generated installation has local modifications: {snapshot["source"]}', 4)
+
+
+def validate_installation(model, document):
+    """Verify a retained complete installation without requiring its original/cache."""
+    if not isinstance(document, dict) or document.get('schema_version') != 1:
+        raise Error('Invalid retained installation')
+    _validate_active(model, document)
+    if document.get('generation') is None or document.get('selection') is None:
+        raise Error('A successful installation is required before exposure', 3)
+    for snapshot in document['snapshots']:
+        _check_snapshot(model, snapshot)
+    _check_active_paths(document)
+    roots = {(snapshot['visibility'], snapshot['source']): Path(snapshot['directory'])
+             for snapshot in document['snapshots']}
+    for entry in document['active']:
+        _skill_directory(roots[(entry['visibility'], entry['source'])], entry['id'], entry['path'])
+    return document
+
+
+def exposure_installation(model):
+    """Return only a complete active set matching current intent and source requirements."""
+    state = inspect(model)
+    if not state['selection_valid']:
+        raise Error('Invalid selection; exposure retained', 2)
+    active = _active(model)
+    if (state['errors'] or active['selection'] != state['desired'] or
+            any(entry['availability'] != 'installed' for entry in state['selected'])):
+        raise Error('Installation is pending or unavailable; sync successfully before exposure', 3)
+    return validate_installation(model, active)
 
 
 def _snapshot(model, generation, source_id, source, state, previous):

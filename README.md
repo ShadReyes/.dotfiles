@@ -87,7 +87,7 @@ skills/               # shared SKILL.md resources
 agents/               # canonical TOML agent definitions
 commands/             # Claude slash commands
 scripts/doctor        # validate symlinks, AI resource counts, and Stow dry-runs
-scripts/skillset       # harness-independent skill installation and profile CLI
+scripts/skillset       # skill installation, profiles, and explicit managed exposure
 skillset/             # shared catalog, profiles, locks, and usage documentation
 scripts/              # helper scripts
 ```
@@ -106,8 +106,10 @@ The catalog and shared profiles are versioned; machine selection and installatio
 
 Skillset installation is separate from exposure: `sync-skills.sh` retains its
 existing discovery-link, agent, and command responsibilities. Manager sync does
-not filter what a harness discovers. Private relocation is a deliberate reviewed
-operation with verified local recovery copies, not a bootstrap side effect.
+not filter what a harness discovers. Explicit [managed OMP launches](skillset/README.md#explicit-managed-omp-launches)
+use a machine-local overlay; default launches and other harnesses stay unchanged.
+Private relocation is a deliberate reviewed operation with verified local recovery
+copies, not a bootstrap side effect.
 
 ## Stow packages
 

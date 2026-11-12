@@ -10,7 +10,7 @@ from .core import Error, Model, Paths, read_json, valid_id, locked, write_many
 
 
 def parser():
-    root = argparse.ArgumentParser(description='Install skills and manage machine selections; harness exposure is unmanaged.')
+    root = argparse.ArgumentParser(description='Install skills, manage selections, and explicitly prepare isolated harness exposure.')
     root.add_argument('--repo', type=Path, default=Path(__file__).resolve().parents[2], help='Dotfiles checkout (defaults to this CLI checkout)')
     commands = root.add_subparsers(dest='command', required=True)
     source = commands.add_parser('source').add_subparsers(dest='action', required=True)
@@ -61,6 +61,9 @@ def parser():
     update.add_argument('sources', nargs='*')
     update.add_argument('--all', action='store_true')
     commands.add_parser('sync').add_argument('--offline', action='store_true')
+    expose = commands.add_parser('expose', help='Prepare isolated managed launches; default discovery is unchanged')
+    expose.add_argument('action', choices=('apply', 'status', 'rollback'))
+    expose.add_argument('--target', action='append', required=True)
     migration = commands.add_parser('import')
     mode = migration.add_mutually_exclusive_group(required=True)
     mode.add_argument('--plan', action='store_true')
@@ -280,7 +283,7 @@ def _emit(result, args):
         print(f'Retained data: {result.get("data_directory", "unavailable")}')
         for error in result.get('errors', []):
             print('Error: ' + str(error), file=sys.stderr)
-    print('Harness exposure: unmanaged; selections and installations do not change discovery.')
+    print('Installation commands do not change discovery. Inspect managed launches with: skillset expose status --target omp')
 
 
 def main(argv=None):
@@ -288,10 +291,13 @@ def main(argv=None):
     paths = None
     try:
         paths = Paths(args.repo)
-        read_only = args.command in ('list', 'status', 'validate', 'resolve')
+        read_only = args.command in ('list', 'status', 'validate', 'resolve') or (args.command == 'expose' and args.action == 'status')
         if read_only:
             model = Model(paths, shared_only=getattr(args, 'shared_only', False))
-            if args.command == 'list':
+            if args.command == 'expose':
+                from .exposure import run
+                result = run(model, args.action, args.target)
+            elif args.command == 'list':
                 result = _catalog_output(model)
             elif args.command == 'validate':
                 model.validate()
@@ -300,12 +306,15 @@ def main(argv=None):
                 from .install import inspect
                 result = inspect(model)
             _emit(result, args)
-            return 2 if result.get('selection_valid') is False else 0
+            return result.get('exit_code', 2 if result.get('selection_valid') is False else 0)
         with locked(paths):
             model = Model(paths)
             if args.command == 'sync':
                 from .install import sync
                 result = sync(model, offline=args.offline)
+            elif args.command == 'expose':
+                from .exposure import run
+                result = run(model, args.action, args.target)
             elif args.command == 'update':
                 from .install import update
                 result = update(model, args.sources, all_sources=args.all)
@@ -315,7 +324,7 @@ def main(argv=None):
             else:
                 result = configure(model, args)
         _emit(result, args)
-        return 0
+        return result.get('exit_code', 0)
     except Error as exc:
         if args.command in ('status', 'resolve'):
             _emit(_broken_resolution(paths, exc), args)

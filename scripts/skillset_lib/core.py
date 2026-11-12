@@ -36,6 +36,7 @@ class Paths:
         discovery = [self.home / p for p in (
             '.claude/skills', '.agents/skills', '.codex/skills', '.pi/agent/skills',
             '.omp/skills', '.config/omp/skills', '.config/opencode/skills', '.hermes/skills',
+            '.omp/agent/skills', '.omp/agent/managed-skills',
         )]
         for root in (self.config, self.data):
             if root.is_relative_to(self.repo) or any(root.is_relative_to(p.resolve()) for p in discovery):

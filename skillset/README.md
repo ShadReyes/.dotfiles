@@ -1,8 +1,8 @@
 # Skillset
 
-A local Python 3.11+ / Git CLI for skill catalogs, profiles, independent machine choices, and reproducible installations. No pip dependencies, server, or AI harness is required.
+A local Python 3.11+ / Git CLI for skill catalogs, profiles, independent machine choices, and reproducible installations. Core installation requires no pip dependencies, server, or AI harness. Optional managed OMP launches require a verified installed OMP build.
 
-**Selected, installed, and exposed are different.** Skillset manages the first two. `sync-skills.sh` still owns existing discovery links, agents, and commands. `skillset sync` never changes harness discovery.
+**Selected, installed, applied, and session-loaded are different.** `skillset sync` installs only. Explicit `expose` prepares an isolated OMP launch overlay; it does not change ordinary harness launches. `sync-skills.sh` still owns the legacy discovery pool, agents, and commands.
 
 ## Run
 
@@ -10,7 +10,7 @@ Bootstrap provisions/checks Python and Git and links `~/.local/bin/skillset`; th
 
 `--stow-only` / `--no-packages` does not download prerequisites; it reports missing runtimes. Package mode requires a supported runtime after provisioning. Older Linux distributions may require installing Python 3.11+ manually. An existing unrelated `~/.local/bin/skillset` is not overwritten.
 
-Bootstrap does **not** import sources, select profiles, run manager sync, or relocate private files. Shared catalog and profile definitions do not activate skills automatically.
+Bootstrap does **not** import sources, select profiles, run manager sync/exposure, or relocate private files. Shared catalog and profile definitions do not activate skills automatically.
 
 ## First selection
 
@@ -115,6 +115,78 @@ Desired membership diffs compare against the last successfully activated selecti
 
 Edit authored/vendored originals, not generated installations or managed fetched content. Unexpected edits to generated/fetched content are conflicts, not permission to overwrite it.
 
+## Explicit managed OMP launches
+
+This is an opt-in launch route, not a cutover of default discovery. Review required
+authored/private baseline membership and standalone eligibility before using it.
+Only launches using the printed overlay enforce managed selection; ordinary OMP,
+Claude Code, Codex CLI, and Pi discovery remain unchanged. Plugins stay independent.
+
+```sh
+skillset sync --offline
+skillset expose apply --target omp
+# Start a new OMP session with the launch arguments printed in the local result.
+skillset expose status --target omp
+skillset expose rollback --target omp
+```
+
+The verified builds are OMP **18.18.8, 18.18.9, and 18.19.0**, using the default native
+profile/config layout. Other builds, named profiles, config-directory overrides,
+and environment-variable custom-directory paths return unsupported without
+publishing. Every apply also uses OMP's actual loader to verify the complete
+selected set, including frontmatter/filter behavior. Apply does not invoke
+acquisition, plugin installation, authentication, or automatic reload commands.
+
+Native YAML is first parsed as a strict overlay in a throwaway home: ordinary OMP
+startup can quarantine malformed settings. Invalid originals remain in place;
+legacy JSON or stored database settings block until independently migrated.
+A normal runtime database with no stored settings is allowed. Database preflight
+checks only for settings-row existence in read-only mode, including pending WAL
+content; unreadable, unknown-schema, or redirected databases block safely.
+Keep OMP configuration unchanged during apply; the final preflight also rejects
+observed launch-context drift before publication.
+
+Apply consumes a complete active installation matching current selection and
+source requirements. Pending selection, failed sync, unavailable content, or a
+discovery conflict retains the previous applied generation. After a successful
+empty sync, applying exposes no managed skills; originals and inactive content
+remain retained. Source-relative links and companion files remain intact.
+
+The overlay replaces only `skills.customDirectories` for that launch. It omits
+known legacy dotfiles library roots and preserves other custom entries. It never
+edits global settings, shared pools, provider switches, agents, commands, hooks,
+MCP, or plugin registries. If a native/shared/project route would reintroduce the
+legacy library, apply blocks rather than disabling a provider or modifying another
+consumer's root. Resolve that target-isolation prerequisite before retrying.
+Independent routes may still contribute additional or duplicate skills; no
+duplicate suppression or global on/off guarantee is provided.
+
+Applied links, the configuration overlay, and its installation record live in
+owner-only generations under the machine-local data root's `exposure/omp`.
+A single atomic `current` link publishes all three together. Crash-before-switch
+retains the old set; crash-after-switch leaves a complete new set with its applied
+record. Before restoring a prior generation, rollback rechecks the verified OMP
+build, its saved launch context, native discovery of the retained selection, and
+retained content. Changed external custom roots, unavailable content, or newer
+unowned edits block restoration without changing the current route. If publication
+rollback cannot be confirmed, further apply is blocked until explicit rollback
+succeeds. Rolling back the first apply removes the managed launch route without
+requiring OMP availability; use ordinary OMP.
+No cache, source snapshot, or exposure generation is garbage-collected.
+
+Results distinguish applied, unchanged/pending, unsupported, recovery-needed, and
+rolled-back state. Repeat `--target` to request several targets; unsupported targets
+return a nonzero overall result without undoing an isolated OMP success. The other
+three harnesses are not yet implemented for managed exposure.
+
+Use the printed launch's working directory/profile. Reapply after changing that
+context or custom-directory configuration. For OMP `read`/`skill list` subcommands,
+use `PI_CONFIG_FILES` with the printed config path appended to any existing value:
+those subcommands do not consume the main command's `--config` flag in these builds.
+Never publish local manifests/configuration: they can contain private paths and
+identifiers. Applied files do not mean a running session loaded them, and previously
+read instructions remain in its history. Refresh/restart stays manual.
+
 ## Private sources
 
 Private originals, registrations, profiles, locks, installations, and recovery contents stay outside dotfiles. Each new private source, skill, and profile requires `--private`:
@@ -187,7 +259,7 @@ Diagnostics go to stderr; JSON stays on stdout. Exit codes: `0` success, `2` inv
 From the repository, using Python 3.11+ on PATH:
 
 ```sh
-python3 -B -m unittest -v test_skillset test_skillset_install test_skillset_migration test_skillset_transactions
+python3 -B -m unittest -v test_skillset test_skillset_install test_skillset_migration test_skillset_transactions test_skillset_exposure
 bash test_skillset_bootstrap.sh
 bash test-bootstrap.sh
 ```

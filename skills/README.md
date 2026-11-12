@@ -3,9 +3,10 @@
 These directories are the source of truth for local AI skills. Run `../sync-skills.sh` from this directory's parent to symlink them into the supported AI CLI locations.
 
 [Skillset](../skillset/README.md) separately manages registration, profiles, and
-installations. Its selection does not change this legacy discovery pool. Private
-sources registered with Skillset live outside dotfiles; reviewed relocation keeps
-Git-excluded local path aliases so existing discovery continues to work.
+installations. Its selection does not change this legacy discovery pool. For
+selected-only standalone discovery, use its [explicit managed OMP launch](../skillset/README.md#explicit-managed-omp-launches).
+Private sources registered with Skillset live outside dotfiles; reviewed relocation
+keeps Git-excluded local path aliases so existing discovery continues to work.
 
 ## Machine-local confidential context
 
@@ -81,6 +82,11 @@ git clone --depth 1 https://github.com/mattpocock/skills /tmp/mattpocock-skills
 ```
 
 ## Native OMP discovery
+
+The configuration below is the **legacy full-library route**. An explicit
+Skillset-managed OMP launch uses an isolated overlay instead; it does not rewrite
+these global settings or migrate the other harnesses. Review standalone membership
+before adopting the [managed launch route](../skillset/README.md#explicit-managed-omp-launches).
 
 OMP scans direct children of each skill root, not arbitrary nested bundles.
 Configure the following once in `~/.omp/agent/config.yml`, preserving other settings:

@@ -7,8 +7,10 @@ description: Add, author, update, or audit agent skills in ~/.dotfiles and the l
 
 Use [Skillset](../../../../skillset/README.md) for standalone registration,
 profiles, machine selection, installations, and reviewed private relocation.
-It does not control harness discovery. Existing discovery links, agents, and
-commands remain owned by `~/.dotfiles/sync-skills.sh`; the legacy workflow follows.
+For selected-only OMP launches, explicitly apply its [managed exposure overlay](../../../../skillset/README.md#explicit-managed-omp-launches)
+after successful sync and review of authored/private baseline membership. Default
+harness launches remain unchanged. Existing discovery links, agents, and commands
+remain owned by `~/.dotfiles/sync-skills.sh`; the legacy workflow follows.
 
 Establish standalone distribution before copying third-party skills. Install native
 plugins, including Figma, independently through each harness; their bundled skills
